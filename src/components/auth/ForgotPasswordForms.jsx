@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import FormInput from "../ui/FormInput";
 import {
   forgotPasswordSchema,
@@ -20,20 +20,17 @@ export const EmailStep = ({ onNext }) => {
 
   return (
     <form onSubmit={handleSubmit(onNext)} className="space-y-6">
-      <h2 className="text-2xl font-bold text-center text-secondary mb-2">
-        Forget Password
-      </h2>
       <FormInput
-        placeholder="Enter your email"
+        label="Email Address"
+        placeholder="Enter your email address"
         type="email"
-        icon={Mail}
         error={errors.email}
         {...register("email")}
       />
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-[#2D3E4E] hover:bg-[#1D2B38] text-white py-3.5 rounded-xl font-bold text-sm tracking-widest uppercase transition-all active:scale-[0.98]"
+        className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-50"
       >
         Get OTP
       </button>
@@ -81,10 +78,7 @@ export const OtpStep = ({ onNext }) => {
   const isComplete = otp.every((digit) => digit !== "");
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-center text-secondary mb-2">
-        OTP
-      </h2>
+    <div className="space-y-6 pt-2">
       <div className="flex justify-center gap-5">
         {otp.map((digit, index) => (
           <input
@@ -96,14 +90,14 @@ export const OtpStep = ({ onNext }) => {
             onChange={(e) => handleChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
             onPaste={handlePaste}
-            className="w-12 h-12 text-center text-xl font-bold bg-white border-2 border-secondary/10 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all shadow-sm"
+            className="w-12 h-12 text-center text-xl font-bold bg-[#051532] border border-[#192B4C] text-white rounded-xl focus:border-[#5D9E32] focus:ring-1 focus:ring-[#5D9E32]/20 outline-none transition-all shadow-sm"
           />
         ))}
       </div>
       <button
         onClick={() => isComplete && onNext({ otp: otp.join("") })}
         disabled={!isComplete}
-        className="w-full bg-[#2D3E4E] hover:bg-[#1D2B38] text-white py-3.5 rounded-xl font-bold text-sm tracking-widest uppercase transition-all active:scale-[0.98] disabled:opacity-50"
+        className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-50"
       >
         Continue
       </button>
@@ -123,15 +117,16 @@ export const ResetStep = ({ onNext }) => {
 
   return (
     <form onSubmit={handleSubmit(onNext)} className="space-y-6">
-      <h2 className="text-2xl font-bold text-secondary mb-2">Reset Password</h2>
       <div className="space-y-4">
         <FormInput
+          label="New Password"
           placeholder="New Password"
           type="password"
           error={errors.password}
           {...register("password")}
         />
         <FormInput
+          label="Confirm Password"
           placeholder="Confirm Password"
           type="password"
           error={errors.confirmPassword}
@@ -141,7 +136,7 @@ export const ResetStep = ({ onNext }) => {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-[#2D3E4E] hover:bg-[#1D2B38] text-white py-3.5 rounded-xl font-bold text-sm tracking-widest uppercase transition-all active:scale-[0.98]"
+        className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-50"
       >
         Continue
       </button>
@@ -159,14 +154,14 @@ export const SuccessStep = ({ onFinish }) => {
   return (
     <div className="flex flex-col items-center justify-center py-4 space-y-6 animate-in zoom-in-95 duration-500">
       <div className="relative">
-        <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
-        <CheckCircle2 className="w-24 h-24 text-[#003465] relative z-10" />
+        <div className="absolute inset-0 bg-[#5D9E32]/20 rounded-full blur-xl animate-pulse" />
+        <CheckCircle2 className="w-24 h-24 text-[#5D9E32] relative z-10" />
       </div>
       <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold text-secondary font-sans tracking-tight">
+        <h2 className="text-3xl font-bold text-white font-sans tracking-tight">
           Password Changed!
         </h2>
-        <p className="text-secondary/60 raleway font-medium">
+        <p className="text-slate-400 lato font-medium text-sm">
           Your password has been changed successfully.
         </p>
       </div>

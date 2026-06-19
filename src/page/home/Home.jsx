@@ -1,5 +1,9 @@
+import ExamTopics from "../examTopics/ExamTopics";
+
 function Home() {
-  return <div>Home</div>;
+  return (
+    <ExamTopics />
+  );
 }
 
 export default Home;

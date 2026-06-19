@@ -6,11 +6,11 @@ function Signup() {
   return (
     <>
       <SEO
-        title="Sign Up || IMMERSIV"
-        description="Create your account to start exploring Culture, Cuisine, Motion, and Memory on IMMERSIV."
+        title="Sign Up || ExcelJM"
+        description="Create your account to start exploring Culture, Cuisine, Motion, and Memory on ExcelJM."
       />
 
-      <AuthLayout subtitle="Create your account to start exploring">
+      <AuthLayout title="Create Your Account" subtitle="Join Excel Jam And Start Your Learning Journey">
         <SignupForm />
       </AuthLayout>
     </>

@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 
 const SEO = ({ title, description, keywords, image }) => {
-  const defaultDescription = "Join IMMERSIV to explore Culture, Cuisine, Motion, and Memory.";
+  const defaultDescription = "Join ExcelJM to explore Culture, Cuisine, Motion, and Memory.";
   
   return (
     <Helmet>

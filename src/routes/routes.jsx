@@ -2,9 +2,11 @@ import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import ErrorPage from "../page/ErrorPage";
 import Home from "../page/home/Home";
+import Profile from "../page/profile/Profile";
 import Login from "../page/auth/Login";
 import Signup from "../page/auth/Signup";
 import ForgotPassword from "../page/auth/ForgotPassword";
+import ExamDetails from "../page/examDetails/ExamDetails";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +17,14 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: "exam-details/:id",
+        element: <ExamDetails />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
       },
     ],
   },

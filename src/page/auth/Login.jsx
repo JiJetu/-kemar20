@@ -6,11 +6,11 @@ function Login() {
   return (
     <>
       <SEO
-        title="Login || IMMERSIV"
-        description="Sign in to your account to start exploring Culture, Cuisine, Motion, and Memory on IMMERSIV."
+        title="Login || ExcelJM"
+        description="Sign in to your account to start exploring Culture, Cuisine, Motion, and Memory on ExcelJM."
       />
 
-      <AuthLayout subtitle="Sign in to your account to start exploring">
+      <AuthLayout title="Welcome Back" subtitle="Login To Continue Your Learning Journey">
         <LoginForm />
       </AuthLayout>
     </>

@@ -1,25 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.lora{
-  font-family: "Lora", serif;
-  font-optical-sizing: auto;
+.roboto {
+  font-family: "Roboto", sans-serif;
 }
 
-.raleway {
-  font-family: "Raleway", sans-serif;
-  font-optical-sizing: auto;
+.lato {
+  font-family: "Lato", sans-serif;
 }
 
-/* Fix browser autofill background color */
+/* Autofill override for dark inputs */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active{
-    -webkit-box-shadow: 0 0 0 30px #EFECE7 inset !important;
-    -webkit-text-fill-color: #242424 !important;
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #051532 inset !important;
+  -webkit-text-fill-color: white !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
+

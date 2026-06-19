@@ -45,6 +45,14 @@ export const authApi = baseApi.injectEndpoints({
         body: { reset_token, new_password, confirm_password },
       }),
     }),
+
+    // Get current logged-in user profile
+    getMe: builder.query({
+      query: () => ({
+        url: "/auth/me/",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -53,4 +61,5 @@ export const {
   useSendOtpMutation,
   useVerifyOtpMutation,
   useResetPasswordMutation,
+  useGetMeQuery,
 } = authApi;

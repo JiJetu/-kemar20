@@ -4,9 +4,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#F97415",
-        secondary: "#242424",
-        gold: "#CFAE6D",
+        primary: "#5D9E32",
+        secondary: "#3233A9",
+        orange: "#C48012",
+        "orange-light": "rgba(196, 128, 18, 0.26)",
       },
     },
   },

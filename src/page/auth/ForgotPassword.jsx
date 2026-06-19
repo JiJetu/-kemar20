@@ -9,7 +9,7 @@ function ForgotPassword() {
   const getSubtitle = (step) => {
     switch (step) {
       case "email":
-        return "Sign in to your account to start exploring";
+        return "Enter your email to reset your password";
       case "otp":
         return "We've sent a 4-digit code to your email";
       case "reset":
@@ -24,8 +24,8 @@ function ForgotPassword() {
   return (
     <>
       <SEO
-        title="Forgot Password || IMMERSIV"
-        description="Forgot your password? No problem! Reset your password and get back to exploring Culture, Cuisine, Motion, and Memory on IMMERSIV."
+        title="Forgot Password || ExcelJM"
+        description="Forgot your password? No problem! Reset your password and get back to exploring Culture, Cuisine, Motion, and Memory on ExcelJM."
       />
 
       <AuthLayout
