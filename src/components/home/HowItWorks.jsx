@@ -184,7 +184,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="w-full bg-white py-20 border-b border-slate-100 select-none">
+    <section id="how-it-works" className="w-full bg-white py-20 select-none">
       <div className="max-w-7xl mx-auto px-6">
         
         {/* Reusable Section Header Component */}

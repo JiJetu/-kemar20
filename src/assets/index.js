@@ -6,6 +6,7 @@ import loveExcellM1 from "../assets/images/LOVE-EXCELLM1.png";
 import loveExcellM2 from "../assets/images/LOVE-EXCELLM2.png";
 import loveExcellM3 from "../assets/images/LOVE-EXCELLM3.png";
 import loveExcellM4 from "../assets/images/LOVE-EXCELLM4.png";
+import examPerpar from "../assets/images/exam-perpar.png";
 
 
 import lightBlub from "../assets/icons/light.png";
@@ -20,5 +21,5 @@ import quizIconsBlack from "../assets/icons/quiz-black.png";
 import blackIcon from "../assets/icons/blackIcon.png";
 
 
-export const IMAGES = { logo, loadingLogo, authBg, heroBanner,loveExcellM1,loveExcellM2,loveExcellM3,loveExcellM4 };
+export const IMAGES = { logo, loadingLogo, authBg, heroBanner,loveExcellM1,loveExcellM2,loveExcellM3,loveExcellM4,examPerpar };
 export const ICONS = { lightBlub, crown, pdf ,studentIcons,studentIconsBlack,studentIcon,uploadIcons,quizIcons, quizIconsBlack,blackIcon};

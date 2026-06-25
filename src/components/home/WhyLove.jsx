@@ -59,8 +59,8 @@ export default function WhyLove() {
   ];
 
   return (
-    <section id="features" className="w-full bg-white py-20 select-none">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center">
+    <section id="features" className="w-full bg-white pb-20 select-none">
+      <div className="max-w-full mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center">
         {/* Heading */}
         <SectionHeader
           badge="FEATURES"
@@ -105,7 +105,7 @@ export default function WhyLove() {
                     <span className="font-bold text-[#082042] text-[18px] md:text-[20px] tracking-wide">
                       {row.index}
                     </span>
-                    <div className="w-14 h-[2px] bg-slate-200" />
+                    <div className="w-10 h-[2px] bg-gradient-to-r from-[#092449] to-transparent" />
                   </div>
 
                   {/* Title */}
