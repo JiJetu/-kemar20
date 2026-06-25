@@ -1,5 +1,4 @@
 import { useSelector } from "react-redux";
-import { Bell } from "lucide-react";
 import { IMAGES } from "../../assets";
 import { useGetMeQuery } from "../../redex/features/auth/auth.api";
 import { Link } from "react-router-dom";
@@ -20,24 +19,24 @@ const Header = () => {
   const notificationsCount = profile?.notificationsCount ?? 4;
 
   return (
-    <header className="w-full bg-[#001131] border border-[#192B4C] rounded-[20px] px-6 py-4 flex items-center justify-between shadow-lg select-none">
+    <header className="w-full bg-white border border-slate-200 rounded-[20px] px-6 py-4 flex items-center justify-between shadow-md select-none">
       {/* Left Section: Logo & Welcome Message */}
       <div className="flex items-center gap-4">
         <div className="flex-shrink-0">
-          <Link to="/">
+          <Link to="/dashboard">
             <img
               src={IMAGES.logo}
               alt="ExcelJM Logo"
-              className="w-14 h-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.2)] hover:scale-105 transition-transform"
+              className="w-14 h-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.1)] hover:scale-105 transition-transform"
             />
           </Link>
         </div>
         
         <div className="flex flex-col text-left">
-          <h1 className="text-lg sm:text-2xl font-bold text-white roboto flex items-center gap-2">
+          <h1 className="text-lg sm:text-2xl font-bold text-slate-900 roboto flex items-center gap-2">
             Welcome Back, {username}! <span className="animate-bounce">👋</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 font-medium lato mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500 font-medium lato mt-0.5">
             Keep Practicing And Achieve Your Goals.
           </p>
         </div>
@@ -46,36 +45,36 @@ const Header = () => {
       {/* Right Section: Notifications & User Profile */}
       <div className="flex items-center">
         {/* Notification Bell */}
-        {/* <div className="relative cursor-pointer group p-1.5 rounded-full hover:bg-white/5 transition-colors">
-          <Bell className="w-6 h-6 text-white transition-transform group-hover:scale-105" />
+        {/* <div className="relative cursor-pointer group p-1.5 rounded-full hover:bg-black/5 transition-colors">
+          <Bell className="w-6 h-6 text-slate-900 transition-transform group-hover:scale-105" />
           {notificationsCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 bg-red-600 text-white rounded-full text-[10px] font-bold w-4 h-4 flex items-center justify-center border border-[#001131]">
+            <span className="absolute -top-0.5 -right-0.5 bg-red-600 text-white rounded-full text-[10px] font-bold w-4 h-4 flex items-center justify-center border border-white">
               {notificationsCount}
             </span>
           )}
         </div> */}
 
         {/* Vertical Separator */}
-        <div className="h-8 w-px bg-[#192B4C] mx-4 sm:mx-5" />
+        <div className="h-8 w-px bg-slate-200 mx-4 sm:mx-5" />
 
         {/* Profile Details Link */}
         <Link
-          to="/profile"
+          to="/dashboard/profile"
           className="flex items-center gap-3 cursor-pointer hover:opacity-85 transition-opacity"
         >
           <div className="flex-shrink-0">
             <img
               src={avatarUrl}
               alt={username}
-              className="w-10 h-10 rounded-full border border-[#192B4C] object-cover drop-shadow-sm"
+              className="w-10 h-10 rounded-full border border-slate-200 object-cover drop-shadow-sm"
             />
           </div>
           
           <div className="hidden sm:flex flex-col text-left">
-            <span className="text-sm font-bold text-white tracking-wide roboto">
+            <span className="text-sm font-bold text-slate-800 tracking-wide roboto">
               {userRole}
             </span>
-            <span className="text-xs text-slate-400 font-medium lato mt-0.5">
+            <span className="text-xs text-slate-500 font-medium lato mt-0.5">
               {description}
             </span>
           </div>

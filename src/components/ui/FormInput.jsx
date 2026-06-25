@@ -9,7 +9,7 @@ const FormInput = React.forwardRef(
     return (
       <div className="w-full flex flex-col gap-2 text-left">
         {label && (
-          <label className="text-[14px] text-slate-200 font-medium lato tracking-wide">
+          <label className="text-[14px] text-black font-medium lato tracking-wide">
             {label}
           </label>
         )}
@@ -25,11 +25,11 @@ const FormInput = React.forwardRef(
           <input
             ref={ref}
             type={isPassword ? (showPassword ? "text" : "password") : type}
-            className={`w-full bg-[#051532] border border-[#192B4C] rounded-[10px] py-3.5 ${
+            className={`w-full bg-white border border-[#192B4C] rounded-[10px] py-3.5 ${
               Icon ? "pl-11" : "px-4"
             } ${
               isPassword ? "pr-11" : "pr-4"
-            } text-white placeholder:text-slate-500 focus:outline-none focus:border-[#5D9E32] focus:ring-1 focus:ring-[#5D9E32]/20 transition-all lato text-sm`}
+            } text-black placeholder:text-slate-500 focus:outline-none focus:border-[#5D9E32] focus:ring-1 focus:ring-[#5D9E32]/20 transition-all lato text-sm`}
             {...props}
           />
 
@@ -38,7 +38,7 @@ const FormInput = React.forwardRef(
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 text-slate-400 hover:text-slate-200 transition-colors"
+              className="absolute right-4 text-slate-400 hover:text-slate-500 transition-colors"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>

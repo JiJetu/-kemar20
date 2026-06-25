@@ -90,7 +90,7 @@ export const OtpStep = ({ onNext }) => {
             onChange={(e) => handleChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
             onPaste={handlePaste}
-            className="w-12 h-12 text-center text-xl font-bold bg-[#051532] border border-[#192B4C] text-white rounded-xl focus:border-[#5D9E32] focus:ring-1 focus:ring-[#5D9E32]/20 outline-none transition-all shadow-sm"
+            className="w-12 h-12 text-center text-xl font-bold bg-white border border-[#192B4C] text-black rounded-xl focus:border-[#5D9E32] focus:ring-1 focus:ring-[#5D9E32]/20 outline-none transition-all shadow-sm"
           />
         ))}
       </div>

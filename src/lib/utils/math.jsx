@@ -23,7 +23,7 @@ export const parseMathEquation = (equationStr, isSmall = false) => {
 
   return (
     <div
-      className={`flex items-center justify-center flex-wrap gap-1.5 text-slate-100 font-serif italic select-none ${
+      className={`flex items-center justify-center flex-wrap gap-1.5 text-black font-serif italic select-none ${
         isSmall ? "text-base sm:text-lg my-1.5" : "text-2xl sm:text-3xl my-6"
       }`}
     >

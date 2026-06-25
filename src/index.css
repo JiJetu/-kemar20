@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -13,13 +14,50 @@
   font-family: "Lato", sans-serif;
 }
 
+.lora {
+  font-family: "Lora", serif;
+  font-optical-sizing: auto;
+}
+
 /* Autofill override for dark inputs */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px #051532 inset !important;
-  -webkit-text-fill-color: white !important;
+  -webkit-box-shadow: 0 0 0 30px #FFFFFF inset !important;
+  -webkit-text-fill-color: black !important;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+/* Premium Loading Screen Animations */
+@keyframes logo-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 15px rgba(93, 158, 50, 0.2));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 30px rgba(93, 158, 50, 0.5));
+  }
+}
+
+.animate-logo-pulse {
+  animation: logo-pulse 2s infinite ease-in-out;
+}
+
+@keyframes dot-blink {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+.animate-dot-1 {
+  animation: dot-blink 1.4s infinite 0s;
+}
+.animate-dot-2 {
+  animation: dot-blink 1.4s infinite 0.2s;
+}
+.animate-dot-3 {
+  animation: dot-blink 1.4s infinite 0.4s;
+}
+
 

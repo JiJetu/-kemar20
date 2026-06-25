@@ -38,7 +38,7 @@ const LoginForm = () => {
         />
 
         <div className="flex items-center justify-between text-xs sm:text-sm pt-1">
-          <label className="flex items-center gap-2 text-slate-300 font-medium cursor-pointer select-none">
+          <label className="flex items-center gap-2 text-black font-medium cursor-pointer select-none">
             <input
               type="checkbox"
               className="w-4 h-4 rounded border-[#192B4C] bg-[#051532] text-[#5D9E32] focus:ring-[#5D9E32]/20 accent-[#5D9E32] cursor-pointer"
@@ -47,7 +47,7 @@ const LoginForm = () => {
           </label>
           <Link
             to="/forgot-password"
-            className="text-[#3b82f6] hover:text-[#60a5fa] hover:underline transition-all font-medium lato"
+            className="text-[#3b82f6] hover:text-[#60a5fa] hover:underline transition-all font-semibold lato"
           >
             Forgot Password
           </Link>

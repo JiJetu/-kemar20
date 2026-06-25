@@ -2,23 +2,23 @@ import { IMAGES } from "../../../assets";
 
 const AuthLayout = ({ children, title = "Welcome Back", subtitle }) => {
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden bg-[#020b1e] selection:bg-primary/30">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden bg-white text-black selection:bg-primary/30">
       {/* Background Image */}
-      <img
+      {/* <img
         src={IMAGES.authBg}
         alt=""
         className="absolute inset-0 w-full h-full object-fill z-0 pointer-events-none select-none"
         loading="eager"
         decoding="async"
-      />
+      /> */}
 
       {/* Form Card */}
       <div
         className="w-full max-w-[480px] p-8 sm:p-10 flex flex-col relative z-10"
         style={{
           borderRadius: "20px",
-          border: "1px solid #192B4C",
-          background: "#001131",
+          border: "1px solid #DED7D7",
+          // background: "#001131",
         }}
       >
         {/* Logo Section */}
