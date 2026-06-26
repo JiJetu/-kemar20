@@ -153,8 +153,20 @@ export default function QuizReview({ formData, onPublish }) {
           <h2 className="text-2xl font-bold text-[#082042] roboto leading-tight">
             Exam 2026
           </h2>
-          <div className="text-slate-400 text-sm font-semibold lato flex items-center gap-1.5 mt-0.5">
-            <span>{formData?.subject || "Mathematics"}</span>
+          <div className="text-slate-400 text-sm font-semibold lato flex flex-wrap items-center gap-1.5 mt-0.5">
+            {formData?.book && (
+              <>
+                <span>{formData.book}</span>
+                <span>•</span>
+              </>
+            )}
+            {formData?.chapter && (
+              <>
+                <span>{formData.chapter}</span>
+                <span>•</span>
+              </>
+            )}
+            <span>{formData?.topic || "Mathematics"}</span>
             <span>•</span>
             <span>{formData?.duration || "1 Hour"}</span>
           </div>

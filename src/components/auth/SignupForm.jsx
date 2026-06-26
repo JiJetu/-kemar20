@@ -3,12 +3,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import FormInput from "../ui/FormInput";
 import { signupSchema } from "../../lib/validation/auth.schema";
+import { useSignupMutation } from "../../redex/features/auth/auth.api";
+import { toast } from "sonner";
 
-const SignupForm = () => {
+const SignupForm = ({ onSuccess }) => {
+  const [signup, { isLoading: isSigningUp }] = useSignupMutation();
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -16,9 +20,21 @@ const SignupForm = () => {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("Signup Data:", data);
-    // Add signup logic here
+  const onSubmit = async (data) => {
+    try {
+      const response = await signup({
+        email: data.email,
+        full_name: data.name,
+        password: data.password,
+      }).unwrap();
+
+      toast.success(response.detail || "Account created! Verification code sent.");
+      onSuccess?.(data.email);
+    } catch (error) {
+      console.error("Signup error:", error);
+      const errorMsg = error?.data?.detail || error?.data?.message || error?.data?.email?.[0] || error?.data?.password?.[0] || "Signup failed. Please try again.";
+      toast.error(errorMsg);
+    }
   };
 
   return (
@@ -82,10 +98,10 @@ const SignupForm = () => {
 
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSigningUp}
         className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-70 shadow-lg shadow-[#5D9E32]/10"
       >
-        {isSubmitting ? "Creating..." : "Create Account"}
+        {isSigningUp ? "Creating..." : "Create Account"}
       </button>
 
       <div className="text-center mt-6">

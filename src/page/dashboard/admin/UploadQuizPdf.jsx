@@ -12,7 +12,9 @@ export default function UploadQuizPdf() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [quizMetadata, setQuizMetadata] = useState({
-    subject: "",
+    book: "",
+    chapter: "",
+    topic: "",
     duration: "1 Hour",
     numQuestions: "20",
   });
@@ -47,7 +49,9 @@ export default function UploadQuizPdf() {
     
     // Clear details
     setQuizMetadata({
-      subject: "",
+      book: "",
+      chapter: "",
+      topic: "",
       duration: "1 Hour",
       numQuestions: "20",
     });

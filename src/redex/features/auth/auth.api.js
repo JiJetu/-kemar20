@@ -19,6 +19,22 @@ export const authApi = baseApi.injectEndpoints({
       },
     }),
 
+    signup: builder.mutation({
+      query: ({ email, full_name, password }) => ({
+        url: "/api/auth/signup/",
+        method: "POST",
+        body: { email, full_name, password },
+      }),
+    }),
+
+    verify: builder.mutation({
+      query: ({ email, otp }) => ({
+        url: "/api/auth/verify/",
+        method: "POST",
+        body: { email, otp },
+      }),
+    }),
+
     // Forgot password: send OTP
     sendOtp: builder.mutation({
       query: ({ email }) => ({
@@ -51,6 +67,7 @@ export const authApi = baseApi.injectEndpoints({
       query: () => ({
         url: "/auth/me/",
         method: "GET",
+        body: {},
       }),
     }),
   }),
@@ -62,4 +79,6 @@ export const {
   useVerifyOtpMutation,
   useResetPasswordMutation,
   useGetMeQuery,
+  useSignupMutation,
+  useVerifyMutation,
 } = authApi;
