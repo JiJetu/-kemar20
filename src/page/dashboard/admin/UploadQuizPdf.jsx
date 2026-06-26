@@ -1,40 +1,85 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import UploadStepper from "../../../components/admin/quiz/UploadStepper";
-import UploadForm from "../../../components/admin/quiz/UploadForm";
+import QuizInfoForm from "../../../components/admin/quiz/QuizInfoForm";
+import PdfUploadForm from "../../../components/admin/quiz/PdfUploadForm";
 import AIProcessing from "../../../components/admin/quiz/AIProcessing";
 import QuizReview from "../../../components/admin/quiz/QuizReview";
-import QuizPreview from "../../../components/admin/quiz/QuizPreview";
+import QuizPublishedSuccess from "../../../components/admin/quiz/QuizPublishedSuccess";
 
 export default function UploadQuizPdf() {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [quizMetadata, setQuizMetadata] = useState({
+    subject: "",
+    duration: "1 Hour",
+    numQuestions: "20",
+  });
+  const [pdfFile, setPdfFile] = useState(null);
   const [formData, setFormData] = useState(null);
   const [questions, setQuestions] = useState([]);
+  const [isPublished, setIsPublished] = useState(false);
 
-  const handleUploadSubmit = (data) => {
-    setFormData(data);
+  const handleInfoSubmit = (metadata) => {
+    setQuizMetadata(metadata);
     setCurrentStep(2);
   };
 
-  const handleProcessingComplete = () => {
+  const handlePdfSubmit = (file) => {
+    setPdfFile(file);
+    const combinedData = {
+      ...quizMetadata,
+      pdfFile: file,
+      date: new Date().toISOString().split("T")[0],
+    };
+    setFormData(combinedData);
     setCurrentStep(3);
   };
 
-  const handleReviewComplete = (reviewedQuestions) => {
-    setQuestions(reviewedQuestions);
+  const handleProcessingComplete = () => {
     setCurrentStep(4);
   };
 
   const handlePublishComplete = () => {
+    // Show success toast and trigger the published successfully state view
     toast.success("Quiz has been successfully published to students!");
-    // Reset wizard
+    
+    // Clear details
+    setQuizMetadata({
+      subject: "",
+      duration: "1 Hour",
+      numQuestions: "20",
+    });
+    setPdfFile(null);
     setFormData(null);
     setQuestions([]);
-    setCurrentStep(1);
+    setIsPublished(true);
   };
 
+  const handleViewPublishedQuiz = () => {
+    setIsPublished(false);
+    setCurrentStep(1);
+    navigate("/quiz");
+  };
+
+  const handleGoToDashboard = () => {
+    setIsPublished(false);
+    setCurrentStep(1);
+    navigate("/admin");
+  };
+
+  if (isPublished) {
+    return (
+      <QuizPublishedSuccess
+        onViewQuiz={handleViewPublishedQuiz}
+        onGoToDashboard={handleGoToDashboard}
+      />
+    );
+  }
+
   return (
-    <div className="w-full flex flex-col gap-6 text-left max-w-5xl mx-auto select-none">
+    <div className="w-full flex flex-col gap-6 text-left max-w-7xl mx-auto select-none">
       {/* Stepper header stays at the top of the content */}
       <div className="sticky top-0 z-10 bg-slate-50/80 backdrop-blur-sm pb-2">
         <UploadStepper currentStep={currentStep} />
@@ -43,21 +88,17 @@ export default function UploadQuizPdf() {
       {/* Current Step Content Area */}
       <div className="w-full flex-1">
         {currentStep === 1 && (
-          <UploadForm onSubmitData={handleUploadSubmit} />
+          <QuizInfoForm onSubmitData={handleInfoSubmit} defaultValues={quizMetadata} />
         )}
         {currentStep === 2 && (
-          <AIProcessing onComplete={handleProcessingComplete} />
+          <PdfUploadForm onSubmitFile={handlePdfSubmit} defaultFile={pdfFile} />
         )}
         {currentStep === 3 && (
-          <QuizReview
-            formData={formData}
-            onComplete={handleReviewComplete}
-          />
+          <AIProcessing onComplete={handleProcessingComplete} />
         )}
         {currentStep === 4 && (
-          <QuizPreview
+          <QuizReview
             formData={formData}
-            questions={questions}
             onPublish={handlePublishComplete}
           />
         )}

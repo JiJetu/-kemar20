@@ -1,24 +1,24 @@
-import { ChevronRight, UploadCloud, Brain, LayoutGrid, FileSearch } from "lucide-react";
+import { ChevronRight, ClipboardList, UploadCloud, Brain, FileSearch } from "lucide-react";
 
 export default function UploadStepper({ currentStep }) {
   const steps = [
     {
       id: 1,
-      title: "Upload PDF",
-      subtitle: "Upload your quiz PDF",
-      icon: UploadCloud,
+      title: "Quiz Information",
+      subtitle: "Basic details about the quiz",
+      icon: ClipboardList,
     },
     {
       id: 2,
-      title: "AI Processing",
-      subtitle: "Extracting Content",
-      icon: Brain,
+      title: "Upload Pdf",
+      subtitle: "Upload Previous Exam Pdf",
+      icon: UploadCloud,
     },
     {
       id: 3,
-      title: "Generate Quiz",
-      subtitle: "Creating Q&A Solutions",
-      icon: LayoutGrid,
+      title: "AI Processing",
+      subtitle: "AI Will Generate Quiz",
+      icon: Brain,
     },
     {
       id: 4,
@@ -42,19 +42,17 @@ export default function UploadStepper({ currentStep }) {
               <div className="flex items-center gap-3">
                 <div
                   className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors shrink-0 ${
-                    isActive || isCompleted
+                    isActive
                       ? "bg-[#082042] text-white shadow-sm"
-                      : "bg-[#E2E8F0] text-slate-500"
+                      : isCompleted
+                      ? "bg-[#66A331] text-white shadow-sm"
+                      : "bg-[#E2E8F0] text-[#082042]"
                   }`}
                 >
                   <Icon className="w-5 h-5" />
                 </div>
                 <div className="flex flex-col text-left">
-                  <span
-                    className={`font-bold text-sm roboto ${
-                      isActive || isCompleted ? "text-[#082042]" : "text-slate-500"
-                    }`}
-                  >
+                  <span className="font-bold text-sm text-[#082042] roboto">
                     {step.title}
                   </span>
                   <span className="text-slate-400 text-xs mt-0.5 whitespace-nowrap lato">

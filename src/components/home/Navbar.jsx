@@ -14,6 +14,16 @@ export default function Navbar() {
     { name: "Contact Us", path: "#contact" },
   ];
 
+  const handleScroll = (e, path) => {
+    e.preventDefault();
+    setIsOpen(false);
+    const targetId = path.replace("#", "");
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <nav className="w-full absolute top-0 left-0 right-0 z-40 bg-transparent select-none">
       <div className="px-6 md:px-12 lg:px-24 py-4 flex items-center justify-between">
@@ -28,6 +38,7 @@ export default function Navbar() {
             <a
               key={item.name}
               href={item.path}
+              onClick={(e) => handleScroll(e, item.path)}
               className="text-slate-600 font-semibold hover:text-[#082042] transition-colors text-sm roboto"
             >
               {item.name}
@@ -68,7 +79,7 @@ export default function Navbar() {
             <a
               key={item.name}
               href={item.path}
-              onClick={() => setIsOpen(false)}
+              onClick={(e) => handleScroll(e, item.path)}
               className="text-slate-600 font-semibold hover:text-[#082042] transition-colors text-sm py-1.5 border-b border-slate-50 roboto text-left"
             >
               {item.name}

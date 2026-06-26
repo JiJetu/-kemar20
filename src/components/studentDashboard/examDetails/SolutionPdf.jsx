@@ -1,226 +1,232 @@
 import { useState } from "react";
 import {
-  Award,
-  ChevronLeft,
-  ChevronRight,
   Download,
   Maximize2,
   Minimize2,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
 } from "lucide-react";
 import { toast } from "sonner";
-import { parseMathEquation } from "../../../lib/utils/math";
-import { ICONS } from "../../../assets";
 
-// PDF Sheet layout sample pages
-const pdfPages = [
-  {
-    page: 1,
-    title: "Choose correct answer(s) from given choice",
-    items: [
-      {
-        num: 4,
-        q: "Find factors of 9q² - 45pq + 8q - 40p:",
-        options: [
-          "a. (-5q + p)(9q + 8)",
-          "b. (9q + 8)(q - 5p)",
-          "c. (3p + q)(9q + 8)",
-          "d. (-5p + q)(9q + 8)",
-        ],
-      },
-      {
-        num: 5,
-        q: "Find factors of xy - 6y - 2x + 12:",
-        options: [
-          "a. (x - 6)(y - 2)",
-          "b. (-x - 6)(y - 2)",
-          "c. (-x - 6)(-y - 2)",
-          "d. (x - 6)(y + 2)",
-        ],
-      },
-      {
-        num: 6,
-        q: "Factorize (81x² - 16):",
-        options: [
-          "a. (9x - 4)(9x - 4)",
-          "b. (x - 1)(81x - 16)",
-          "c. (9x + 4)(9x - 4)",
-          "d. (x + 1)(81x - 16)",
-        ],
-      },
-    ],
-  },
-  {
-    page: 2,
-    title: "Solving Linear Equations & System of Equations",
-    items: [
-      {
-        num: 7,
-        q: "Find value of x for 2x + 10 = 20:",
-        options: ["a. x = 2", "b. x = 5", "c. x = 10", "d. x = 4"],
-      },
-      {
-        num: 8,
-        q: "Solve system: x + y = 5, x - y = 1:",
-        options: ["a. (3, 2)", "b. (4, 1)", "c. (2, 3)", "d. (1, 4)"],
-      },
-    ],
-  },
-];
-const SolutionPdf = ({ currentQuestionData }) => {
-  const [pdfPage, setPdfPage] = useState(1);
+const SolutionPdf = () => {
   const [pdfZoom, setPdfZoom] = useState(100);
   const [isPdfFullscreen, setIsPdfFullscreen] = useState(false);
+  const [pdfPage, setPdfPage] = useState(1);
 
   const handleDownloadPdf = () => {
-    toast.info("Downloading Math_Practice_Sheet.pdf...");
-    toast.success("Download started successfully!");
+    toast.info("Downloading Coordinate_Geometry_Grade_9_CBSE.pdf...");
+    setTimeout(() => {
+      toast.success("Download completed successfully!");
+    }, 1000);
   };
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
-      {/* Solution Panel (md:span-4) */}
-      <div className="md:col-span-5 bg-white border border-slate-200 rounded-[20px] p-6 flex flex-col text-left shadow-md">
-        <h3 className="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2 font-sans">
-          Solution
-        </h3>
-
-        {/* Formulas List */}
-        <div className="flex flex-col gap-3 items-start flex-1">
-          {currentQuestionData.solution.map((step, idx) => (
-            <div key={idx} className="flex items-center gap-3">
-              <span className="text-xs text-[#5D9E32] font-sans font-bold">
-                Step {idx + 1}:
-              </span>
-              {parseMathEquation(step, true)}
+  const renderCheatSheet = (isFullscreen = false) => {
+    return (
+      <div 
+        className="w-full border border-slate-200 rounded-[20px] p-6 bg-[#FCFDFE] relative flex flex-col md:flex-row gap-6 items-stretch shadow-inner overflow-hidden select-none"
+        style={{
+          transform: isFullscreen ? `scale(${pdfZoom / 100})` : `scale(${pdfZoom / 100})`,
+          transformOrigin: "center center",
+          transition: "transform 0.2s ease-out",
+        }}
+      >
+        {/* Left: Educational Text Content */}
+        <div className="flex-1 flex flex-col gap-4 text-left justify-between">
+          <div className="flex flex-col">
+            <h2 className="text-2xl md:text-[32px] font-extrabold text-[#3F5475] tracking-wider roboto uppercase text-center border-b border-slate-200 pb-2">
+              Coordinate Geometry
+            </h2>
+            <div className="text-center font-bold text-slate-400 text-xs tracking-widest mt-1 lato">
+              GRADE 9 - CBSE
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* Correct Banner */}
-        <div className="mt-6">
-          <div className="bg-[#5D9E32]/10 border border-[#5D9E32]/30 rounded-lg py-2 px-3 flex items-center justify-center gap-2 text-[#5D9E32] text-xs font-bold">
-            <Award size={14} />
-            <span>Correct Answer : {currentQuestionData.correctAnswer}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+            {/* Introduction Card */}
+            <div className="bg-[#FAFBFD] border border-slate-100 rounded-xl p-4 flex flex-col gap-2 shadow-sm">
+              <h4 className="text-[#3F5475] font-bold text-sm flex items-center gap-2 roboto">
+                <span className="w-5 h-5 rounded-full bg-[#E5ECF6] text-[#3F5475] flex items-center justify-center text-xs font-bold font-mono">1</span>
+                INTRODUCTION
+              </h4>
+              <p className="text-xs text-[#5C6B73] font-medium leading-relaxed lato mt-1">
+                Coordinate Geometry helps us locate points on a plane using numbers.
+                <span className="block my-2" />
+                Was introduced by <strong className="text-red-500 font-semibold">René Descartes</strong>.
+                <span className="block my-2" />
+                A plane containing two number lines at right angles is called the <strong className="text-[#3F5475] font-semibold">Cartesian Plane</strong>.
+              </p>
+            </div>
+
+            {/* Cartesian Plane Card */}
+            <div className="bg-[#FAFBFD] border border-slate-100 rounded-xl p-4 flex flex-col gap-2 shadow-sm">
+              <h4 className="text-[#3F5475] font-bold text-sm flex items-center gap-2 roboto">
+                <span className="w-5 h-5 rounded-full bg-[#E5ECF6] text-[#3F5475] flex items-center justify-center text-xs font-bold font-mono">2</span>
+                CARTESIAN PLANE
+              </h4>
+              <p className="text-xs text-[#5C6B73] font-medium leading-relaxed lato mt-1">
+                It has two perpendicular axes:
+                <span className="block mt-1 font-semibold text-slate-700">
+                  • X-axis &rarr; Horizontal line
+                </span>
+                <span className="block font-semibold text-slate-700">
+                  • Y-axis &rarr; Vertical line
+                </span>
+                They intersect at a point called <strong className="text-[#3F5475] font-semibold">Origin</strong>.
+                <span className="block my-1.5" />
+                Origin coordinates = <span className="bg-[#E5ECF6] text-[#3F5475] px-1.5 py-0.5 rounded font-mono font-bold text-xs">(0,0)</span>
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* PDF Viewer Panel (md:span-8) */}
-      <div className="md:col-span-7 bg-white border border-slate-200 rounded-[20px] p-6 flex flex-col text-left relative min-h-[300px] shadow-md">
-        <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
-          <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2 font-sans">
-            PDF Viewer <img src={ICONS.pdf} alt="pdf" className="w-6 h-6" />
-          </h3>
+        {/* Right: Cartesian Grid Graphic */}
+        <div className="w-full md:w-[260px] shrink-0 border border-slate-200 bg-white rounded-xl p-6 flex items-center justify-center relative shadow-sm min-h-[220px]">
+          {/* Grid lines (Decorative) */}
+          <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] opacity-60"></div>
+          
+          {/* Coordinate Axes */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4">
+            {/* X-Axis Line */}
+            <div className="w-[85%] h-[1.5px] bg-[#3F5475] relative">
+              <div className="absolute -right-1 -top-[3.5px] w-2.5 h-2.5 border-t-2 border-r-2 border-[#3F5475] transform rotate-45"></div>
+              <div className="absolute -left-1.5 -top-[3.5px] w-2.5 h-2.5 border-b-2 border-l-2 border-[#3F5475] transform rotate-45"></div>
+              <span className="absolute -right-2 -top-5 text-[11px] font-extrabold text-[#3F5475]">X</span>
+              <span className="absolute -left-2 -top-5 text-[11px] font-extrabold text-[#3F5475]">X'</span>
+            </div>
+            {/* Y-Axis Line */}
+            <div className="h-[85%] w-[1.5px] bg-[#3F5475] relative">
+              <div className="absolute -top-1.5 -left-[3.5px] w-2.5 h-2.5 border-t-2 border-l-2 border-[#3F5475] transform rotate-45"></div>
+              <div className="absolute -bottom-1 -left-[3.5px] w-2.5 h-2.5 border-b-2 border-r-2 border-[#3F5475] transform rotate-45"></div>
+              <span className="absolute left-3 -top-1.5 text-[11px] font-extrabold text-[#3F5475]">Y</span>
+              <span className="absolute left-3 bottom-0.5 text-[11px] font-extrabold text-[#3F5475]">Y'</span>
+            </div>
+            
+            {/* Origin Center Point */}
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500 z-10 border border-white shadow-[0_1px_3px_rgba(0,0,0,0.3)]"></div>
+            <span className="absolute text-[10px] font-bold text-red-500 translate-x-7 translate-y-3 bg-white/80 px-1 rounded">O (0,0)</span>
+            
+            {/* Quadrants Texts */}
+            <div className="absolute top-6 left-6 text-center bg-white/70 px-1 py-0.5 rounded">
+              <div className="text-xs font-extrabold text-[#3F5475]">II</div>
+              <div className="text-[9px] font-bold text-slate-500">(-, +)</div>
+            </div>
+            <div className="absolute top-6 right-6 text-center bg-white/70 px-1 py-0.5 rounded">
+              <div className="text-xs font-extrabold text-[#3F5475]">I</div>
+              <div className="text-[9px] font-bold text-slate-500">(+, +)</div>
+            </div>
+            <div className="absolute bottom-6 left-6 text-center bg-white/70 px-1 py-0.5 rounded">
+              <div className="text-xs font-extrabold text-[#3F5475]">III</div>
+              <div className="text-[9px] font-bold text-slate-500">(-, -)</div>
+            </div>
+            <div className="absolute bottom-6 right-6 text-center bg-white/70 px-1 py-0.5 rounded">
+              <div className="text-xs font-extrabold text-[#3F5475]">IV</div>
+              <div className="text-[9px] font-bold text-slate-500">(+, -)</div>
+            </div>
+          </div>
         </div>
 
-        {/* PDF Page layout body */}
-        <div className="bg-white rounded-xl p-5 text-black border border-slate-300 flex-1 flex flex-col relative overflow-hidden">
-          <div
-            style={{
-              transform: `scale(${pdfZoom / 100})`,
-              transformOrigin: "top center",
-              width: "100%",
-            }}
+        {/* Superimposed Floating action buttons */}
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-20">
+          <button
+            type="button"
+            onClick={handleDownloadPdf}
+            title="Download Document"
+            className="w-10 h-10 rounded-full bg-[#082042] hover:bg-[#1C398E] text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105"
           >
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest border-b pb-1 mb-3 block text-left">
-              {pdfPages[pdfPage - 1]?.title || "Practice Worksheet"}
-            </span>
-
-            <div className="flex flex-col gap-4 overflow-y-auto max-h-[220px]">
-              {pdfPages[pdfPage - 1]?.items.map((item) => (
-                <div key={item.num} className="text-xs text-left">
-                  <p className="font-bold text-slate-800">
-                    ({item.num}) {item.q}
-                  </p>
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-1 text-slate-600 font-medium">
-                    {item.options.map((opt, idx) => (
-                      <span key={idx}>{opt}</span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Actions Column floated on right */}
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-20">
-            <button
-              type="button"
-              onClick={handleDownloadPdf}
-              title="Download Sheet"
-              className="w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105"
-            >
-              <Download size={18} />
-            </button>
+            <Download size={18} />
+          </button>
+          {!isFullscreen && (
             <button
               type="button"
               onClick={() => setIsPdfFullscreen(true)}
-              title="Fullscreen Viewer"
-              className="w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+              title="Fullscreen"
+              className="w-10 h-10 rounded-full bg-[#082042] hover:bg-[#1C398E] text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105"
             >
               <Maximize2 size={18} />
             </button>
-          </div>
+          )}
         </div>
+      </div>
+    );
+  };
 
-        {/* Controls Row (Pagination and zoom) */}
-        <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-200 text-xs font-bold text-slate-600">
-          {/* PDF Pagination */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              disabled={pdfPage === 1}
-              onClick={() => setPdfPage((p) => p - 1)}
-              className="p-1 rounded bg-slate-50 border border-slate-200 hover:bg-slate-200 text-slate-800 disabled:opacity-40"
-            >
-              <ChevronLeft size={14} />
-            </button>
-            <span>{pdfPage}/12</span>
-            <button
-              type="button"
-              disabled={pdfPage === pdfPages.length}
-              onClick={() => setPdfPage((p) => p + 1)}
-              className="p-1 rounded bg-slate-50 border border-slate-200 hover:bg-slate-200 text-slate-800 disabled:opacity-40"
-            >
-              <ChevronRight size={14} />
-            </button>
-          </div>
+  return (
+    <div className="bg-white border border-slate-200 rounded-[20px] p-6 flex flex-col text-left shadow-md w-full">
+      
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+        <h3 className="text-lg font-bold text-[#082042] flex items-center gap-2 roboto">
+          Previous Exam Papers
+          <span className="text-base text-red-500"><FileText size={18} /></span>
+        </h3>
+      </div>
 
-          {/* PDF Zoom */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setPdfZoom((z) => Math.max(z - 10, 80))}
-              className="px-2 py-0.5 rounded bg-slate-50 border border-slate-200 hover:bg-slate-200 text-slate-800"
-            >
-              —
-            </button>
-            <span>{pdfZoom}%</span>
-            <button
-              type="button"
-              onClick={() => setPdfZoom((z) => Math.min(z + 10, 120))}
-              className="px-2 py-0.5 rounded bg-slate-50 border border-slate-200 hover:bg-slate-200 text-slate-800"
-            >
-              +
-            </button>
-          </div>
+      {/* Sheet Content Viewer wrapper with scaling bounds */}
+      <div className="relative overflow-auto flex justify-center py-2 bg-slate-50 rounded-xl border border-slate-100 min-h-[300px] items-center px-4">
+        <div className="w-full max-w-4xl">
+          {renderCheatSheet(false)}
         </div>
       </div>
 
-      {/* Fullscreen PDF Modal Overlay */}
+      {/* Controls Row (Pagination and zoom) */}
+      <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-200 text-xs font-bold text-slate-600">
+        
+        {/* Pagination mock controls */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            disabled={pdfPage === 1}
+            onClick={() => setPdfPage((p) => Math.max(1, p - 1))}
+            className="p-1 rounded bg-slate-50 border border-slate-200 hover:bg-slate-200 text-slate-800 disabled:opacity-40"
+          >
+            <ChevronLeft size={14} />
+          </button>
+          <span className="font-mono">{pdfPage} / 12</span>
+          <button
+            type="button"
+            disabled={pdfPage === 12}
+            onClick={() => setPdfPage((p) => Math.min(12, p + 1))}
+            className="p-1 rounded bg-slate-50 border border-slate-200 hover:bg-slate-200 text-slate-800 disabled:opacity-40"
+          >
+            <ChevronRight size={14} />
+          </button>
+        </div>
+
+        {/* Zoom adjustment triggers */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPdfZoom((z) => Math.max(z - 10, 80))}
+            className="px-2 py-0.5 rounded bg-slate-50 border border-slate-200 hover:bg-slate-200 text-slate-800 font-bold"
+          >
+            —
+          </button>
+          <span className="font-mono text-slate-800">{pdfZoom}%</span>
+          <button
+            type="button"
+            onClick={() => setPdfZoom((z) => Math.min(z + 10, 120))}
+            className="px-2 py-0.5 rounded bg-slate-50 border border-slate-200 hover:bg-slate-200 text-slate-800 font-bold"
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      {/* Fullscreen Viewer Modal */}
       {isPdfFullscreen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex flex-col items-center justify-center p-4">
-          <div className="w-full max-w-5xl bg-white border border-slate-200 rounded-2xl p-6 flex flex-col h-[90vh] shadow-xl">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center p-4">
+          <div className="w-full max-w-5xl bg-white border border-slate-200 rounded-2xl p-6 flex flex-col h-[90vh] shadow-2xl">
             {/* Header controls inside fullscreen */}
             <div className="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
-              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                PDF Sheet - Fullscreen
+              <h3 className="text-lg font-bold text-[#082042] flex items-center gap-2">
+                Previous Exam Papers - CBSE Grade 9
               </h3>
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={handleDownloadPdf}
-                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-xl text-sm transition-all"
+                  className="flex items-center gap-2 bg-[#082042] hover:bg-[#1C398E] text-white font-bold py-2 px-4 rounded-xl text-sm transition-all"
                 >
                   <Download size={16} /> Download
                 </button>
@@ -235,61 +241,34 @@ const SolutionPdf = ({ currentQuestionData }) => {
             </div>
 
             {/* Scaleable PDF page container */}
-            <div className="flex-1 bg-white rounded-xl p-8 text-black border border-slate-300 flex flex-col items-center justify-center overflow-auto relative">
-              <div
-                className="w-full max-w-2xl text-left"
-                style={{
-                  transform: `scale(${pdfZoom / 100})`,
-                  transformOrigin: "center center",
-                }}
-              >
-                <span className="text-sm font-bold text-slate-500 uppercase tracking-widest border-b pb-2 mb-4 block">
-                  {pdfPages[pdfPage - 1]?.title || "Practice Worksheet"}
-                </span>
-
-                <div className="flex flex-col gap-6">
-                  {pdfPages[pdfPage - 1]?.items.map((item) => (
-                    <div key={item.num} className="text-sm text-left">
-                      <p className="font-bold text-slate-800 text-base">
-                        ({item.num}) {item.q}
-                      </p>
-                      <div className="grid grid-cols-2 gap-x-6 gap-y-2 mt-2 text-slate-600 font-semibold">
-                        {item.options.map((opt, idx) => (
-                          <span key={idx}>{opt}</span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            <div className="flex-1 bg-slate-100 rounded-xl p-8 text-black border border-slate-200 flex flex-col items-center justify-center overflow-auto relative">
+              <div className="w-full max-w-4xl">
+                {renderCheatSheet(true)}
               </div>
             </div>
 
             {/* Bottom Controls */}
             <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-200">
-              {/* PDF Pagination */}
               <div className="flex items-center gap-2 text-slate-700 text-sm font-bold">
                 <button
                   type="button"
                   disabled={pdfPage === 1}
-                  onClick={() => setPdfPage((p) => p - 1)}
+                  onClick={() => setPdfPage((p) => Math.max(1, p - 1))}
                   className="p-2 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-200 text-slate-800 disabled:opacity-40"
                 >
                   <ChevronLeft size={16} />
                 </button>
-                <span>
-                  Page {pdfPage} / {pdfPages.length}
-                </span>
+                <span className="font-mono">Page {pdfPage} / 12</span>
                 <button
                   type="button"
-                  disabled={pdfPage === pdfPages.length}
-                  onClick={() => setPdfPage((p) => p + 1)}
+                  disabled={pdfPage === 12}
+                  onClick={() => setPdfPage((p) => Math.min(12, p + 1))}
                   className="p-2 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-200 text-slate-800 disabled:opacity-40"
                 >
                   <ChevronRight size={16} />
                 </button>
               </div>
 
-              {/* PDF Zoom */}
               <div className="flex items-center gap-3 text-slate-700 text-sm font-bold">
                 <button
                   type="button"
@@ -298,7 +277,7 @@ const SolutionPdf = ({ currentQuestionData }) => {
                 >
                   —
                 </button>
-                <span>{pdfZoom}%</span>
+                <span className="font-mono text-slate-800">{pdfZoom}%</span>
                 <button
                   type="button"
                   onClick={() => setPdfZoom((z) => Math.min(z + 10, 120))}

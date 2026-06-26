@@ -122,13 +122,23 @@ const ExamTopics = () => {
                   </span>
                 </div>
 
-                {/* Start Practice button */}
-                <Link
-                  to={`/dashboard/exam-details/${topic.id}`}
-                  className="bg-primary hover:bg-[#4d8229] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 lato"
-                >
-                  Start Practice <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                {/* Dynamic Start Practice or View Result button */}
+                {(() => {
+                  const isCompleted = localStorage.getItem("exam_completed_" + topic.id) === "true";
+                  return (
+                    <Link
+                      to={`/dashboard/exam-details/${topic.id}`}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 lato text-white ${
+                        isCompleted
+                          ? "bg-[#082042] hover:bg-[#1c398e]"
+                          : "bg-primary hover:bg-[#4d8229]"
+                      }`}
+                    >
+                      {isCompleted ? "View Result" : "Start Practice"}
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  );
+                })()}
               </div>
             </div>
           ))}

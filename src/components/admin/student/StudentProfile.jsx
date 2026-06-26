@@ -106,15 +106,15 @@ export default function StudentProfile() {
             <h2 className="text-2xl font-bold text-[#082042] roboto mb-4 leading-none">
               {displayName}
             </h2>
-            <div className="grid grid-cols-[90px_1fr] gap-y-2.5 text-sm roboto text-slate-800">
-              <span className="text-slate-400 font-medium">Student Id</span>
-              <span className="font-semibold text-slate-700">{displayStudentId}</span>
+            <div className="grid grid-cols-[100px_1fr] gap-y-2.5 text-sm text-slate-800">
+              <span className="text-slate-400 font-medium lato">Student Id</span>
+              <span className="font-semibold text-slate-700 roboto">{displayStudentId}</span>
 
-              <span className="text-slate-400 font-medium">Email</span>
-              <span className="font-semibold text-slate-700">{displayEmail}</span>
+              <span className="text-slate-400 font-medium lato">Email</span>
+              <span className="font-semibold text-slate-700 roboto">{displayEmail}</span>
 
-              <span className="text-slate-400 font-medium">Status</span>
-              <div>
+              <span className="text-slate-400 font-medium lato">Status</span>
+              <div className="lato">
                 <span className={`inline-block px-3 py-0.5 text-xs font-bold rounded-full border ${
                   student.status === "Active"
                     ? "text-[#66A331] bg-[#EBF5E4] border-[#66A331]/20"
@@ -132,12 +132,12 @@ export default function StudentProfile() {
 
         {/* Right Section: Score Stats Summary */}
         <div className="flex flex-col justify-center md:pl-8 min-w-[200px]">
-          <div className="grid grid-cols-[110px_1fr] gap-y-3 text-sm roboto text-slate-800">
-            <span className="text-slate-400 font-medium">Total Quizzes</span>
-            <span className="font-semibold text-slate-700">{student.quizzesTaken}</span>
+          <div className="grid grid-cols-[115px_1fr] gap-y-3 text-sm text-slate-800">
+            <span className="text-slate-400 font-medium lato">Total Quizzes</span>
+            <span className="font-semibold text-slate-700 roboto">{student.quizzesTaken}</span>
 
-            <span className="text-slate-400 font-medium">Average Score</span>
-            <span className="font-semibold text-slate-700">{student.score}</span>
+            <span className="text-slate-400 font-medium lato">Average Score</span>
+            <span className="font-semibold text-slate-700 roboto">{student.score}</span>
           </div>
         </div>
 
@@ -149,22 +149,19 @@ export default function StudentProfile() {
           <table className="w-full text-sm border-separate border-spacing-0">
             <thead>
               <tr className="text-slate-500 font-semibold lato text-sm">
-                <th className="py-3 px-6 text-left font-semibold bg-slate-50 border-y border-l border-slate-100 rounded-l-xl">
+                <th className="py-3 px-6 text-left font-semibold bg-[#EAEFF8] rounded-l-xl text-slate-600">
                   Quiz Name
                 </th>
-                <th className="py-3 px-4 text-left font-semibold bg-slate-50 border-y border-slate-100">
-                  Subject
-                </th>
-                <th className="py-3 px-4 text-center font-semibold bg-slate-50 border-y border-slate-100">
+                <th className="py-3 px-4 text-center font-semibold bg-[#EAEFF8] text-slate-600">
                   Score
                 </th>
-                <th className="py-3 px-4 text-center font-semibold bg-slate-50 border-y border-slate-100">
+                <th className="py-3 px-4 text-center font-semibold bg-[#EAEFF8] text-slate-600">
                   Rank
                 </th>
-                <th className="py-3 px-4 text-center font-semibold bg-slate-50 border-y border-slate-100">
+                <th className="py-3 px-4 text-center font-semibold bg-[#EAEFF8] text-slate-600">
                   Date
                 </th>
-                <th className="py-3 px-6 text-center font-semibold bg-slate-50 border-y border-r border-slate-100 rounded-r-xl">
+                <th className="py-3 px-6 text-center font-semibold bg-[#EAEFF8] rounded-r-xl text-slate-600">
                   Action
                 </th>
               </tr>
@@ -177,13 +174,8 @@ export default function StudentProfile() {
                     {attempt.name}
                   </td>
 
-                  {/* Subject */}
-                  <td className="py-4 px-4 border-b border-slate-100 text-left text-slate-500 lato font-medium">
-                    {attempt.subject}
-                  </td>
-
                   {/* Score */}
-                  <td className="py-4 px-4 border-b border-slate-100 text-center font-semibold text-blue-600 roboto">
+                  <td className="py-4 px-4 border-b border-slate-100 text-center font-semibold roboto">
                     {attempt.score}
                   </td>
 
@@ -197,7 +189,7 @@ export default function StudentProfile() {
                     )}
                     {attempt.rank.val === 2 && (
                       <div className="flex items-center justify-center gap-1.5">
-                        <span className="w-5 h-5 rounded-full bg-[#1A365D] text-white flex items-center justify-center text-xs font-bold font-sans">
+                        <span className="w-5 h-5 rounded-full bg-[#1A365D] text-white flex items-center justify-center text-xs font-bold roboto">
                           2
                         </span>
                         <span className="font-semibold text-slate-700 leading-none">{attempt.rank.label}</span>
@@ -205,7 +197,7 @@ export default function StudentProfile() {
                     )}
                     {attempt.rank.val === 3 && (
                       <div className="flex items-center justify-center gap-1.5">
-                        <span className="w-5 h-5 rounded-full bg-[#7C2D12] text-white flex items-center justify-center text-xs font-bold font-sans">
+                        <span className="w-5 h-5 rounded-full bg-[#7C2D12] text-white flex items-center justify-center text-xs font-bold roboto">
                           3
                         </span>
                         <span className="font-semibold text-slate-700 leading-none">{attempt.rank.label}</span>

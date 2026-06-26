@@ -5,9 +5,9 @@ import { ICONS } from "../../../assets";
 const podiumData = [
   {
     rank: 2,
-    name: "Gazi",
+    name: "Pappu",
     score: 26,
-    avatar: "https://randomuser.me/api/portraits/men/44.jpg",
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
   },
   {
     rank: 1,
@@ -17,22 +17,17 @@ const podiumData = [
   },
   {
     rank: 3,
-    name: "Joti",
+    name: "Pappu",
     score: 22,
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
   },
 ];
 
 const rankingsList = Array.from({ length: 14 }, (_, i) => ({
   rank: i + 1,
-  name: i === 0 || i % 3 === 0 ? "Pappu" : i % 2 === 0 ? "Gazi" : "Joti",
-  score: 38 - Math.floor(i / 2),
-  avatar:
-    i === 0 || i % 3 === 0
-      ? "https://randomuser.me/api/portraits/men/32.jpg"
-      : i % 2 === 0
-        ? "https://randomuser.me/api/portraits/men/44.jpg"
-        : "https://randomuser.me/api/portraits/women/44.jpg",
+  name: "Pappu",
+  score: 38,
+  avatar: "https://randomuser.me/api/portraits/men/32.jpg",
 }));
 
 const Leaderboard = () => {
@@ -260,8 +255,8 @@ const Leaderboard = () => {
       </div>
 
       {/* Leaderboard scrollable list */}
-      <div className="flex-1 overflow-y-auto max-h-[380px] pr-2 flex flex-col gap-2.5 custom-scrollbar">
-        {rankingsList.map((rank) => (
+      <div className="flex-1 flex flex-col gap-2.5">
+        {rankingsList.slice(0, 5).map((rank) => (
           <div
             key={rank.rank}
             className="bg-slate-50/60 hover:bg-slate-50 border border-slate-200 rounded-xl py-2 px-4 flex items-center justify-between transition-all"
@@ -291,6 +286,14 @@ const Leaderboard = () => {
           </div>
         ))}
       </div>
+
+      {/* View Full Leaderboard Button */}
+      <button
+        type="button"
+        className="w-full mt-4 py-2.5 bg-[#E8F0FE] hover:bg-[#D4E4FC] text-[#1A73E8] font-bold rounded-xl text-xs sm:text-sm transition-all tracking-wide shadow-sm"
+      >
+        View Full Leaderboard
+      </button>
     </div>
   );
 };

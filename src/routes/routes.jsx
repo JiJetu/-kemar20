@@ -13,6 +13,10 @@ import Profile from "../components/studentDashboard/profile/Profile";
 import ExamDetails from "../page/dashboard/student/examDetails/ExamDetails";
 import StudentProfile from "../components/admin/student/StudentProfile";
 import UploadQuizPdf from "../page/dashboard/admin/UploadQuizPdf";
+import QuizManagement from "../page/dashboard/admin/QuizManagement";
+import QuizDetail from "../page/dashboard/admin/QuizDetail";
+import SettingsPage from "../page/dashboard/admin/SettingsPage";
+
 
 const router = createBrowserRouter([
   {
@@ -57,16 +61,20 @@ const router = createBrowserRouter([
         element: <StudentProfile />,
       },
       {
-        path: "upload-quiz-pdf",
+        path: "upload-quiz",
         element: <UploadQuizPdf />,
       },
       {
         path: "quiz",
-        element: <div className="text-left p-6 bg-white rounded-2xl border border-slate-200 shadow-sm"><h2 className="text-xl font-bold text-slate-800 mb-2">Quiz Panel</h2><p className="text-slate-500">Quiz details and management coming soon.</p></div>,
+        element: <QuizManagement />,
+      },
+      {
+        path: "quiz/:id",
+        element: <QuizDetail />,
       },
       {
         path: "setting",
-        element: <div className="text-left p-6 bg-white rounded-2xl border border-slate-200 shadow-sm"><h2 className="text-xl font-bold text-slate-800 mb-2">Settings</h2><p className="text-slate-500">Admin settings page coming soon.</p></div>,
+        element: <SettingsPage />,
       },
     ],
   },

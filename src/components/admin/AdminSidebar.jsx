@@ -1,10 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import {
-  Home,
-  Settings,
-  LogOut,
-} from "lucide-react";
+import { Home, Settings, LogOut } from "lucide-react";
 import { ICONS, IMAGES } from "../../assets";
 import { logout } from "../../redex/features/auth/auth.slice";
 
@@ -20,12 +16,12 @@ const navItems = [
     iconImage: ICONS.studentIcons,
   },
   {
-    name: "Upload Exam",
-    path: "/admin/upload-quiz-pdf",
+    name: "Upload Exam Quiz",
+    path: "/admin/upload-quiz",
     iconImage: ICONS.uploadIcons,
   },
   {
-    name: "Quiz",
+    name: "All Quiz",
     path: "/admin/quiz",
     iconImage: ICONS.quizIcons,
   },

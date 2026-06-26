@@ -37,7 +37,6 @@ export default function RecentQuizzes() {
           <thead>
             <tr className="text-slate-500 font-semibold lato text-base">
               <th className="py-3 px-6 text-left font-semibold bg-slate-50 border-y border-l border-slate-100 rounded-l-xl">Quiz Name</th>
-              <th className="py-3 px-4 text-left font-semibold bg-slate-50 border-y border-slate-100">Subject</th>
               <th className="py-3 px-4 text-center font-semibold bg-slate-50 border-y border-slate-100">Questions</th>
               <th className="py-3 px-4 text-left font-semibold bg-slate-50 border-y border-slate-100">Uploaded On</th>
               <th className="py-3 px-4 text-center font-semibold bg-slate-50 border-y border-slate-100">Status</th>
@@ -49,9 +48,6 @@ export default function RecentQuizzes() {
               <tr key={quiz.id} className="hover:bg-slate-50/50 transition-colors">
                 <td className="py-3.5 px-6 border-b border-slate-100 font-semibold text-slate-900 roboto">
                   {quiz.name}
-                </td>
-                <td className="py-3.5 px-4 border-b border-slate-100 font-medium text-slate-500 lato">
-                  {quiz.subject}
                 </td>
                 <td className="py-3.5 px-4 border-b border-slate-100 text-center font-semibold text-slate-700 roboto">
                   {quiz.questions}
