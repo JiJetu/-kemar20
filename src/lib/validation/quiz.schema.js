@@ -28,3 +28,18 @@ export const uploadQuizSchema = z.object({
       message: "Questions must be a number greater than 0",
     }),
 });
+
+export const infoSchema = z.object({
+  title: z.string().min(1, "Quiz Title is required"),
+  classForm: z.string().min(1, "Class/Form is required"),
+  duration: z.string().min(1, "Duration is required"),
+  numQuestions: z
+    .string()
+    .min(1, "Number of questions is required")
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+      message: "Questions must be a number greater than 0",
+    }),
+  bookName: z.string().min(1, "Book selection is required"),
+  chapter: z.string().min(1, "Chapter selection is required"),
+  topic: z.string().min(1, "Topic selection is required"),
+});

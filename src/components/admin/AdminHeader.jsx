@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useGetMeQuery } from "../../redex/features/auth/auth.api";
+import { useGetMeQuery } from "../../redex/features/profile/profile.api";
 
 export default function AdminHeader({ onOpenSidebar }) {
   const user = useSelector((state) => state.auth.user);

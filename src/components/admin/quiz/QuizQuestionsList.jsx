@@ -7,7 +7,7 @@ export default function QuizQuestionsList({ questions }) {
           className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm flex flex-col gap-4 animate-in fade-in duration-200"
         >
           {/* Question Label Header */}
-          <h4 className="font-bold text-[#082042] text-lg roboto">
+          <h4 className="font-bold text-secondary text-lg roboto">
             Q{idx + 1}.<span className="text-slate-400 text-sm font-semibold ml-1">(MCQ)</span>
           </h4>
 
@@ -30,17 +30,17 @@ export default function QuizQuestionsList({ questions }) {
                         key={oidx}
                         className={`flex items-center gap-3 px-4 py-2.5 rounded-lg border text-sm transition-all ${
                           isCorrect
-                            ? "border-[#66A331] bg-[#EBF5E4]/50 text-slate-800 font-semibold shadow-sm"
+                            ? "border-[#137333] bg-[#E6F4EA]/50 text-slate-800 font-semibold shadow-sm"
                             : "border-slate-100 bg-slate-50/20 text-slate-600"
                         }`}
                       >
                         {/* Circle radio indicator with selected dot */}
                         <div
                           className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 bg-white ${
-                            isCorrect ? "border-[#66A331]" : "border-slate-300"
+                            isCorrect ? "border-[#137333]" : "border-slate-300"
                           }`}
                         >
-                          {isCorrect && <div className="w-2 h-2 rounded-full bg-[#66A331]" />}
+                          {isCorrect && <div className="w-2 h-2 rounded-full bg-[#137333]" />}
                         </div>
                         <span className="font-bold">{String.fromCharCode(65 + oidx)}.</span>
                         <span className="flex-1 truncate">{opt}</span>
@@ -51,7 +51,7 @@ export default function QuizQuestionsList({ questions }) {
               </div>
 
               {/* Correct choice highlight */}
-              <div className="mt-4 text-xs font-bold text-[#66A331] uppercase lato tracking-wider">
+              <div className="mt-4 text-xs font-bold text-[#137333] uppercase lato tracking-wider">
                 Correct Answer: {String.fromCharCode(65 + q.correctAnswer)}
               </div>
             </div>

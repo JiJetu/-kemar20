@@ -1,9 +1,9 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useVerifyMutation } from "../../redex/features/auth/auth.api";
+import { useVerifyMutation, useResendOtpMutation } from "../../redex/features/auth/auth.api";
 import { toast } from "sonner";
 
-const OtpVerificationForm = ({ email }) => {
+const OtpVerificationForm = ({ email, onSuccess }) => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   
   // Define individual refs instead of using array instantiation of useRef() directly, 
@@ -18,6 +18,7 @@ const OtpVerificationForm = ({ email }) => {
   const inputRefs = [ref0, ref1, ref2, ref3, ref4, ref5];
   const navigate = useNavigate();
   const [verify, { isLoading: isVerifying }] = useVerifyMutation();
+  const [resendOtp, { isLoading: isResending }] = useResendOtpMutation();
 
   const handleChange = (index, value) => {
     if (!/^\d*$/.test(value)) return;
@@ -62,11 +63,25 @@ const OtpVerificationForm = ({ email }) => {
     try {
       const code = otp.join("");
       await verify({ email, otp: code }).unwrap();
-      toast.success("Account activated successfully! Please log in.");
-      navigate("/login");
+      toast.success("Account activated successfully!");
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate("/login");
+      }
     } catch (error) {
       console.error("Verification error:", error);
       const errorMsg = error?.data?.detail || error?.data?.message || "Invalid OTP code. Please try again.";
+      toast.error(errorMsg);
+    }
+  };
+
+  const handleResend = async () => {
+    try {
+      await resendOtp({ email }).unwrap();
+      toast.success("Verification code resent to your email.");
+    } catch (error) {
+      const errorMsg = error?.data?.detail || error?.data?.message || "Failed to resend code. Please try again.";
       toast.error(errorMsg);
     }
   };
@@ -89,13 +104,27 @@ const OtpVerificationForm = ({ email }) => {
         ))}
       </div>
 
-      <button
-        type="submit"
-        disabled={!isComplete || isVerifying}
-        className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#5D9E32]/10"
-      >
-        {isVerifying ? "Verifying..." : "Verify & Activate"}
-      </button>
+      <div className="flex flex-col gap-3">
+        <button
+          type="submit"
+          disabled={!isComplete || isVerifying}
+          className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#5D9E32]/10 cursor-pointer"
+        >
+          {isVerifying ? "Verifying..." : "Verify & Activate"}
+        </button>
+
+        <div className="text-center text-xs mt-1">
+          <span className="text-slate-400 font-medium">Didn't receive code? </span>
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={isResending}
+            className="text-[#5D9E32] font-bold hover:underline bg-transparent border-none cursor-pointer"
+          >
+            {isResending ? "Resending..." : "Resend Code"}
+          </button>
+        </div>
+      </div>
     </form>
   );
 };

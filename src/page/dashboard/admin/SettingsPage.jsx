@@ -123,7 +123,7 @@ export default function SettingsPage() {
               <button
                 type="button"
                 onClick={() => setIsEditMode(true)}
-                className="px-5 py-2 bg-[#082042] hover:bg-[#0c2f5d] text-white text-sm font-bold rounded-lg cursor-pointer transition-colors shadow-sm"
+                className="px-5 py-2 bg-secondary hover:bg-secondary/90 text-white text-sm font-bold rounded-lg cursor-pointer transition-colors shadow-sm"
               >
                 Edit
               </button>
@@ -199,7 +199,7 @@ export default function SettingsPage() {
                   value={adminInfo.firstName}
                   disabled={!isEditMode}
                   onChange={(e) => handleInfoChange("firstName", e.target.value)}
-                  className="w-full bg-[#FAFBFD] disabled:bg-slate-50/50 disabled:text-slate-500 disabled:cursor-not-allowed border border-slate-200 focus:bg-white focus:border-slate-300 pl-10 pr-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
+                  className="w-full bg-[#FAFBFD] disabled:bg-slate-50/50 disabled:text-slate-500 disabled:cursor-not-allowed border border-slate-200 focus:bg-white focus:border-secondary focus:ring-1 focus:ring-secondary/20 pl-10 pr-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
                 />
               </div>
             </div>
@@ -216,7 +216,7 @@ export default function SettingsPage() {
                   value={adminInfo.lastName}
                   disabled={!isEditMode}
                   onChange={(e) => handleInfoChange("lastName", e.target.value)}
-                  className="w-full bg-[#FAFBFD] disabled:bg-slate-50/50 disabled:text-slate-500 disabled:cursor-not-allowed border border-slate-200 focus:bg-white focus:border-slate-300 pl-10 pr-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
+                  className="w-full bg-[#FAFBFD] disabled:bg-slate-50/50 disabled:text-slate-500 disabled:cursor-not-allowed border border-slate-200 focus:bg-white focus:border-secondary focus:ring-1 focus:ring-secondary/20 pl-10 pr-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
                 />
               </div>
             </div>
@@ -233,7 +233,7 @@ export default function SettingsPage() {
                   value={adminInfo.phoneNumber}
                   disabled={!isEditMode}
                   onChange={(e) => handleInfoChange("phoneNumber", e.target.value)}
-                  className="w-full bg-[#FAFBFD] disabled:bg-slate-50/50 disabled:text-slate-500 disabled:cursor-not-allowed border border-slate-200 focus:bg-white focus:border-slate-300 pl-10 pr-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
+                  className="w-full bg-[#FAFBFD] disabled:bg-slate-50/50 disabled:text-slate-500 disabled:cursor-not-allowed border border-slate-200 focus:bg-white focus:border-secondary focus:ring-1 focus:ring-secondary/20 pl-10 pr-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
                 />
               </div>
             </div>
@@ -250,7 +250,7 @@ export default function SettingsPage() {
                   value={adminInfo.emailAddress}
                   disabled={!isEditMode}
                   onChange={(e) => handleInfoChange("emailAddress", e.target.value)}
-                  className="w-full bg-[#FAFBFD] disabled:bg-slate-50/50 disabled:text-slate-500 disabled:cursor-not-allowed border border-slate-200 focus:bg-white focus:border-slate-300 pl-10 pr-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
+                  className="w-full bg-[#FAFBFD] disabled:bg-slate-50/50 disabled:text-slate-500 disabled:cursor-not-allowed border border-slate-200 focus:bg-white focus:border-secondary focus:ring-1 focus:ring-secondary/20 pl-10 pr-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
                 />
               </div>
             </div>
@@ -262,7 +262,7 @@ export default function SettingsPage() {
       <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 w-full">
         {/* Left Side elements */}
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
+          <div className="w-12 h-12 rounded-full bg-[#DCF3FF] flex items-center justify-center text-secondary shrink-0">
             <Lock className="w-5 h-5" />
           </div>
           <div className="flex flex-col text-left">
@@ -325,7 +325,7 @@ export default function SettingsPage() {
                 placeholder="Enter Current Password"
                 value={passwords.currentPassword}
                 onChange={(e) => handlePasswordInputChange("currentPassword", e.target.value)}
-                className="w-full bg-[#FAFBFD] border border-slate-200 focus:bg-white focus:border-slate-300 px-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
+                className="w-full bg-[#FAFBFD] border border-slate-200 focus:bg-white focus:border-secondary focus:ring-1 focus:ring-secondary/20 px-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
               />
             </div>
 
@@ -339,7 +339,7 @@ export default function SettingsPage() {
                 placeholder="Enter New Password"
                 value={passwords.newPassword}
                 onChange={(e) => handlePasswordInputChange("newPassword", e.target.value)}
-                className="w-full bg-[#FAFBFD] border border-slate-200 focus:bg-white focus:border-slate-300 px-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
+                className="w-full bg-[#FAFBFD] border border-slate-200 focus:bg-white focus:border-secondary focus:ring-1 focus:ring-secondary/20 px-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
               />
             </div>
 
@@ -353,7 +353,7 @@ export default function SettingsPage() {
                 placeholder="Confirm New Password"
                 value={passwords.confirmPassword}
                 onChange={(e) => handlePasswordInputChange("confirmPassword", e.target.value)}
-                className="w-full bg-[#FAFBFD] border border-slate-200 focus:bg-white focus:border-slate-300 px-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
+                className="w-full bg-[#FAFBFD] border border-slate-200 focus:bg-white focus:border-secondary focus:ring-1 focus:ring-secondary/20 px-4 py-2.5 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none transition-all shadow-sm text-sm font-semibold"
               />
             </div>
           </div>
@@ -373,7 +373,7 @@ export default function SettingsPage() {
           <button
             type="button"
             onClick={handleSaveAll}
-            className="flex items-center gap-2 bg-[#082042] hover:bg-[#0c2f5d] text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition-all focus:outline-none roboto text-center text-sm leading-none cursor-pointer"
+            className="flex items-center gap-2 bg-secondary hover:bg-secondary/90 text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition-all focus:outline-none roboto text-center text-sm leading-none cursor-pointer"
           >
             <Lock className="w-4 h-4" />
             <span>Save Changes</span>

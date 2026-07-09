@@ -1,38 +1,40 @@
 import { ArrowUp } from "lucide-react";
 import { ICONS } from "../../../assets";
+import { useGetQuizLeaderboardQuery } from "../../../redex/features/quiz/quiz.api";
 
-// Leaderboard mock data
-const podiumData = [
-  {
-    rank: 2,
-    name: "Pappu",
-    score: 26,
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    rank: 1,
-    name: "Pappu",
-    score: 38,
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    rank: 3,
-    name: "Pappu",
-    score: 22,
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-];
+const Leaderboard = ({ quizId }) => {
+  const { data: leaderboardData, isLoading } = useGetQuizLeaderboardQuery(quizId);
 
-const rankingsList = Array.from({ length: 14 }, (_, i) => ({
-  rank: i + 1,
-  name: "Pappu",
-  score: 38,
-  avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-}));
+  if (isLoading) {
+    return (
+      <div className="bg-white border border-slate-200 rounded-[20px] p-6 flex flex-col items-center justify-center h-full min-h-[500px] shadow-md w-full">
+        <div className="w-8 h-8 border-4 border-[#39842B] border-t-transparent rounded-full animate-spin" />
+        <span className="text-xs text-slate-400 mt-3 roboto font-medium">Loading leaderboard...</span>
+      </div>
+    );
+  }
 
-const Leaderboard = () => {
+  // Format rankings list
+  const rawList = Array.isArray(leaderboardData)
+    ? leaderboardData
+    : (leaderboardData?.results || leaderboardData?.rankings || leaderboardData?.leaderboard || []);
+
+  const rankings = rawList.map((item, idx) => ({
+    rank: item.rank || (idx + 1),
+    name: item.student_name || item.user?.full_name || item.user?.email?.split("@")[0] || "Student",
+    score: item.score || 0,
+    avatar: item.user?.profile_picture || ICONS.studentIcon,
+  }));
+
+  const rank1 = rankings.find((r) => r.rank === 1) || { rank: 1, name: "No Record", score: 0, avatar: ICONS.studentIcon };
+  const rank2 = rankings.find((r) => r.rank === 2) || { rank: 2, name: "No Record", score: 0, avatar: ICONS.studentIcon };
+  const rank3 = rankings.find((r) => r.rank === 3) || { rank: 3, name: "No Record", score: 0, avatar: ICONS.studentIcon };
+
+  const podiumData = [rank2, rank1, rank3];
+  const rankingsList = rankings;
+
   return (
-    <div className="bg-white border border-slate-200 rounded-[20px] p-6 flex flex-col h-full min-h-[500px] shadow-md">
+    <div className="bg-white border border-slate-200 rounded-[20px] p-6 flex flex-col h-full min-h-[500px] shadow-md w-full">
       {/* Podium Area */}
       <div className="flex items-end justify-center pt-8 pb-4 border-b border-slate-200 mb-6 select-none relative">
         {/* Rank 2 (Gazi - Left) */}
@@ -290,7 +292,7 @@ const Leaderboard = () => {
       {/* View Full Leaderboard Button */}
       <button
         type="button"
-        className="w-full mt-4 py-2.5 bg-[#E8F0FE] hover:bg-[#D4E4FC] text-[#1A73E8] font-bold rounded-xl text-xs sm:text-sm transition-all tracking-wide shadow-sm"
+        className="w-full mt-4 py-2.5 bg-[#E5ECF9] text-secondary font-bold rounded-xl text-xs sm:text-sm transition-all tracking-wide shadow-sm"
       >
         View Full Leaderboard
       </button>

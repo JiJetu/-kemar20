@@ -1,59 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Edit2, Trash2, X, Plus, Save, RotateCcw } from "lucide-react";
+import { Edit2, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { ICONS } from "../../../assets/index";
+import EditQuestionModal from "./EditQuestionModal";
+import EditQuizInfoModal from "./EditQuizInfoModal";
+import EditPdfModal from "./EditPdfModal";
+import {
+  useCreateAdminQuestionMutation,
+  useUpdateAdminQuestionMutation,
+  useDeleteAdminQuestionMutation,
+} from "../../../redex/features/admin/questions.api";
 
-export default function QuizReview({ formData, onPublish }) {
+export default function QuizReview({ formData, onPublish, onGoToStep, onUpdateFormData, onSave }) {
   const navigate = useNavigate();
-  // Mock questions matching the mathematical focus of the mockup
-  const [questions, setQuestions] = useState([
-    {
-      id: 1,
-      questionText: "If 2x^2 + 5x - 3 = 0, what is the value of 4x^2 + 10x?",
-      options: ["6", "-6", "3", "-3"],
-      correctAnswer: 1,
-      solution: "2x^2 + 5x - 3 = 0 => 2x^2 + 5x = 3\n4x^2 + 10x = 2(2x^2 + 5x) = 2 * 3 = 6",
-    },
-    {
-      id: 2,
-      questionText: "If $2x + 3 = 11$, what is the value of $x$?",
-      options: ["2", "3", "4", "5"],
-      correctAnswer: 2,
-      solution: "2x + 3 = 11\n2x = 11 - 3 = 8\nx = 8/2 = 4",
-    },
-    {
-      id: 3,
-      questionText: "Solve for x: x^2 - 4 = 0",
-      options: ["2 or -2", "4", "0", "1"],
-      correctAnswer: 0,
-      solution: "x^2 - 4 = 0\nx^2 = 4\nx = 2 or -2",
-    },
-    {
-      id: 4,
-      questionText: "Determine the vertex of the parabola: y = (x - 3)^2 + 5",
-      options: ["(3, 5)", "(-3, 5)", "(3, -5)", "(-3, -5)"],
-      correctAnswer: 0,
-      solution: "The vertex form is y = a(x - h)^2 + k\nHere, h = 3 and k = 5\nTherefore, the vertex is (3, 5)",
-    },
-  ]);
-
+  const [questions, setQuestions] = useState(formData?.questions || []);
   const [editingQuestion, setEditingQuestion] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [isChangesSaved, setIsChangesSaved] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showPdfModal, setShowPdfModal] = useState(false);
+
+  // RTK-Query CRUD Mutations
+  const [createQuestion] = useCreateAdminQuestionMutation();
+  const [updateQuestion] = useUpdateAdminQuestionMutation();
+  const [deleteQuestion] = useDeleteAdminQuestionMutation();
+
+  useEffect(() => {
+    if (formData?.questions) {
+      setQuestions(formData.questions);
+    }
+  }, [formData?.questions]);
 
   // Edit / Delete operations
   const handleOpenEdit = (q) => {
     setEditingQuestion({
       ...q,
-      options: [...q.options], // shallow clone options
+      options: [...q.options],
     });
     setShowEditModal(true);
   };
 
-  const handleDeleteQuestion = (id) => {
-    setQuestions((prev) => prev.filter((q) => q.id !== id));
-    setIsChangesSaved(false);
-    toast.success("Question deleted successfully");
+  const handleOpenAddQuestion = () => {
+    setEditingQuestion({
+      id: "new",
+      questionText: "",
+      options: ["", "", "", ""],
+      correctAnswer: 0,
+      solution: "",
+    });
+    setShowEditModal(true);
+  };
+
+  const handleDeleteQuestion = async (id) => {
+    try {
+      await deleteQuestion(id).unwrap();
+      setQuestions((prev) => prev.filter((q) => q.id !== id));
+      toast.success("Question deleted successfully");
+    } catch (err) {
+      console.error("Delete question error:", err);
+      toast.error("Failed to delete question");
+    }
   };
 
   // Modal handlers
@@ -62,119 +68,190 @@ export default function QuizReview({ formData, onPublish }) {
     setShowEditModal(false);
   };
 
-  const handleModalQuestionChange = (text) => {
-    setEditingQuestion((prev) => ({ ...prev, questionText: text }));
-  };
+  const handleSaveQuestion = async (updatedQuestion) => {
+    try {
+      if (updatedQuestion.id === "new") {
+        // Create new question on backend
+        const payload = {
+          quiz: formData.id,
+          question_no: questions.length + 1,
+          question_text: updatedQuestion.questionText,
+          options: updatedQuestion.options,
+          correct_answer: updatedQuestion.correctAnswer + 1, // 1-indexed
+          steps: updatedQuestion.solution ? updatedQuestion.solution.split("\n") : [],
+          chapter: formData.chapter || "",
+          topic: formData.topic || "",
+        };
+        const result = await createQuestion(payload).unwrap();
 
-  const handleModalOptionChange = (idx, text) => {
-    setEditingQuestion((prev) => {
-      const opts = [...prev.options];
-      opts[idx] = text;
-      return { ...prev, options: opts };
-    });
-  };
+        const newMappedQ = {
+          id: result.id,
+          questionText: result.question_text || updatedQuestion.questionText,
+          options: result.options || updatedQuestion.options,
+          correctAnswer: result.correct_answer !== undefined ? result.correct_answer - 1 : 0,
+          solution: Array.isArray(result.steps) ? result.steps.join("\n") : (result.steps || ""),
+        };
+        setQuestions((prev) => [...prev, newMappedQ]);
+        toast.success("Question created successfully");
+      } else {
+        // Update existing question on backend
+        const payload = {
+          id: updatedQuestion.id,
+          quiz: formData.id,
+          question_no: updatedQuestion.question_no || 1,
+          question_text: updatedQuestion.questionText,
+          options: updatedQuestion.options,
+          correct_answer: updatedQuestion.correctAnswer + 1, // 1-indexed
+          steps: updatedQuestion.solution ? updatedQuestion.solution.split("\n") : [],
+          chapter: formData.chapter || "",
+          topic: formData.topic || "",
+        };
+        await updateQuestion(payload).unwrap();
 
-  const handleModalAddOption = () => {
-    if (editingQuestion.options.length >= 6) {
-      toast.error("Maximum 6 options allowed");
-      return;
-    }
-    setEditingQuestion((prev) => ({
-      ...prev,
-      options: [...prev.options, ""],
-    }));
-  };
-
-  const handleModalRemoveOption = (idx) => {
-    if (editingQuestion.options.length <= 2) {
-      toast.error("Minimum 2 options required");
-      return;
-    }
-    setEditingQuestion((prev) => {
-      const opts = prev.options.filter((_, i) => i !== idx);
-      // Adjust correct answer index if it was pointing to the deleted index
-      let correct = prev.correctAnswer;
-      if (correct === idx) {
-        correct = 0;
-      } else if (correct > idx) {
-        correct -= 1;
+        setQuestions((prev) =>
+          prev.map((q) => (q.id === updatedQuestion.id ? updatedQuestion : q))
+        );
+        toast.success("Question updated successfully");
       }
-      return { ...prev, options: opts, correctAnswer: correct };
-    });
+      setShowEditModal(false);
+      setEditingQuestion(null);
+    } catch (err) {
+      console.error("Save question error:", err);
+      toast.error("Failed to save question");
+    }
   };
 
-  const handleModalCorrectChange = (idx) => {
-    setEditingQuestion((prev) => ({ ...prev, correctAnswer: idx }));
+  const handleSaveQuizInfo = (updatedInfo) => {
+    onUpdateFormData?.(updatedInfo);
+    setShowInfoModal(false);
+    toast.success("Quiz information updated successfully!");
   };
 
-  const handleModalSolutionChange = (text) => {
-    setEditingQuestion((prev) => ({ ...prev, solution: text }));
-  };
-
-  const handleModalSave = () => {
-    if (!editingQuestion.questionText.trim()) {
-      toast.error("Question text is required");
-      return;
-    }
-    if (editingQuestion.options.some((opt) => !opt.trim())) {
-      toast.error("All options must have content");
-      return;
-    }
-    if (!editingQuestion.solution.trim()) {
-      toast.error("Solution steps are required");
-      return;
-    }
-
-    setQuestions((prev) =>
-      prev.map((q) => (q.id === editingQuestion.id ? editingQuestion : q))
-    );
-    setIsChangesSaved(false);
-    setShowEditModal(false);
-    toast.success("Question updated successfully");
+  const handleSavePdf = (newFile) => {
+    onUpdateFormData?.({ pdfFile: newFile });
+    setShowPdfModal(false);
+    toast.success("Exam PDF file updated successfully!");
   };
 
   const handleSaveChanges = () => {
-    toast.success("Quiz saved as draft successfully!");
-    navigate("/admin/quiz");
+    if (onSave) {
+      onSave(questions);
+    } else {
+      toast.success("Quiz saved as draft successfully!");
+      navigate("/admin/quiz");
+    }
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 text-left max-w-5xl mx-auto select-none animate-in fade-in duration-300">
+    <div className="w-full flex flex-col gap-6 text-left max-w-7xl mx-auto select-none animate-in fade-in duration-300">
       {/* 1. Header Information Banner */}
-      <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm flex items-center gap-5 w-full">
-        {/* Clipboard checklist icon wrapper */}
-        <div className="w-16 h-16 rounded-xl bg-[#082042] flex items-center justify-center text-white shrink-0 shadow-sm">
-          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-          </svg>
+      <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm flex items-center justify-between w-full">
+        <div className="flex items-center gap-5">
+          {/* Clipboard checklist icon wrapper */}
+          <div className="w-16 h-16 rounded-xl bg-[#0A2648] flex items-center justify-center text-white shrink-0 shadow-sm">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </div>
+
+          <div className="flex flex-col text-left">
+            <h2 className="text-xl font-bold text-[#0A2648] roboto leading-tight">
+              {formData?.title || "Mathematics Diagnostic Exam"}
+            </h2>
+            <div className="flex flex-wrap items-center mt-3 text-left gap-y-2">
+              <div className="flex flex-col pr-6 border-r border-slate-200">
+                <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Class</span>
+                <span className="text-[#0A2648] font-bold text-sm mt-0.5">
+                  {formData?.classForm ? `${formData.classForm} Grade` : "4th Grade"}
+                </span>
+              </div>
+              <div className="flex flex-col px-6 border-r border-slate-200">
+                <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">No Of Questions</span>
+                <span className="text-[#0A2648] font-bold text-sm mt-0.5">{questions.length}</span>
+              </div>
+              <div className="flex flex-col px-6">
+                <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Time Duration</span>
+                <span className="text-[#0A2648] font-bold text-sm mt-0.5">{formData?.duration} min</span>
+              </div>
+            </div>
+            
+            <div className="flex flex-wrap items-center mt-3 pt-3 border-t border-slate-100 text-left gap-y-2 w-full">
+              <div className="flex flex-col pr-6 border-r border-slate-200 max-w-[320px]">
+                <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider truncate">Book Name</span>
+                <span className="text-[#0A2648] font-bold text-sm mt-0.5 truncate" title={formData?.bookName}>
+                  {formData?.bookName === "volume1"
+                    ? "Mathematics-a-Complete-Course-With-CXC-Questions-Volume-1"
+                    : formData?.bookName === "volume2"
+                    ? "Mathematics-a-Complete-Course-With-CXC-Questions-Volume-2"
+                    : (formData?.bookName || "N/A")}
+                </span>
+              </div>
+              <div className="flex flex-col px-6 border-r border-slate-200 max-w-[200px]">
+                <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider truncate">Chapter</span>
+                <span className="text-[#0A2648] font-bold text-sm mt-0.5 truncate" title={formData?.chapter}>
+                  {formData?.chapter || "N/A"}
+                </span>
+              </div>
+              <div className="flex flex-col px-6 max-w-[240px]">
+                <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider truncate">Topic</span>
+                <span className="text-[#0A2648] font-bold text-sm mt-0.5 truncate" title={formData?.topic}>
+                  {formData?.topic || "N/A"}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col text-left flex-1">
-          <h2 className="text-2xl font-bold text-[#082042] roboto leading-tight">
-            Exam 2026
-          </h2>
-          <div className="text-slate-400 text-sm font-semibold lato flex flex-wrap items-center gap-1.5 mt-0.5">
-            {formData?.book && (
-              <>
-                <span>{formData.book}</span>
-                <span>•</span>
-              </>
-            )}
-            {formData?.chapter && (
-              <>
-                <span>{formData.chapter}</span>
-                <span>•</span>
-              </>
-            )}
-            <span>{formData?.topic || "Mathematics"}</span>
-            <span>•</span>
-            <span>{formData?.duration || "1 Hour"}</span>
+        <button
+          type="button"
+          onClick={() => setShowInfoModal(true)}
+          className="flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-[#0A2648] transition-colors cursor-pointer select-none self-start mt-1"
+        >
+          <span>Edit Information</span>
+          <Edit2 className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* 1.5. Uploaded PDF Preview Card */}
+      <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-sm flex flex-col gap-4 w-full">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <h3 className="text-lg font-bold text-[#0A2648] roboto">Uploaded</h3>
+          <button
+            type="button"
+            onClick={() => setShowPdfModal(true)}
+            className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-[#0A2648] transition-colors cursor-pointer select-none"
+          >
+            <span>Change</span>
+            <Edit2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <div className="bg-[#F1F5FD] rounded-xl p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src={ICONS.pdf} alt="PDF icon" className="w-8 h-8 object-contain shrink-0" />
+            <div className="flex flex-col text-left">
+              <span className="font-bold text-slate-800 text-sm truncate max-w-[200px] sm:max-w-[400px]">
+                {formData?.pdfFile?.name || "Math-Final -2026 Pdf"}
+              </span>
+              <span className="text-slate-400 text-xs mt-0.5">
+                {formData?.pdfFile?.size ? `${(formData.pdfFile.size / (1024 * 1024)).toFixed(2)} Mb` : "2.45 Mb"}
+              </span>
+            </div>
           </div>
-          <div className="mt-2.5 self-start">
-            <span className="inline-block px-3 py-1 text-xs font-bold text-[#66A331] bg-[#EBF5E4] rounded-md border border-[#66A331]/20 lato">
-              {questions.length} Questions Generated
-            </span>
-          </div>
+          <button
+            type="button"
+            onClick={() => {
+              if (formData?.pdfFile) {
+                const url = URL.createObjectURL(formData.pdfFile);
+                window.open(url, "_blank");
+              } else {
+                toast.info("No file uploaded to preview");
+              }
+            }}
+            className="border border-[#1877F2] hover:bg-[#1877F2]/5 text-[#1877F2] bg-white transition-all px-4 py-2 rounded-[6px] text-xs font-bold shadow-sm cursor-pointer"
+          >
+            Preview PDF
+          </button>
         </div>
       </div>
 
@@ -190,7 +267,7 @@ export default function QuizReview({ formData, onPublish }) {
               <button
                 type="button"
                 onClick={() => handleOpenEdit(q)}
-                className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white text-slate-500 hover:text-[#082042] hover:bg-slate-50 transition-colors shadow-sm cursor-pointer"
+                className="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center bg-white text-slate-500 hover:text-[#0A2648] hover:bg-slate-50 transition-colors shadow-sm cursor-pointer"
               >
                 <Edit2 className="w-4 h-4" />
               </button>
@@ -204,7 +281,7 @@ export default function QuizReview({ formData, onPublish }) {
             </div>
 
             {/* Question Label Header */}
-            <h4 className="font-bold text-[#082042] text-lg roboto pr-20">
+            <h4 className="font-bold text-[#0A2648] text-lg roboto pr-20">
               Q{idx + 1}.<span className="text-slate-400 text-sm font-semibold ml-1">(MCQ)</span>
             </h4>
 
@@ -218,8 +295,8 @@ export default function QuizReview({ formData, onPublish }) {
                     {q.questionText}
                   </p>
                   
-                  {/* Options List */}
-                  <div className="flex flex-col gap-2.5">
+                  {/* Options List in 2x2 Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {q.options.map((opt, oidx) => {
                       const isCorrect = q.correctAnswer === oidx;
                       return (
@@ -227,17 +304,17 @@ export default function QuizReview({ formData, onPublish }) {
                           key={oidx}
                           className={`flex items-center gap-3 px-4 py-2.5 rounded-lg border text-sm transition-all ${
                             isCorrect
-                              ? "border-[#66A331] bg-[#EBF5E4]/50 text-slate-800 font-semibold shadow-sm"
-                              : "border-slate-100 bg-slate-50/20 text-slate-600"
+                              ? "border-[#D1EBD0] bg-[#E2F4DF] text-[#39842B] font-semibold"
+                              : "border-slate-200 bg-white text-slate-600 hover:border-slate-350"
                           }`}
                         >
                           {/* Circle radio indicator */}
                           <div
-                            className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 bg-white ${
-                              isCorrect ? "border-[#66A331]" : "border-slate-300"
+                            className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
+                              isCorrect ? "border-[#39842B] bg-[#39842B]" : "border-slate-300 bg-white"
                             }`}
                           >
-                            {isCorrect && <div className="w-2 h-2 rounded-full bg-[#66A331]" />}
+                            {isCorrect && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                           </div>
                           <span className="font-bold">{String.fromCharCode(65 + oidx)}.</span>
                           <span className="flex-1 truncate">{opt}</span>
@@ -248,26 +325,31 @@ export default function QuizReview({ formData, onPublish }) {
                 </div>
 
                 {/* Correct choice highlight */}
-                <div className="mt-4 text-xs font-bold text-[#66A331] uppercase lato tracking-wider">
+                <div className="mt-4 text-sm font-bold text-[#39842B] uppercase lato tracking-wider text-left">
                   Correct Answer: {String.fromCharCode(65 + q.correctAnswer)}
                 </div>
               </div>
 
               {/* Right Column: Steps Solution block */}
-              <div className="bg-[#FAFBFD] border border-slate-100 rounded-xl p-5 flex flex-col gap-3.5 h-full">
+              <div className="bg-[#FAFBFD] border border-slate-100 rounded-xl p-5 flex flex-col gap-2 h-full text-left">
                 <span className="text-sm font-bold text-slate-700 lato">Solution:</span>
-                <div className="flex flex-col gap-2 font-mono text-xs text-slate-600 leading-relaxed overflow-x-auto">
-                  {q.solution.split("\n").map((line, lidx) => (
-                    <div key={lidx} className="bg-white px-3 py-2 rounded-lg border border-slate-200/50 shadow-sm whitespace-pre">
-                      {line}
-                    </div>
-                  ))}
-                </div>
+                <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line font-medium">
+                  {q.solution}
+                </p>
               </div>
 
             </div>
           </div>
         ))}
+
+        {/* Add Question Button inside the container */}
+        <button
+          type="button"
+          onClick={handleOpenAddQuestion}
+          className="flex items-center justify-center gap-2 border border-dashed border-[#0A2648]/30 hover:border-[#0A2648] bg-white hover:bg-slate-50 text-[#0A2648] py-4 rounded-[20px] shadow-sm transition-all text-sm font-bold cursor-pointer mb-2 shrink-0 select-none"
+        >
+          <Plus className="w-4 h-4" /> Add New Question
+        </button>
       </div>
 
       {/* 3. Bottom Action Buttons Bar */}
@@ -275,186 +357,48 @@ export default function QuizReview({ formData, onPublish }) {
         <button
           type="button"
           onClick={handleSaveChanges}
-          className="bg-[#EAEFF8] hover:bg-[#D4DFEE] text-slate-700 font-bold py-2.5 px-6 rounded-lg shadow-sm transition-all focus:outline-none roboto text-center text-sm leading-none border-none cursor-pointer"
+          className="bg-[#F1F5FD] hover:bg-slate-100 text-[#0A2648] font-bold py-2.5 px-6 rounded-lg shadow-sm border border-slate-200 transition-all text-sm leading-none cursor-pointer"
         >
           Save Changes
         </button>
-        <button
-          type="button"
-          onClick={onPublish}
-          className="bg-[#66A331] hover:bg-[#548728] text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition-all focus:outline-none roboto text-center text-sm leading-none cursor-pointer"
-        >
-          Publish Quiz
-        </button>
+        {onPublish && (
+          <button
+            type="button"
+            onClick={onPublish}
+            className="bg-[#66A331] hover:bg-[#66A331]/95 text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition-all text-sm leading-none cursor-pointer"
+          >
+            Publish Quiz
+          </button>
+        )}
       </div>
 
-      {/* 4. Edit Question Overlay Modal popup */}
-      {showEditModal && editingQuestion && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-xl w-full max-w-lg relative text-left animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
-            
-            {/* Modal header */}
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4 shrink-0">
-              <h3 className="text-lg font-bold text-[#082042] roboto">Edit Question</h3>
-              <button
-                onClick={handleModalClose}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Modal scrollable form body */}
-            <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-4">
-              {/* Question Type */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">Question Type</label>
-                <select
-                  defaultValue="Multiple Choice"
-                  className="bg-[#F0F4FA] border border-slate-200 rounded-lg px-3 py-2 text-slate-800 text-sm focus:outline-none w-full font-medium"
-                >
-                  <option value="Multiple Choice">Multiple Choice</option>
-                  <option value="True / False">True / False</option>
-                  <option value="Short Answer">Short Answer</option>
-                </select>
-              </div>
-
-              {/* Question text textarea */}
-              <div className="flex flex-col gap-1.5">
-                <div className="flex justify-between items-baseline">
-                  <label className="text-xs font-bold text-slate-500 uppercase">
-                    Question <span className="text-red-500">*</span>
-                  </label>
-                  <span className="text-[10px] text-slate-400 font-medium">
-                    {editingQuestion.questionText.length}/1000
-                  </span>
-                </div>
-                <textarea
-                  value={editingQuestion.questionText}
-                  onChange={(e) => handleModalQuestionChange(e.target.value)}
-                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 text-sm focus:outline-none focus:ring-1 focus:ring-[#082042]/30 h-20 resize-none font-medium"
-                  placeholder="Enter question text..."
-                />
-              </div>
-
-              {/* Options */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-bold text-slate-500 uppercase">
-                  Options <span className="text-red-500">*</span>
-                </label>
-                <div className="flex flex-col gap-2">
-                  {editingQuestion.options.map((opt, oidx) => {
-                    const isSelected = editingQuestion.correctAnswer === oidx;
-                    return (
-                      <div key={oidx} className="flex items-center gap-2">
-                        {/* Custom radio circular selector with tick */}
-                        <button
-                          type="button"
-                          onClick={() => handleModalCorrectChange(oidx)}
-                          className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 cursor-pointer transition-colors ${
-                            isSelected
-                              ? "bg-green-500 border-green-500 text-white"
-                              : "border-slate-300 bg-white text-transparent"
-                          }`}
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        </button>
-
-                        <span className="text-sm font-bold text-slate-400 w-4 select-none">
-                          {String.fromCharCode(65 + oidx)}.
-                        </span>
-
-                        <input
-                          type="text"
-                          value={opt}
-                          onChange={(e) => handleModalOptionChange(oidx, e.target.value)}
-                          className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-slate-800 text-sm focus:outline-none focus:ring-1 focus:ring-[#082042]/30 font-medium"
-                        />
-
-                        <button
-                          type="button"
-                          onClick={() => handleModalRemoveOption(oidx)}
-                          className="p-1 rounded-md text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleModalAddOption}
-                  className="flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors py-2 border border-dashed border-blue-200 hover:border-blue-300 rounded-lg mt-1 bg-blue-50/20 cursor-pointer"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Option</span>
-                </button>
-              </div>
-
-              {/* Correct Answer Dropdown */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">
-                  Correct Answer <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={editingQuestion.correctAnswer}
-                  onChange={(e) => handleModalCorrectChange(Number(e.target.value))}
-                  className="bg-[#F0F4FA] border border-slate-200 rounded-lg px-3 py-2 text-slate-800 text-sm focus:outline-none w-full font-medium"
-                >
-                  {editingQuestion.options.map((_, oidx) => (
-                    <option key={oidx} value={oidx}>
-                      {String.fromCharCode(65 + oidx)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Solution steps */}
-              <div className="flex flex-col gap-1.5">
-                <div className="flex justify-between items-baseline">
-                  <label className="text-xs font-bold text-slate-500 uppercase">
-                    Solution (Step by step) <span className="text-red-500">*</span>
-                  </label>
-                  <span className="text-[10px] text-slate-400 font-medium">
-                    {editingQuestion.solution.length}/2000
-                  </span>
-                </div>
-                <textarea
-                  value={editingQuestion.solution}
-                  onChange={(e) => handleModalSolutionChange(e.target.value)}
-                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 text-sm focus:outline-none focus:ring-1 focus:ring-[#082042]/30 h-24 resize-none font-medium"
-                  placeholder="Enter step-by-step math solutions..."
-                />
-              </div>
-            </div>
-
-            {/* Modal footer buttons */}
-            <div className="flex items-center justify-between border-t border-slate-100 pt-4 mt-4 shrink-0">
-              <button
-                type="button"
-                onClick={handleModalClose}
-                className="flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors text-sm font-semibold cursor-pointer"
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span>Cancel</span>
-              </button>
-              <button
-                type="button"
-                onClick={handleModalSave}
-                className="flex items-center gap-1.5 px-4.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors shadow-sm text-sm font-bold cursor-pointer"
-              >
-                <Save className="w-4 h-4" />
-                <span>Save Changes</span>
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
+      {/* 4. Edit/Create Question Overlay Modal popup */}
+      <EditQuestionModal
+        isOpen={showEditModal}
+        question={editingQuestion}
+        onClose={handleModalClose}
+        onSave={handleSaveQuestion}
+      />
+      <EditQuizInfoModal
+        isOpen={showInfoModal}
+        data={{
+          title: formData?.title || "",
+          classForm: formData?.classForm || "",
+          duration: formData?.duration || "",
+          numQuestions: formData?.numQuestions || String(questions.length),
+          bookName: formData?.bookName || "",
+          chapter: formData?.chapter || "",
+          topic: formData?.topic || "",
+        }}
+        onClose={() => setShowInfoModal(false)}
+        onSave={handleSaveQuizInfo}
+      />
+      <EditPdfModal
+        isOpen={showPdfModal}
+        currentFile={formData?.pdfFile}
+        onClose={() => setShowPdfModal(false)}
+        onSave={handleSavePdf}
+      />
     </div>
   );
 }

@@ -5,26 +5,26 @@ export default function QuizTable({ quizzes, onView, onDeleteRequest }) {
     <div className="w-full overflow-x-auto">
       <table className="w-full text-sm border-separate border-spacing-0">
         <thead>
-          <tr className="text-slate-500 font-semibold lato text-sm bg-[#EAEFF8]">
-            <th className="py-3 px-6 text-center font-semibold bg-[#EAEFF8] rounded-l-xl w-[8%]">
+          <tr className="text-slate-500 font-semibold lato text-sm bg-[#FCEDEF]">
+            <th className="py-3 px-6 text-center font-semibold bg-[#FCEDEF] rounded-l-xl w-[8%]">
               #
             </th>
-            <th className="py-3 px-4 text-left font-semibold bg-[#EAEFF8] w-[35%]">
+            <th className="py-3 px-4 text-left font-semibold bg-[#FCEDEF] w-[35%]">
               Quiz Title
             </th>
-            <th className="py-3 px-4 text-center font-semibold bg-[#EAEFF8] w-[12%]">
+            <th className="py-3 px-4 text-center font-semibold bg-[#FCEDEF] w-[12%]">
               Questions
             </th>
-            <th className="py-3 px-4 text-center font-semibold bg-[#EAEFF8] w-[13%]">
+            <th className="py-3 px-4 text-center font-semibold bg-[#FCEDEF] w-[13%]">
               Duration
             </th>
-            <th className="py-3 px-4 text-center font-semibold bg-[#EAEFF8] w-[13%]">
+            <th className="py-3 px-4 text-center font-semibold bg-[#FCEDEF] w-[13%]">
               Status
             </th>
-            <th className="py-3 px-4 text-center font-semibold bg-[#EAEFF8] w-[13%]">
+            <th className="py-3 px-4 text-center font-semibold bg-[#FCEDEF] w-[13%]">
               Created at
             </th>
-            <th className="py-3 px-6 text-center font-semibold bg-[#EAEFF8] rounded-r-xl w-[10%]">
+            <th className="py-3 px-6 text-center font-semibold bg-[#FCEDEF] rounded-r-xl w-[10%]">
               Action
             </th>
           </tr>
@@ -55,11 +55,11 @@ export default function QuizTable({ quizzes, onView, onDeleteRequest }) {
               {/* Status */}
               <td className="py-4 px-4 border-b border-slate-100 text-center">
                 {quiz.status === "Published" ? (
-                  <span className="inline-block px-3 py-1 text-xs font-bold text-[#66A331] bg-[#EBF5E4] rounded-full border border-[#66A331]/20 lato">
+                  <span className="inline-block px-3 py-1 text-xs font-semibold text-[#137333] bg-[#E6F4EA] rounded-md border border-[#CEEAD6] select-none">
                     Published
                   </span>
                 ) : (
-                  <span className="inline-block px-3 py-1 text-xs font-bold text-[#E65100] bg-[#FFF0E6] rounded-full border border-[#E65100]/20 lato">
+                  <span className="inline-block px-3 py-1 text-xs font-semibold text-[#B26A00] bg-[#FFF4E5] rounded-md border border-[#FFE2C2] select-none">
                     Draft
                   </span>
                 )}

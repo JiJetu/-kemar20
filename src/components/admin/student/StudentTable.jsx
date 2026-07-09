@@ -6,46 +6,45 @@ export default function StudentTable({ students, onView, onDelete }) {
       <table className="w-full text-sm border-separate border-spacing-0">
           <thead>
             <tr className="text-slate-500 font-semibold lato text-sm">
-              <th className="py-3 pl-6 pr-4 text-center font-semibold bg-slate-50 border-y border-l border-slate-100 rounded-l-xl w-[6%]">
-                #
+              <th className="py-3 pl-6 pr-4 text-center font-semibold bg-[#E5ECF9]/50 border-y border-l border-[#E5ECF9]/10 rounded-l-xl w-[6%]">
+                Id
               </th>
-              <th className="py-3 px-4 text-left font-semibold bg-slate-50 border-y border-slate-100 w-[28%]">
+              <th className="py-3 px-4 text-left font-semibold bg-[#E5ECF9]/50 border-y border-[#E5ECF9]/10 w-[28%]">
                 Student Name
               </th>
-              <th className="py-3 px-4 text-center font-semibold bg-slate-50 border-y border-slate-100 w-[15%]">
-                Quizzes Taken
+              <th className="py-3 px-4 text-center font-semibold bg-[#E5ECF9]/50 border-y border-[#E5ECF9]/10 w-[15%]">
+                Class/Form
               </th>
-              <th className="py-3 px-4 text-center font-semibold bg-slate-50 border-y border-slate-100 w-[15%]">
-                Average Sccore
+              <th className="py-3 px-4 text-center font-semibold bg-[#E5ECF9]/50 border-y border-[#E5ECF9]/10 w-[15%]">
+                Plan
               </th>
-              <th className="py-3 px-4 text-center font-semibold bg-slate-50 border-y border-slate-100 w-[10%]">
+              <th className="py-3 px-4 text-center font-semibold bg-[#E5ECF9]/50 border-y border-[#E5ECF9]/10 w-[10%]">
                 Status
               </th>
-              <th className="py-3 px-4 text-center font-semibold bg-slate-50 border-y border-slate-100 w-[16%]">
+              <th className="py-3 px-4 text-center font-semibold bg-[#E5ECF9]/50 border-y border-[#E5ECF9]/10 w-[16%]">
                 Join Date
               </th>
-              <th className="py-3 pl-4 pr-6 text-center font-semibold bg-slate-50 border-y border-r border-slate-100 rounded-r-xl w-[10%]">
+              <th className="py-3 pl-4 pr-6 text-center font-semibold bg-[#E5ECF9]/50 border-y border-r border-[#E5ECF9]/10 rounded-r-xl w-[10%]">
                 Action
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-sm">
             {students.map((student) => {
-              const scoreNum = parseInt(student.score);
-              const isPassing = scoreNum >= 70;
-              const isActive = student.status === "Active";
+              const isActive = student.status?.toLowerCase() === "active" || student.is_active === true;
+              const isPremium = student.plan?.toLowerCase() === "premium" || student.plan?.toLowerCase() === "paid";
 
               return (
                 <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
                   {/* Rank / # */}
-                  <td className="py-4 pl-6 pr-4 border-b border-slate-100 text-center font-bold text-slate-500 roboto">
+                  <td className="py-4 pl-6 pr-4 border-b border-slate-100 text-center font-bold text-[#0A2648] roboto">
                     {student.rank}
                   </td>
 
                   {/* Student Name & Email */}
                   <td className="py-4 px-4 border-b border-slate-100 text-left">
                     <div className="flex flex-col">
-                      <span className="font-semibold text-slate-900 roboto">
+                      <span className="font-bold text-[#0A2648] roboto">
                         {student.name}
                       </span>
                       <span className="text-xs text-slate-400 lato mt-0.5">
@@ -54,33 +53,39 @@ export default function StudentTable({ students, onView, onDelete }) {
                     </div>
                   </td>
 
-                  {/* Quizzes Taken */}
+                  {/* Class/Form */}
                   <td className="py-4 px-4 border-b border-slate-100 text-center font-semibold text-slate-700 roboto">
-                    {student.quizzesTaken}
+                    {student.classForm || "4th Form"}
                   </td>
 
-                  {/* Average Score */}
-                  <td className={`py-4 px-4 border-b border-slate-100 text-center font-bold roboto ${
-                    isPassing ? "text-[#66A331]" : "text-red-500"
-                  }`}>
-                    {student.score}
+                  {/* Plan */}
+                  <td className="py-4 px-4 border-b border-slate-100 text-center">
+                    {isPremium ? (
+                      <span className="inline-block px-3 py-1 text-xs font-semibold text-[#1967D2] bg-[#E8F0FE] rounded border border-[#D2E3FC] select-none">
+                        Premium
+                      </span>
+                    ) : (
+                      <span className="inline-block px-4 py-1 text-xs font-semibold text-[#5F6368] bg-[#F1F3F4] rounded border border-[#DADCE0] select-none">
+                        Free
+                      </span>
+                    )}
                   </td>
 
                   {/* Status Badge */}
                   <td className="py-4 px-4 border-b border-slate-100 text-center">
                     {isActive ? (
-                      <span className="inline-block px-3 py-1 text-xs font-bold text-[#66A331] bg-[#EBF5E4] rounded-full border border-[#66A331]/20 select-none">
+                      <span className="inline-block px-3 py-1 text-xs font-semibold text-[#39842B] bg-[#E2F4DF] rounded border border-[#D1EBD0] select-none">
                         Active
                       </span>
                     ) : (
-                      <span className="inline-block px-3 py-1 text-xs font-bold text-[#E65100] bg-[#FFF0E6] rounded-full border border-[#E65100]/20 select-none">
+                      <span className="inline-block px-3 py-1 text-xs font-semibold text-[#C5221F] bg-[#FCE8E6] rounded border border-[#FAD2CF] select-none">
                         Inactive
                       </span>
                     )}
                   </td>
 
                   {/* Join Date */}
-                  <td className="py-4 px-4 border-b border-slate-100 text-center font-semibold text-slate-800 roboto">
+                  <td className="py-4 px-4 border-b border-slate-100 text-center font-semibold text-slate-600 roboto">
                     {student.joinDate}
                   </td>
 

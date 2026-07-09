@@ -39,7 +39,7 @@ export default function Navbar() {
               key={item.name}
               href={item.path}
               onClick={(e) => handleScroll(e, item.path)}
-              className="text-slate-600 font-semibold hover:text-[#082042] transition-colors text-sm roboto"
+              className="text-slate-600 font-bold hover:text-[#082042] transition-colors text-base nunito"
             >
               {item.name}
             </a>
@@ -50,16 +50,16 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           <Link
             to="/login"
-            className="border border-slate-300 hover:border-slate-400 text-[#082042] bg-white hover:bg-slate-50 transition-colors px-6 py-2 rounded-[6px] text-sm font-bold shadow-sm roboto leading-none"
+            className="border border-[#092449] text-[#092449] transition-colors px-8 py-3 rounded-[6px] text-sm font-bold shadow-sm nunito leading-none"
           >
             Log In
           </Link>
-          <Link
+          {/* <Link
             to="/signup"
-            className="bg-[#082042] hover:bg-[#0c2f5d] text-white transition-all px-6 py-2 rounded-[6px] text-sm font-bold shadow-sm roboto leading-none"
+            className="btn-gradient text-white transition-all px-6 py-2 rounded-[6px] text-sm font-bold shadow-sm nunito leading-none"
           >
             Get Started
-          </Link>
+          </Link> */}
         </div>
 
         {/* Mobile Hamburger toggle */}
@@ -80,7 +80,7 @@ export default function Navbar() {
               key={item.name}
               href={item.path}
               onClick={(e) => handleScroll(e, item.path)}
-              className="text-slate-600 font-semibold hover:text-[#082042] transition-colors text-sm py-1.5 border-b border-slate-50 roboto text-left"
+              className="text-slate-600 font-semibold hover:text-[#082042] transition-colors text-sm py-1.5 border-b border-slate-50 nunito text-left"
             >
               {item.name}
             </a>
@@ -89,17 +89,17 @@ export default function Navbar() {
             <Link
               to="/login"
               onClick={() => setIsOpen(false)}
-              className="w-full text-center border border-slate-300 text-[#082042] bg-white hover:bg-slate-50 transition-colors py-2.5 rounded-[6px] text-sm font-bold shadow-sm roboto"
+              className="w-full text-center border border-[#092449] text-[#092449] transition-colors py-2.5 rounded-[6px] text-sm font-bold shadow-sm nunito"
             >
               Log In
             </Link>
-            <Link
+            {/* <Link
               to="/signup"
               onClick={() => setIsOpen(false)}
-              className="w-full text-center bg-[#082042] hover:bg-[#0c2f5d] text-white py-2.5 rounded-[6px] text-sm font-bold shadow-sm roboto"
+              className="w-full text-center btn-gradient text-white py-2.5 rounded-[6px] text-sm font-bold shadow-sm nunito"
             >
               Get Started
-            </Link>
+            </Link> */}
           </div>
         </div>
       )}

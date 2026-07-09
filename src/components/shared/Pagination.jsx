@@ -16,7 +16,7 @@ export default function Pagination({
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-5 px-6 border-t border-slate-100 bg-white rounded-b-[20px] select-none text-slate-500 roboto text-sm w-full">
       {/* Left side range label */}
       <div className="flex items-center gap-1 font-medium">
-        <span className="text-[#66A331] font-bold">{startPage}</span>
+        <span className="text-orange-500 font-bold">{startPage}</span>
         <span className="text-slate-400 font-semibold">-</span>
         <span className="text-slate-700 font-bold">{endPage}</span>
         <span className="text-slate-400 font-medium ml-1">of</span>

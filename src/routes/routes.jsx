@@ -10,13 +10,16 @@ import AdminLayout from "../layout/AdminLayout";
 import AdminDashboard from "../page/dashboard/admin/AdminDashboard";
 import StudentManagement from "../page/dashboard/admin/StudentManagement";
 import Profile from "../components/studentDashboard/profile/Profile";
+import ManageSubscription from "../components/studentDashboard/profile/ManageSubscription";
 import ExamDetails from "../page/dashboard/student/examDetails/ExamDetails";
 import StudentProfile from "../components/admin/student/StudentProfile";
 import UploadQuizPdf from "../page/dashboard/admin/UploadQuizPdf";
 import QuizManagement from "../page/dashboard/admin/QuizManagement";
 import QuizDetail from "../page/dashboard/admin/QuizDetail";
 import SettingsPage from "../page/dashboard/admin/SettingsPage";
-
+import SubscriptionManagement from "../page/dashboard/admin/SubscriptionManagement";
+import PricingPlanScreen from "../components/auth/signup/PricingPlanScreen";
+import ProtectedRoute from "../components/shared/auth/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -25,8 +28,16 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: "/test",
+    element: <PricingPlanScreen />,
+  },
+  {
     path: "/dashboard",
-    element: <MainLayout />,
+    element: (
+      <ProtectedRoute allowedRoles={["student"]}>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -38,6 +49,10 @@ const router = createBrowserRouter([
         element: <ExamDetails />,
       },
       {
+        path: "manage-subscription",
+        element: <ManageSubscription />,
+      },
+      {
         path: "profile",
         element: <Profile />,
       },
@@ -45,7 +60,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -76,6 +95,10 @@ const router = createBrowserRouter([
         path: "setting",
         element: <SettingsPage />,
       },
+      {
+        path: "subscriptions",
+        element: <SubscriptionManagement />,
+      },
     ],
   },
   { path: "/login", element: <Login /> },
@@ -84,3 +107,4 @@ const router = createBrowserRouter([
 ]);
 
 export default router;
+

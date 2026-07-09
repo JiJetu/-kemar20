@@ -1,21 +1,46 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import FormInput from "../ui/FormInput";
 import { loginSchema } from "../../lib/validation/auth.schema";
+import { useLoginMutation } from "../../redex/features/auth/auth.api";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation();
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data) => {
-    console.log("Login Data:", data);
-    // Add login logic here
+  const onSubmit = async (data) => {
+    try {
+      const response = await login({
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+
+      toast.success("Logged in successfully!");
+
+      const role = response?.user?.role ?? response?.user_role;
+      if (role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      const errorMsg =
+        error?.data?.detail ||
+        error?.data?.message ||
+        "Invalid email or password. Please try again.";
+      toast.error(errorMsg);
+    }
   };
 
   return (
@@ -41,13 +66,13 @@ const LoginForm = () => {
           <label className="flex items-center gap-2 text-black font-medium cursor-pointer select-none">
             <input
               type="checkbox"
-              className="w-4 h-4 rounded border-[#192B4C] bg-[#051532] text-[#5D9E32] focus:ring-[#5D9E32]/20 accent-[#5D9E32] cursor-pointer"
+              className="w-4 h-4 rounded border-[#192B4C] bg-[#051532] text-secondary focus:ring-secondary/20 accent-secondary cursor-pointer"
             />
             <span className="lato">Remember Me</span>
           </label>
           <Link
             to="/forgot-password"
-            className="text-[#3b82f6] hover:text-[#60a5fa] hover:underline transition-all font-semibold lato"
+            className="text-secondary hover:underline transition-all font-semibold roboto"
           >
             Forgot Password
           </Link>
@@ -56,23 +81,11 @@ const LoginForm = () => {
 
       <button
         type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-70 shadow-lg shadow-[#5D9E32]/10"
+        disabled={isLoading}
+        className="w-full bg-[#39842B] hover:bg-[#39842B]/95 text-white py-3.5 rounded-[8px] font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-70 shadow-md cursor-pointer"
       >
-        {isSubmitting ? "Signing in..." : "Create Account"}
+        {isLoading ? "Logging In..." : "Log In"}
       </button>
-
-      <div className="text-center mt-6">
-        <p className="text-slate-400 text-sm font-medium lato">
-          Don't Have An Account?{" "}
-          <Link
-            to="/signup"
-            className="text-[#5D9E32] hover:underline transition-all font-bold"
-          >
-            Create Account
-          </Link>
-        </p>
-      </div>
     </form>
   );
 };

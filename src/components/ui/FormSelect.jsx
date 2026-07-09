@@ -1,11 +1,11 @@
 import React from "react";
 
 const FormSelect = React.forwardRef(
-  ({ label, icon: Icon, error, children, ...props }, ref) => {
+  ({ label, icon: Icon, error, children, className, labelClassName, ...props }, ref) => {
     return (
       <div className="w-full flex flex-col gap-2 text-left">
         {label && (
-          <label className="text-[14px] text-black font-medium lato tracking-wide">
+          <label className={`text-[14px] font-medium lato tracking-wide ${labelClassName || "text-black"}`}>
             {label}
           </label>
         )}
@@ -13,7 +13,7 @@ const FormSelect = React.forwardRef(
         <div className="relative flex items-center group">
           {/* Leading Icon */}
           {Icon && (
-            <div className="absolute left-4 text-slate-400 group-focus-within:text-[#5D9E32] transition-colors pointer-events-none">
+            <div className="absolute left-4 text-slate-400 group-focus-within:text-secondary transition-colors pointer-events-none">
               <Icon size={18} />
             </div>
           )}
@@ -22,14 +22,14 @@ const FormSelect = React.forwardRef(
             ref={ref}
             className={`w-full bg-white border border-[#192B4C] rounded-[10px] py-3.5 ${
               Icon ? "pl-11" : "px-4"
-            } pr-10 text-black focus:outline-none focus:border-[#5D9E32] focus:ring-1 focus:ring-[#5D9E32]/20 transition-all lato text-sm appearance-none cursor-pointer`}
+            } pr-10 text-black focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all lato text-sm appearance-none cursor-pointer ${className || ""}`}
             {...props}
           >
             {children}
           </select>
 
           {/* Custom arrow decorator */}
-          <div className="absolute right-4 pointer-events-none text-slate-500 group-focus-within:text-[#5D9E32] transition-colors">
+          <div className="absolute right-4 pointer-events-none text-slate-500 group-focus-within:text-secondary transition-colors">
             <svg
               className="w-4 h-4"
               fill="none"

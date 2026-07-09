@@ -79,7 +79,7 @@ const SignupForm = ({ onSuccess }) => {
             id="agree"
             type="checkbox"
             {...register("agree")}
-            className="w-4 h-4 rounded border-[#192B4C] bg-[#051532] text-[#5D9E32] focus:ring-[#5D9E32]/20 accent-[#5D9E32] cursor-pointer"
+            className="w-4 h-4 rounded border-[#192B4C] bg-[#051532] text-secondary focus:ring-secondary/20 accent-secondary cursor-pointer"
           />
           <span className="lato">Remember Me</span>
         </label>
@@ -99,7 +99,7 @@ const SignupForm = ({ onSuccess }) => {
       <button
         type="submit"
         disabled={isSigningUp}
-        className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-70 shadow-lg shadow-[#5D9E32]/10"
+        className="w-full bg-secondary text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-70 shadow-lg shadow-[#5D9E32]/10"
       >
         {isSigningUp ? "Creating..." : "Create Account"}
       </button>
@@ -109,7 +109,7 @@ const SignupForm = ({ onSuccess }) => {
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-[#5D9E32] hover:underline transition-all font-bold"
+            className="text-secondary hover:underline transition-all font-bold"
           >
             Sign In
           </Link>

@@ -16,7 +16,7 @@ export default function QuestionGridPanel({
       {/* Key Indicators */}
       <div className="flex items-center gap-4 mb-6 flex-wrap">
         <div className="flex items-center gap-1.5">
-          <div className="w-3.5 h-3.5 bg-[#66A331] rounded shrink-0" />
+          <div className="w-3.5 h-3.5 bg-[#E2F4DF] border border-[#39842B]/30 rounded shrink-0" />
           <span className="text-xs text-slate-500 font-semibold roboto">
             Answered
           </span>
@@ -25,12 +25,6 @@ export default function QuestionGridPanel({
           <div className="w-3.5 h-3.5 bg-[#082042] rounded shrink-0" />
           <span className="text-xs text-slate-500 font-semibold roboto">
             Current
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3.5 h-3.5 bg-red-500 rounded shrink-0" />
-          <span className="text-xs text-slate-500 font-semibold roboto">
-            Skipped
           </span>
         </div>
       </div>
@@ -42,13 +36,13 @@ export default function QuestionGridPanel({
           const isAnswered = answers[idx] !== null;
           const isSkipped = visitedQuestions.includes(idx) && answers[idx] === null;
 
-          let btnStyles = "bg-white border-slate-200 text-slate-700 hover:border-slate-300";
+          let btnStyles = "bg-white border-slate-200 text-slate-400 hover:border-slate-300";
           if (isActive) {
             btnStyles = "bg-[#082042] border-[#082042] text-white font-bold";
           } else if (isAnswered) {
-            btnStyles = "bg-[#E1EBCF] border-[#66A331] text-[#66A331] font-bold";
+            btnStyles = "bg-[#E2F4DF] border-[#39842B]/30 text-[#39842B] font-bold";
           } else if (isSkipped) {
-            btnStyles = "bg-red-100 border-red-500 text-red-600 font-bold";
+            btnStyles = "bg-slate-50 border-slate-200 text-slate-400";
           }
 
           return (

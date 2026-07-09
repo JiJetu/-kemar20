@@ -52,14 +52,14 @@ export default function LoadingScreen() {
           <img
             src={IMAGES.loadingLogo}
             alt="Loading..."
-            className="w-32 h-auto object-contain animate-logo-pulse drop-shadow-[0_0_20px_rgba(93,158,50,0.25)]"
+            className="w-32 h-auto object-contain animate-logo-pulse drop-shadow-[0_0_20px_rgba(57,132,43,0.15)]"
           />
         </div>
 
         {/* Progress Bar Container */}
-        <div className="w-full bg-[#192B4C]/40 border border-[#192B4C]/60 h-2 rounded-full overflow-hidden mb-3 relative backdrop-blur-sm">
+        <div className="w-full bg-slate-100 border border-slate-200/60 h-2 rounded-full overflow-hidden mb-3 relative backdrop-blur-sm">
           <div
-            className="bg-gradient-to-r from-primary via-[#7ab84c] to-[#9ad66c] h-full rounded-full transition-all duration-150 ease-out shadow-[0_0_12px_rgba(93,158,50,0.5)]"
+            className="bg-gradient-to-r from-[#EBF9E9] via-[#39842B] to-[#10A43B] h-full rounded-full transition-all duration-150 ease-out shadow-[0_0_12px_rgba(57,132,43,0.3)]"
             style={{ width: `${progress}%` }}
           />
         </div>

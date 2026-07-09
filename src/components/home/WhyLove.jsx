@@ -1,115 +1,122 @@
-import { Settings, Bot, Zap, Check } from "lucide-react";
+import { Sparkles, Check } from "lucide-react";
 import SectionHeader from "../shared/SectionHeader";
-import { IMAGES } from "../../assets";
+import { ICONS, IMAGES } from "../../assets";
 
 export default function WhyLove() {
   const rows = [
     {
       index: "01",
-      icon: Bot,
       title: "AI Quiz Generation",
       image: IMAGES.loveExcellM1,
+      theme: "blue",
       bullets: [
         "Upload Any Exam Paper",
         "AI Automatically Extracts Questions",
         "Generates Answers & Solutions",
-        "Ready In Seconds"
+        "Ready In Seconds",
       ],
-      isImageLeft: true
+      isImageLeft: true,
     },
     {
       index: "02",
-      icon: Zap,
-      title: "Instant Results",
+      title: "Instant Score & Analysis",
       image: IMAGES.loveExcellM2,
+      theme: "green",
       bullets: [
-        "Students Get Instant Results",
-        "View Correct Answers & Solutions",
-        "Know Your Score Immediately",
-        "Save Time, Improve Faster"
+        "Get Instant Score After Every Quiz",
+        "Detailed Performance Breakdown",
+        "Identify Strong & Weak Topics",
+        "Track Improvement Over Time",
       ],
-      isImageLeft: false
+      isImageLeft: false,
     },
     {
       index: "03",
-      icon: Bot,
       title: "Performance Tracking",
       image: IMAGES.loveExcellM3,
+      theme: "blue",
       bullets: [
-        "Track Your Progress Over Time",
-        "View Detailed Performance Analytics",
-        "Identify Strengths And Weaknesses",
-        "Improve With Data-Driven Insights"
+        "Track Your Performance Over Time",
+        "Visual Insight With Graphics",
+        "Understand Your Progress",
+        "Focus On Weak Areas",
       ],
-      isImageLeft: true
+      isImageLeft: true,
     },
     {
       index: "04",
-      icon: Zap,
-      title: "Leaderboard Ranking",
+      title: "Leaderboard & Ranking",
       image: IMAGES.loveExcellM4,
+      theme: "green",
       bullets: [
-        "Compare Your Performance With Others",
-        "See Your Position On The Leaderboard",
-        "Stay Motivated With Healthy Competition",
-        "Track Ranking Improvements Over Time"
+        "Compete With Students Across The Nation",
+        "Real-Time Leaderboard Updates",
+        "See Your Rank & Improve",
+        "Stay Motivated Every Day",
       ],
-      isImageLeft: false
-    }
+      isImageLeft: false,
+    },
   ];
 
   return (
-    <section id="features" className="w-full bg-white pb-20 select-none">
-      <div className="max-w-full mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center">
+    <section id="features" className="w-full bg-white py-20 select-none">
+      <div className="px-6 md:px-12 lg:px-24 flex flex-col items-center">
         {/* Heading */}
         <SectionHeader
-          badge="FEATURES"
-          icon={Settings}
-          title={[
-            { text: "Why Students ", className: "text-[#1C398E]" },
-            "Love Excellm"
+          badge={[
+            "Explore ",
+            { text: "Features", className: "text-primary" }
           ]}
-          description="Powerful AI Tools That Make Exam Practice Smarter, Faster, And More Effective."
+          icon={Sparkles}
+          title="Why Students Love Excelim"
+          description="Excellim makes exam preparation smarter, faster, and more effective with powerful tools designed for real results"
         />
 
-        {/* Small blue line decor under description */}
-        <div className="w-14 h-[3px] bg-[#1C398E] rounded-full mt-5 mb-16" />
+        {/* Space separator */}
+        <div className="mb-16" />
 
         {/* 4 Alternating Layout Rows */}
-        <div className="w-full flex flex-col gap-10 md:gap-16 lg:gap-20">
+        <div className="w-full flex flex-col gap-12 md:gap-16 lg:gap-20">
           {rows.map((row, idx) => {
-            const Icon = row.icon;
             return (
               <div
                 key={idx}
-                className={`flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 ${
-                  row.isImageLeft ? "" : "lg:flex-row-reverse"
-                }`}
+                className={`w-full rounded-[32px] p-8 md:p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 ${
+                  row.theme === "blue" ? "bg-[#DCE8FD]" : "bg-[#EBF9E9]"
+                } ${row.isImageLeft ? "" : "lg:flex-row-reverse"}`}
               >
                 {/* Image Column */}
-                <div className="w-full lg:w-[50%] flex justify-center">
-                  <img
-                    src={row.image}
-                    alt={row.title}
-                    className="w-full h-auto object-contain max-w-[480px] rounded-xl hover:scale-[1.02] transition-transform duration-300 shadow-sm border border-slate-50/50"
-                  />
+                <div className="w-full lg:w-[48%] flex justify-center">
+                  <div className="bg-white p-4 md:p-6 rounded-[24px] shadow-sm border border-slate-100/50 w-full max-w-[540px]">
+                    <img
+                      src={row.image}
+                      alt={row.title}
+                      className="w-full h-auto object-contain rounded-2xl"
+                    />
+                  </div>
                 </div>
 
                 {/* Text Column */}
                 <div className="w-full lg:w-[42%] flex flex-col items-start text-left">
                   {/* Step Index Header */}
                   <div className="flex items-center gap-3.5 mb-5">
-                    <div className="w-10 h-10 rounded-[12px] bg-[#EBF2FC] text-[#1C398E] flex items-center justify-center shadow-sm shrink-0">
-                      <Icon className="w-5 h-5 text-[#1C398E]" />
+                    <div className={`w-12 h-12 rounded-[14px] flex items-center justify-center shadow-sm shrink-0 ${
+                      row.theme === "blue" ? "bg-[#D0DFFF] text-[#1C398E]" : "bg-[#D1EBD0] text-[#39842B]"
+                    }`}>
+                      <img src={ICONS.botIcon} alt={row.title} className="w-8 h-8" />
                     </div>
-                    <span className="font-bold text-[#082042] text-[18px] md:text-[20px] tracking-wide">
+                    <span className={`font-bold  text-[18px] md:text-[20px] tracking-wide ${
+                      row.theme === "blue" ? "text-secondary" : "text-primary"
+                    }`}>
                       {row.index}
                     </span>
-                    <div className="w-10 h-[2px] bg-gradient-to-r from-[#092449] to-transparent" />
+                    <div className={`w-12 h-[2px] ${
+                      row.theme === "blue" ? "bg-blue-200" : "bg-emerald-200"
+                    }`} />
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-[#082042] text-2xl md:text-3xl font-extrabold mb-5 roboto tracking-wide">
+                  <h3 className="text-[#082042] text-2xl md:text-3xl font-extrabold mb-5 roboto tracking-wide leading-tight">
                     {row.title}
                   </h3>
 
@@ -117,7 +124,9 @@ export default function WhyLove() {
                   <ul className="space-y-4 w-full">
                     {row.bullets.map((bullet, bIdx) => (
                       <li key={bIdx} className="flex items-center gap-3.5">
-                        <div className="w-5 h-5 bg-[#1C398E] rounded-full text-white flex items-center justify-center shrink-0 shadow-sm">
+                        <div className={`w-5 h-5 rounded-full text-white flex items-center justify-center shrink-0 shadow-sm ${
+                          row.theme === "blue" ? "bg-secondary" : "bg-[#39842B]"
+                        }`}>
                           <Check className="w-3.5 h-3.5 text-white stroke-[3.5px]" />
                         </div>
                         <span className="text-[#47515E] font-bold text-sm sm:text-base roboto tracking-wide">
@@ -131,7 +140,6 @@ export default function WhyLove() {
             );
           })}
         </div>
-
       </div>
     </section>
   );

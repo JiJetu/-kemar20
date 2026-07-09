@@ -9,11 +9,11 @@ import {
 } from "../../lib/validation/auth.schema";
 
 // --- Email Step ---
-export const EmailStep = ({ onNext }) => {
+export const EmailStep = ({ onNext, isLoading }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(forgotPasswordSchema),
   });
@@ -29,19 +29,27 @@ export const EmailStep = ({ onNext }) => {
       />
       <button
         type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-50"
+        disabled={isLoading}
+        className="w-full bg-[#39842B] hover:bg-[#39842B]/95 text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
       >
-        Get OTP
+        {isLoading ? "Sending OTP..." : "Get OTP"}
       </button>
     </form>
   );
 };
 
 // --- OTP Step ---
-export const OtpStep = ({ onNext }) => {
-  const [otp, setOtp] = useState(["", "", "", ""]);
-  const inputRefs = [useRef(), useRef(), useRef(), useRef()];
+export const OtpStep = ({ onNext, isLoading }) => {
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  
+  const ref0 = useRef(null);
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const ref3 = useRef(null);
+  const ref4 = useRef(null);
+  const ref5 = useRef(null);
+  
+  const inputRefs = [ref0, ref1, ref2, ref3, ref4, ref5];
 
   const handleChange = (index, value) => {
     if (!/^\d*$/.test(value)) return;
@@ -49,37 +57,37 @@ export const OtpStep = ({ onNext }) => {
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
 
-    if (value && index < 3) {
-      inputRefs[index + 1].current.focus();
+    if (value && index < 5) {
+      inputRefs[index + 1].current?.focus();
     }
   };
 
   const handleKeyDown = (index, e) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs[index - 1].current.focus();
+      inputRefs[index - 1].current?.focus();
     }
   };
 
   const handlePaste = (e) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").slice(0, 4);
+    const pastedData = e.clipboardData.getData("text").slice(0, 6);
     if (!/^\d+$/.test(pastedData)) return;
 
     const newOtp = pastedData
       .split("")
-      .concat(Array(4 - pastedData.length).fill(""))
-      .slice(0, 4);
+      .concat(Array(6 - pastedData.length).fill(""))
+      .slice(0, 6);
     setOtp(newOtp);
 
-    const nextIndex = pastedData.length < 4 ? pastedData.length : 3;
-    inputRefs[nextIndex].current.focus();
+    const nextIndex = pastedData.length < 6 ? pastedData.length : 5;
+    inputRefs[nextIndex].current?.focus();
   };
 
   const isComplete = otp.every((digit) => digit !== "");
 
   return (
     <div className="space-y-6 pt-2">
-      <div className="flex justify-center gap-5">
+      <div className="flex justify-center gap-2 sm:gap-3">
         {otp.map((digit, index) => (
           <input
             key={index}
@@ -90,27 +98,27 @@ export const OtpStep = ({ onNext }) => {
             onChange={(e) => handleChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
             onPaste={handlePaste}
-            className="w-12 h-12 text-center text-xl font-bold bg-white border border-[#192B4C] text-black rounded-xl focus:border-[#5D9E32] focus:ring-1 focus:ring-[#5D9E32]/20 outline-none transition-all shadow-sm"
+            className="w-10 h-12 sm:w-12 sm:h-12 text-center text-xl font-bold bg-white border border-[#192B4C] text-black rounded-xl focus:border-[#5D9E32] focus:ring-1 focus:ring-[#5D9E32]/20 outline-none transition-all shadow-sm"
           />
         ))}
       </div>
       <button
         onClick={() => isComplete && onNext({ otp: otp.join("") })}
-        disabled={!isComplete}
-        className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-50"
+        disabled={!isComplete || isLoading}
+        className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#5D9E32]/10 cursor-pointer"
       >
-        Continue
+        {isLoading ? "Submitting..." : "Continue"}
       </button>
     </div>
   );
 };
 
 // --- Reset Password Step ---
-export const ResetStep = ({ onNext }) => {
+export const ResetStep = ({ onNext, isLoading }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(resetPasswordSchema),
   });
@@ -135,10 +143,10 @@ export const ResetStep = ({ onNext }) => {
       </div>
       <button
         type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-[#5D9E32] hover:bg-[#4d8628] text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-50"
+        disabled={isLoading}
+        className="w-full bg-[#39842B] hover:bg-[#39842B]/95 text-white py-3.5 rounded-xl font-bold text-sm tracking-wider transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
       >
-        Continue
+        {isLoading ? "Saving..." : "Continue"}
       </button>
     </form>
   );

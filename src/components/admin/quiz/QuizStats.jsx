@@ -3,9 +3,9 @@ export default function QuizStats() {
     {
       title: "Total Quizzes",
       value: "1,248",
-      bg: "bg-[#C1D8F4]",
+      bg: "bg-[#FCEDEF]",
       icon: (
-        <svg className="w-7 h-7 text-[#082042]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-7 h-7 text-[#AD0122]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
         </svg>
       ),
@@ -13,9 +13,9 @@ export default function QuizStats() {
     {
       title: "Published Quizzes",
       value: "1,000",
-      bg: "bg-[#DAF5C2]",
+      bg: "bg-[#E6F4EA]",
       icon: (
-        <svg className="w-7 h-7 text-[#66A331]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <svg className="w-7 h-7 text-[#137333]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       ),
@@ -23,9 +23,9 @@ export default function QuizStats() {
     {
       title: "Draft Quizzes",
       value: "248",
-      bg: "bg-[#FCEAE2]",
+      bg: "bg-[#FFF4E5]",
       icon: (
-        <svg className="w-7 h-7 text-[#E65100]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-7 h-7 text-[#B26A00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),

@@ -70,7 +70,7 @@ export default function PdfUploadForm({ onSubmitFile, defaultFile }) {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-[20px] p-8 shadow-sm flex flex-col gap-6 text-left w-full max-w-3xl mx-auto animate-in fade-in duration-300">
+    <div className="bg-white border border-slate-200 rounded-[20px] p-8 shadow-sm flex flex-col gap-6 text-left w-full max-w-7xl mx-auto animate-in fade-in duration-300">
       <div className="flex flex-col gap-1">
         <h3 className="text-xl font-bold text-[#082042] roboto">Upload Previous Exam Pdf</h3>
         <p className="text-slate-400 text-sm lato">Upload A Previous Exam Pdf</p>
@@ -85,7 +85,7 @@ export default function PdfUploadForm({ onSubmitFile, defaultFile }) {
         onClick={() => fileInputRef.current?.click()}
         className={`border border-dashed rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all ${
           dragActive
-            ? "border-[#082042] bg-slate-50"
+            ? "border-[#0A2648] bg-slate-50"
             : "border-slate-300 bg-slate-50/50 hover:bg-slate-50"
         }`}
       >
@@ -98,7 +98,7 @@ export default function PdfUploadForm({ onSubmitFile, defaultFile }) {
         />
 
         {/* Custom Upload Icon Circle matching image */}
-        <div className="w-12 h-12 rounded-full border border-[#082042]/20 flex items-center justify-center bg-white text-[#082042] mb-3">
+        <div className="w-12 h-12 rounded-full border border-[#0A2648]/20 flex items-center justify-center bg-white text-[#0A2648] mb-3">
           <UploadCloud className="w-6 h-6" />
         </div>
         <span className="font-bold text-slate-800 text-sm md:text-base roboto">
@@ -107,7 +107,7 @@ export default function PdfUploadForm({ onSubmitFile, defaultFile }) {
         <span className="text-slate-400 text-xs my-1.5 lato">Or</span>
         <button
           type="button"
-          className="bg-[#082042] hover:bg-[#0c2f5d] text-white font-semibold px-6 py-2 rounded-[6px] text-sm shadow-sm transition-colors"
+          className="bg-[#0A2648] hover:bg-[#0A2648]/90 text-white font-semibold px-6 py-2 rounded-[6px] text-sm shadow-sm transition-colors"
         >
           Choose PDF File
         </button>
@@ -118,7 +118,7 @@ export default function PdfUploadForm({ onSubmitFile, defaultFile }) {
 
       {/* Uploaded File Preview */}
       {file && (
-        <div className="bg-[#F0F4FA] border border-slate-200/50 rounded-xl p-4 flex items-center justify-between shadow-sm animate-in fade-in duration-200">
+        <div className="bg-[#F1F5FD] border border-slate-200/50 rounded-xl p-4 flex items-center justify-between shadow-sm animate-in fade-in duration-200">
           <div className="flex items-center gap-3">
             <img src={ICONS.pdf} alt="PDF icon" className="w-8 h-8 object-contain shrink-0" />
             <div className="flex flex-col">
@@ -149,7 +149,7 @@ export default function PdfUploadForm({ onSubmitFile, defaultFile }) {
       <button
         type="button"
         onClick={handleUploadSubmit}
-        className="w-full bg-[#082042] hover:bg-[#0c2f5d] text-white font-bold py-3.5 px-4 rounded-xl shadow-sm transition-all focus:outline-none mt-2 roboto text-center leading-none"
+        className="w-full bg-[#0A2648] hover:bg-[#0A2648]/90 text-white font-bold py-3.5 px-4 rounded-xl shadow-sm transition-all focus:outline-none mt-2 roboto text-center leading-none"
       >
         Upload & Continue
       </button>

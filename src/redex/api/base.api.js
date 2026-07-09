@@ -3,7 +3,7 @@ import { logout } from "../features/auth/auth.slice";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_BASE_URL,
-  credentials: "include",
+  // credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.accessToken;
 
@@ -33,6 +33,18 @@ const baseQueryWithExpiryGuard = async (args, api, extraOptions) => {
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithExpiryGuard,
-  tagTypes: [],
+  tagTypes: [
+    "Profile",
+    "Subscription",
+    "Quizzes",
+    "Quiz",
+    "Leaderboard",
+    "QuizResult",
+    "AdminOverview",
+    "AdminStudents",
+    "AdminStudentDetails",
+    "AdminQuestions",
+  ],
   endpoints: () => ({}),
 });
+

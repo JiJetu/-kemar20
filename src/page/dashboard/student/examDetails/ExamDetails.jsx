@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { ChevronLeft, ChevronRight, AlertTriangle } from "lucide-react";
 import { parseMathEquation } from "../../../../lib/utils/math";
 import { toast } from "sonner";
@@ -6,285 +6,114 @@ import { useNavigate, useParams } from "react-router-dom";
 import ExamTimerMetrics from "../../../../components/studentDashboard/examDetails/ExamTimerMetrics";
 import QuestionGridPanel from "../../../../components/studentDashboard/examDetails/QuestionGridPanel";
 import QuizResultSummary from "../../../../components/studentDashboard/examDetails/QuizResultSummary";
+import FreeTrialAlertBar from "../examTopics/FreeTrialAlertBar";
+import LoadingSpinner from "../../../../components/shared/LoadingSpinner";
+import {
+  useGetQuizDetailsQuery,
+  useSubmitQuizMutation,
+} from "../../../../redex/features/quiz/quiz.api";
+import { useGetSubscriptionStatusQuery } from "../../../../redex/features/subscription/subscription.api";
 
-// Question list data (20 questions to populate the grid)
-const mockQuestions = [
-  {
-    id: 1,
-    title: "Math Practiceseeions",
-    text: "What Is The Sindnewdi ie Games And The Realot Of The Cooprontation?",
-    equation: "x = x^2 / 2^2 + 1/2 + 14",
-    options: [
-      { key: "A", val: "A. X = -4" },
-      { key: "B", val: "A. X = -4" },
-      { key: "C", val: "C. X = 3", correct: true },
-      { key: "D", val: "A. X = -4" }
-    ]
-  },
-  {
-    id: 2,
-    title: "Math Practiceseeions",
-    text: "Solve for the variable y in the linear relationship:",
-    equation: "y = 2x + 10",
-    options: [
-      { key: "A", val: "A. y = 10" },
-      { key: "B", val: "B. y = 12" },
-      { key: "C", val: "C. y = 14", correct: true },
-      { key: "D", val: "D. y = 16" }
-    ]
-  },
-  {
-    id: 3,
-    title: "Math Practiceseeions",
-    text: "Find the value of z in the following algebraic relation:",
-    equation: "z = 3^2 + 4^2",
-    options: [
-      { key: "A", val: "A. z = 25", correct: true },
-      { key: "B", val: "B. z = 12" },
-      { key: "C", val: "C. z = 7" },
-      { key: "D", val: "D. z = 9" }
-    ]
-  },
-  {
-    id: 4,
-    title: "Math Practiceseeions",
-    text: "Solve the fraction equation for x:",
-    equation: "x = 1/2 + 3/4",
-    options: [
-      { key: "A", val: "A. x = 5/4", correct: true },
-      { key: "B", val: "B. x = 1/4" },
-      { key: "C", val: "C. x = 1" },
-      { key: "D", val: "D. x = 3/4" }
-    ]
-  },
-  {
-    id: 5,
-    title: "Math Practiceseeions",
-    text: "Determine the solution of the quadratic equation:",
-    equation: "x = x^2 - 6",
-    options: [
-      { key: "A", val: "A. x = 2" },
-      { key: "B", val: "B. x = 3", correct: true },
-      { key: "C", val: "C. x = -2" },
-      { key: "D", val: "D. x = 4" }
-    ]
-  },
-  {
-    id: 6,
-    title: "Math Practiceseeions",
-    text: "What Is The Sindnewdi ie Games And The Realot Of The Cooprontation?",
-    equation: "x = x^2 / 2^2 + 1/2 + 14",
-    options: [
-      { key: "A", val: "A. X = -4" },
-      { key: "B", val: "A. X = -4" },
-      { key: "C", val: "C. X = 3", correct: true },
-      { key: "D", val: "A. X = -4" }
-    ]
-  },
-  {
-    id: 7,
-    title: "Math Practiceseeions",
-    text: "Find the limit of the expression as n approaches infinity:",
-    equation: "L = 1 / n + 5",
-    options: [
-      { key: "A", val: "A. L = 5", correct: true },
-      { key: "B", val: "B. L = 0" },
-      { key: "C", val: "C. L = 1" },
-      { key: "D", val: "D. L = 6" }
-    ]
-  },
-  {
-    id: 8,
-    title: "Math Practiceseeions",
-    text: "Solve for x in the trigonometric ratio:",
-    equation: "x = sin(pi/2) + 2",
-    options: [
-      { key: "A", val: "A. x = 3", correct: true },
-      { key: "B", val: "B. x = 2" },
-      { key: "C", val: "C. x = 1" },
-      { key: "D", val: "D. x = 0" }
-    ]
-  },
-  {
-    id: 9,
-    title: "Math Practiceseeions",
-    text: "Calculate the area of a square with side length s:",
-    equation: "A = s^2",
-    options: [
-      { key: "A", val: "A. A = 16", correct: true },
-      { key: "B", val: "B. A = 8" },
-      { key: "C", val: "C. A = 12" },
-      { key: "D", val: "D. A = 4" }
-    ]
-  },
-  {
-    id: 10,
-    title: "Math Practiceseeions",
-    text: "Find the derivative of the function f(x):",
-    equation: "df = 2x + 3",
-    options: [
-      { key: "A", val: "A. df = 2", correct: true },
-      { key: "B", val: "B. df = 3" },
-      { key: "C", val: "C. df = 5" },
-      { key: "D", val: "D. df = 1" }
-    ]
-  },
-  {
-    id: 11,
-    title: "Math Practiceseeions",
-    text: "Calculate the slope of the line passing through origin:",
-    equation: "m = y / x",
-    options: [
-      { key: "A", val: "A. m = 1", correct: true },
-      { key: "B", val: "B. m = 2" },
-      { key: "C", val: "C. m = 0" },
-      { key: "D", val: "D. m = 4" }
-    ]
-  },
-  {
-    id: 12,
-    title: "Math Practiceseeions",
-    text: "Find the positive square root of the number:",
-    equation: "x = 144 / 12",
-    options: [
-      { key: "A", val: "A. x = 12", correct: true },
-      { key: "B", val: "B. x = 6" },
-      { key: "C", val: "C. x = 144" },
-      { key: "D", val: "D. x = 24" }
-    ]
-  },
-  {
-    id: 13,
-    title: "Math Practiceseeions",
-    text: "Calculate the simple interest for principal P:",
-    equation: "I = P * r * t",
-    options: [
-      { key: "A", val: "A. I = 100", correct: true },
-      { key: "B", val: "B. I = 50" },
-      { key: "C", val: "C. I = 200" },
-      { key: "D", val: "D. I = 150" }
-    ]
-  },
-  {
-    id: 14,
-    title: "Math Practiceseeions",
-    text: "Evaluate the sum of arithmetic progression:",
-    equation: "S = n/2 * (a + l)",
-    options: [
-      { key: "A", val: "A. S = 50" },
-      { key: "B", val: "B. S = 100", correct: true },
-      { key: "C", val: "C. S = 150" },
-      { key: "D", val: "D. S = 200" }
-    ]
-  },
-  {
-    id: 15,
-    title: "Math Practiceseeions",
-    text: "Find the hypotenuse of a right triangle with legs a and b:",
-    equation: "c^2 = a^2 + b^2",
-    options: [
-      { key: "A", val: "A. c = 5", correct: true },
-      { key: "B", val: "B. c = 7" },
-      { key: "C", val: "C. c = 6" },
-      { key: "D", val: "D. c = 8" }
-    ]
-  },
-  {
-    id: 16,
-    title: "Math Practiceseeions",
-    text: "Solve the basic exponential equation:",
-    equation: "y = 2^3 + 1",
-    options: [
-      { key: "A", val: "A. y = 9", correct: true },
-      { key: "B", val: "B. y = 8" },
-      { key: "C", val: "C. y = 7" },
-      { key: "D", val: "D. y = 10" }
-    ]
-  },
-  {
-    id: 17,
-    title: "Math Practiceseeions",
-    text: "Find the mean of the numbers 4, 8, and 12:",
-    equation: "mu = 24 / 3",
-    options: [
-      { key: "A", val: "A. mu = 8", correct: true },
-      { key: "B", val: "B. mu = 6" },
-      { key: "C", val: "C. mu = 7" },
-      { key: "D", val: "D. mu = 9" }
-    ]
-  },
-  {
-    id: 18,
-    title: "Math Practiceseeions",
-    text: "Find the probability of a coin toss landing heads:",
-    equation: "P = 1 / 2",
-    options: [
-      { key: "A", val: "A. P = 0.5", correct: true },
-      { key: "B", val: "B. P = 1.0" },
-      { key: "C", val: "C. P = 0.25" },
-      { key: "D", val: "D. P = 0.0" }
-    ]
-  },
-  {
-    id: 19,
-    title: "Math Practiceseeions",
-    text: "Solve for the radius of a circle given area A:",
-    equation: "r^2 = A / pi",
-    options: [
-      { key: "A", val: "A. r = 3" },
-      { key: "B", val: "B. r = 4", correct: true },
-      { key: "C", val: "C. r = 5" },
-      { key: "D", val: "D. r = 2" }
-    ]
-  },
-  {
-    id: 20,
-    title: "Math Practiceseeions",
-    text: "Calculate the final velocity v in kinematics:",
-    equation: "v = u + a*t",
-    options: [
-      { key: "A", val: "A. v = 15" },
-      { key: "B", val: "B. v = 20", correct: true },
-      { key: "C", val: "C. v = 25" },
-      { key: "D", val: "D. v = 30" }
-    ]
-  }
-];
-
-
-
-function ExamDetails() {
+// Main ExamDetails container (controls loading router)
+export default function ExamDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const totalCount = mockQuestions.length;
 
-  // Track submission state
+  const { data: quizDetails, isLoading: isQuizLoading } = useGetQuizDetailsQuery(id);
+  const { data: subStatus } = useGetSubscriptionStatusQuery();
+  const [submitQuiz, { isLoading: isSubmitting }] = useSubmitQuizMutation();
+
+  const isSubscribed = subStatus?.is_premium === true || subStatus?.is_active === true || subStatus?.plan === "premium";
+
+  // Track submission state via local state & localStorage to prevent calling result on load unless finished
   const [isExamSubmitted, setIsExamSubmitted] = useState(() => {
     return localStorage.getItem("exam_completed_" + id) === "true";
   });
 
-  // Initialize state: starting on Question 6 (index 5)
-  const [currentQIndex, setCurrentQIndex] = useState(5);
-  
-  // Set up selected answers array. Populate first 5 questions with mock answers to match mockup index (5 answered, 15 remaining)
-  const [answers, setAnswers] = useState(() => {
-    const initial = Array(totalCount).fill(null);
-    initial[0] = "A";
-    initial[1] = "B";
-    initial[2] = "C";
-    initial[3] = "D";
-    initial[4] = "C";
-    return initial;
+  if (isQuizLoading || isSubmitting) {
+    return (
+      <LoadingSpinner 
+        message={isQuizLoading ? "Loading exam questions..." : "Submitting answers..."} 
+        minHeight="min-h-[50vh]"
+      />
+    );
+  }
+
+  // Derive questions array
+  const questions = (quizDetails?.questions || []).map((q, qIdx) => {
+    const keys = ["A", "B", "C", "D"];
+    const options = (q.options || []).map((opt, optIdx) => ({
+      key: keys[optIdx] || String(optIdx),
+      val: opt,
+    }));
+    return {
+      id: q.id,
+      question_no: q.question_no || (qIdx + 1),
+      text: q.question_text || "",
+      options,
+    };
   });
 
-  // Track visited questions to identify skipped ones (initially visited the first 6 questions)
-  const [visitedQuestions, setVisitedQuestions] = useState([0, 1, 2, 3, 4, 5]);
+  const totalCount = questions.length;
 
-  const [timeLeft, setTimeLeft] = useState(24 * 60 + 37); // Start countdown at 24:37
+  if (isExamSubmitted) {
+    return (
+      <QuizResultSummary
+        results={{
+          correctCount: 0,
+          incorrectCount: 0,
+          accuracy: 0,
+          timeTaken: "00:00",
+          rank: 1,
+          totalRank: 1,
+        }}
+        totalCount={totalCount}
+        mockQuestions={questions}
+        answers={[]}
+        onBack={() => navigate("/dashboard")}
+        quizId={id}
+      />
+    );
+  }
+
+  return (
+    <ActiveExamSession
+      key={quizDetails.id}
+      id={id}
+      quizDetails={quizDetails}
+      questions={questions}
+      isSubscribed={isSubscribed}
+      submitQuiz={submitQuiz}
+      setIsExamSubmitted={setIsExamSubmitted}
+    />
+  );
+}
+
+// Inner active session component (initializes states cleanly on mount via key-resetting)
+function ActiveExamSession({
+  id,
+  quizDetails,
+  questions,
+  isSubscribed,
+  submitQuiz,
+  setIsExamSubmitted,
+}) {
+  const navigate = useNavigate();
+  const totalCount = questions.length;
+
+  const [currentQIndex, setCurrentQIndex] = useState(0);
+  const [answers, setAnswers] = useState(() => Array(totalCount).fill(null));
+  const [visitedQuestions, setVisitedQuestions] = useState([0]);
+  const [timeLeft, setTimeLeft] = useState(() => (quizDetails.time_limit || 30) * 60);
   const [isExamStarted, setIsExamStarted] = useState(false);
   const [showExitModal, setShowExitModal] = useState(true);
 
-  // Transition handler that updates both current index and visited state during user events
+  // Sync answers with mutable ref to prevent stale closures in event listeners
+  const answersRef = useRef(answers);
+  useEffect(() => {
+    answersRef.current = answers;
+  }, [answers]);
+
   const handleQuestionChange = (newIndex) => {
     setCurrentQIndex(newIndex);
     if (!visitedQuestions.includes(newIndex)) {
@@ -292,45 +121,29 @@ function ExamDetails() {
     }
   };
 
-  // Main Submit exam action
-  const handleSubmitExam = () => {
+  const handleSubmitExam = async () => {
     setIsExamStarted(false);
-    
-    // Calculate correct / incorrect answers count
-    let correctCount = 0;
-    mockQuestions.forEach((q, idx) => {
-      const selectedKey = answers[idx];
-      const correctKey = q.options.find((o) => o.correct)?.key;
-      if (selectedKey === correctKey) {
-        correctCount++;
-      }
-    });
-    const incorrectCount = mockQuestions.length - correctCount;
-    const accuracy = Math.round((correctCount / mockQuestions.length) * 100);
 
-    // Calculate elapsed time taken
-    const totalDuration = 30 * 60; // 30 minutes total time
-    const elapsedSeconds = Math.max(0, totalDuration - timeLeft);
-    const m = Math.floor(elapsedSeconds / 60)
-      .toString()
-      .padStart(2, "0");
-    const s = (elapsedSeconds % 60).toString().padStart(2, "0");
-    const timeTaken = `${m}:${s}`;
+    try {
+      const formattedAnswers = questions.map((q, idx) => {
+        const selectedKey = answersRef.current[idx];
+        const keys = ["A", "B", "C", "D"];
+        const optionIndex = keys.indexOf(selectedKey);
+        
+        return {
+          question: q.id,
+          selected_option: optionIndex !== -1 ? optionIndex : null,
+        };
+      });
 
-    const resultPayload = {
-      correctCount,
-      incorrectCount,
-      accuracy,
-      timeTaken,
-      rank: 2,
-      totalRank: 50,
-    };
-
-    localStorage.setItem("exam_result_" + id, JSON.stringify(resultPayload));
-    localStorage.setItem("exam_completed_" + id, "true");
-
-    toast.success("Exam results submitted successfully!");
-    setIsExamSubmitted(true);
+      await submitQuiz({ id, answers: formattedAnswers }).unwrap();
+      localStorage.setItem("exam_completed_" + id, "true");
+      setIsExamSubmitted(true);
+      toast.success("Exam results submitted successfully!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to submit exam. Please try again.");
+    }
   };
 
   // Countdown timer effect
@@ -351,7 +164,7 @@ function ExamDetails() {
     return () => clearInterval(interval);
   }, [isExamStarted, timeLeft]);
 
-  // Page visibility API handler (user switches tab or minimizes window)
+  // Page visibility API handler
   useEffect(() => {
     if (!isExamStarted) return;
     
@@ -366,7 +179,7 @@ function ExamDetails() {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [isExamStarted, answers]);
+  }, [isExamStarted]);
 
   const handleOptionSelect = (optionKey) => {
     const newAnswers = [...answers];
@@ -384,47 +197,32 @@ function ExamDetails() {
 
   const handleExitExam = () => {
     setShowExitModal(false);
-    navigate("/dashboard"); // Exit silently back to dashboard, no toast
+    navigate("/dashboard");
   };
 
-  const currentQuestionData = mockQuestions[currentQIndex];
   const attemptedCount = answers.filter((a) => a !== null).length;
   const remainingCount = totalCount - attemptedCount;
-
-  if (isExamSubmitted) {
-    // Calculate or retrieve results
-    let results = {
-      correctCount: 18,
-      incorrectCount: 2,
-      accuracy: 90,
-      timeTaken: "22:45",
-      rank: 2,
-      totalRank: 50,
-    };
-
-    const savedResult = localStorage.getItem("exam_result_" + id);
-    if (savedResult) {
-      try {
-        results = JSON.parse(savedResult);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    return (
-      <QuizResultSummary
-        results={results}
-        totalCount={totalCount}
-        mockQuestions={mockQuestions}
-        answers={answers}
-        onBack={() => navigate("/dashboard")}
-      />
-    );
-  }
+  const currentQuestionData = questions[currentQIndex] || { title: "", text: "", options: [], equation: "" };
 
   return (
-    <div className="w-full flex flex-col pb-10 select-none text-slate-800 font-sans">
+    <div className="w-full flex flex-col pb-10 select-none text-slate-800 font-sans gap-6">
       
+      {/* Reusable Free Trial Alert Bar if unsubscribed */}
+      {!isSubscribed && (
+        <FreeTrialAlertBar 
+          title="free trial active" 
+          subtitle="You Can Access 2 Free Topic/Quizzes Only" 
+        />
+      )}
+
+      {/* Back to Topics Button */}
+      <button
+        onClick={() => navigate("/dashboard")}
+        className="self-start border border-slate-200 hover:bg-slate-50 text-[#47515E] font-bold text-xs md:text-sm px-4 py-2 rounded-[8px] transition-all flex items-center gap-1.5 shadow-sm bg-white cursor-pointer select-none"
+      >
+        <span>← Back To Topics</span>
+      </button>
+
       {/* 3-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch w-full">
         
@@ -450,7 +248,7 @@ function ExamDetails() {
               {/* Progress Bar */}
               <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                 <div
-                  className="bg-[#082042] h-full rounded-full transition-all duration-300"
+                  className="bg-[#39842B] h-full rounded-full transition-all duration-300"
                   style={{ width: `${((currentQIndex + 1) / totalCount) * 100}%` }}
                 />
               </div>
@@ -458,8 +256,8 @@ function ExamDetails() {
 
             {/* Question Text with circle number */}
             <div className="flex items-start gap-4 text-left mt-6">
-              <div className="w-10 h-10 rounded-full bg-[#082042] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm mt-0.5">
-                {currentQuestionData.id}.
+              <div className="w-10 h-10 rounded-full bg-[#39842B] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm mt-0.5 animate-in zoom-in duration-300">
+                {currentQuestionData.question_no || currentQuestionData.id}.
               </div>
               <h4 className="text-[#082042] text-base sm:text-[17px] font-bold leading-relaxed roboto">
                 {currentQuestionData.text}
@@ -482,7 +280,7 @@ function ExamDetails() {
                     onClick={() => handleOptionSelect(option.key)}
                     className={`w-full flex items-center justify-between py-3.5 px-4 rounded-xl border transition-all text-left ${
                       isSelected
-                        ? "bg-[#E1EBCF] border-[#66A331] text-[#66A331] font-bold"
+                        ? "bg-[#EBF9E9]/60 border-[#39842B] text-[#39842B] font-bold"
                         : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
                     }`}
                   >
@@ -490,8 +288,8 @@ function ExamDetails() {
                       <span
                         className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all shrink-0 ${
                           isSelected
-                            ? "bg-[#66A331] text-white"
-                            : "bg-[#F0F5FD] text-[#082042]"
+                            ? "bg-[#39842B] text-white"
+                            : "bg-white border border-slate-200 text-slate-500"
                         }`}
                       >
                         {option.key}
@@ -501,7 +299,7 @@ function ExamDetails() {
                       </span>
                     </div>
                     {isSelected && (
-                      <span className="text-[#66A331] font-extrabold text-base pr-1">✓</span>
+                      <span className="text-[#39842B] font-extrabold text-base pr-1">✓</span>
                     )}
                   </button>
                 );
@@ -515,7 +313,7 @@ function ExamDetails() {
               type="button"
               disabled={currentQIndex === 0}
               onClick={() => handleQuestionChange(currentQIndex - 1)}
-              className="bg-[#F0F4FA] hover:bg-slate-100 text-[#082042] font-bold px-6 py-2.5 rounded-lg flex items-center gap-1.5 transition-all text-sm disabled:opacity-40 disabled:pointer-events-none select-none cursor-pointer"
+              className="bg-[#F1F3F6] hover:bg-slate-200 text-[#718096] font-bold px-6 py-2.5 rounded-[8px] flex items-center gap-1.5 transition-all text-sm disabled:opacity-40 disabled:pointer-events-none select-none cursor-pointer"
             >
               <ChevronLeft size={16} />
               Previous
@@ -525,7 +323,7 @@ function ExamDetails() {
               <button
                 type="button"
                 onClick={handleSubmitExam}
-                className="bg-[#66A331] hover:bg-[#5D9E32] text-white font-bold px-8 py-2.5 rounded-lg flex items-center transition-all text-sm select-none cursor-pointer shadow-md active:scale-95"
+                className="bg-[#39842B] hover:bg-[#39842B]/90 text-white font-bold px-8 py-2.5 rounded-[8px] flex items-center transition-all text-sm select-none cursor-pointer shadow-sm active:scale-95"
               >
                 Submit
               </button>
@@ -533,7 +331,7 @@ function ExamDetails() {
               <button
                 type="button"
                 onClick={() => handleQuestionChange(currentQIndex + 1)}
-                className="bg-[#082042] hover:bg-[#1C398E] text-white font-bold px-8 py-2.5 rounded-lg flex items-center gap-1.5 transition-all text-sm select-none cursor-pointer"
+                className="bg-[#39842B] hover:bg-[#39842B]/95 text-white font-bold px-8 py-2.5 rounded-[8px] flex items-center gap-1.5 transition-all text-sm select-none cursor-pointer"
               >
                 Next
                 <ChevronRight size={16} />
@@ -545,7 +343,7 @@ function ExamDetails() {
         {/* Right Column: Question List Jump Grid (Col-span 3) */}
         <div className="lg:col-span-3 flex">
           <QuestionGridPanel
-            mockQuestions={mockQuestions}
+            mockQuestions={questions}
             currentQIndex={currentQIndex}
             answers={answers}
             visitedQuestions={visitedQuestions}
@@ -556,7 +354,7 @@ function ExamDetails() {
       </div>
 
       {/* Warning/Start Modal */}
-      {showExitModal && !isExamSubmitted && (
+      {showExitModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-sm w-full p-6 flex flex-col items-center text-center shadow-lg animate-in fade-in zoom-in duration-200">
             
@@ -600,5 +398,3 @@ function ExamDetails() {
     </div>
   );
 }
-
-export default ExamDetails;

@@ -35,7 +35,7 @@ export default function DeleteConfirmModal({
           <button
             type="button"
             onClick={onConfirm}
-            className="px-5 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors shadow-sm text-sm font-bold cursor-pointer"
+            className="px-5 py-3 bg-[#AD0122] hover:bg-[#AD0122]/90 text-white rounded-lg transition-colors shadow-sm text-sm font-bold cursor-pointer"
           >
             Delete
           </button>

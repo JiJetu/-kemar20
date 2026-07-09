@@ -3,6 +3,7 @@ import Leaderboard from "./Leaderboard";
 import SolutionPdf from "./SolutionPdf";
 import { ICONS } from "../../../assets";
 import { parseMathEquation } from "../../../lib/utils/math";
+import { useGetQuizResultQuery } from "../../../redex/features/quiz/quiz.api";
 
 // Helper to get step-by-step math derivations for solutions
 const getQuestionSolutionSteps = (q) => {
@@ -16,22 +17,87 @@ const getQuestionSolutionSteps = (q) => {
     ];
   }
   
-  // Custom math derivations based on equation text or options
-  const correctVal = q.options.find(o => o.correct)?.val.replace(/^[A-D]\.\s*/, "") || "solution";
   return [
     q.equation || "x = 3",
     "\\text{Simplify terms and constants}",
     "\\text{Isolate variable on one side}",
     "\\text{Solve for the target value}",
-    correctVal
+    q.correctText || "solution"
   ];
 };
 
-const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack }) => {
-  const correctPct = Math.round((results.correctCount / totalCount) * 100);
+const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack, quizId }) => {
+  const { data: quizResult, isLoading } = useGetQuizResultQuery(quizId);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 w-full">
+        <div className="w-10 h-10 border-4 border-[#39842B] border-t-transparent rounded-full animate-spin" />
+        <p className="text-slate-500 font-medium roboto">Loading quiz results...</p>
+      </div>
+    );
+  }
+
+  // Override results with API response if available
+  const apiResults = quizResult ? {
+    correctCount: quizResult.score ?? 0,
+    incorrectCount: (quizResult.total - quizResult.score) ?? 0,
+    accuracy: quizResult.percentage ?? 0,
+    timeTaken: quizResult.time_taken ?? results?.timeTaken ?? "00:00",
+    rank: quizResult.rank ?? results?.rank ?? 1,
+    totalRank: quizResult.total_rank ?? results?.totalRank ?? 1,
+  } : results;
+
+  const finalTotalCount = quizResult?.total ?? quizResult?.questions?.length ?? totalCount ?? 10;
+  const correctPct = Math.round((apiResults.correctCount / finalTotalCount) * 100) || 0;
   const radius = 40;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (correctPct / 100) * circumference;
+
+  const displayQuestions = (quizResult?.answers || quizResult?.questions || mockQuestions || []).map((q, idx) => {
+    const keys = ["A", "B", "C", "D"];
+    const optionsList = (q.options || []).map((opt) => typeof opt === "object" ? opt.val : opt);
+    
+    let selectedText = "";
+    if (q.selected_option !== undefined && q.selected_option !== null) {
+      if (typeof q.selected_option === "number" || (!isNaN(q.selected_option) && typeof q.selected_option === "string" && q.selected_option.trim() !== "")) {
+        const optIndex = Number(q.selected_option);
+        selectedText = optionsList[optIndex] !== undefined ? optionsList[optIndex] : String(q.selected_option);
+      } else {
+        selectedText = q.selected_option;
+      }
+    } else if (answers && answers[idx]) {
+      const optIndex = keys.indexOf(answers[idx]);
+      selectedText = optIndex !== -1 && optionsList[optIndex] !== undefined ? optionsList[optIndex] : answers[idx];
+    }
+    
+    let correctText = "";
+    const correctVal = q.correct_answer !== undefined ? q.correct_answer : q.correct_option;
+    if (correctVal !== undefined && correctVal !== null) {
+      if (typeof correctVal === "number" || (!isNaN(correctVal) && typeof correctVal === "string" && correctVal.trim() !== "")) {
+        const optIndex = Number(correctVal);
+        correctText = optionsList[optIndex] !== undefined ? optionsList[optIndex] : String(correctVal);
+      } else {
+        correctText = correctVal;
+      }
+    } else if (q.options && Array.isArray(q.options) && typeof q.options[0] === "object") {
+      const correctOpt = q.options.find(o => o.correct);
+      correctText = correctOpt ? correctOpt.val : "";
+    }
+
+    const isCorrect = q.is_correct ?? (selectedText === correctText);
+
+    return {
+      id: q.question || q.id || (idx + 1),
+      text: q.question_text || q.text || "Question",
+      selectedText,
+      correctText,
+      isCorrect,
+      steps: q.steps || [],
+      explanation: q.explanation || "",
+      equation: q.equation || "",
+    };
+  });
 
   return (
     <div className="w-full flex flex-col pb-10 select-none text-slate-800 lato text-left px-2">
@@ -80,7 +146,7 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
           </svg>
           <div className="absolute flex flex-col items-center justify-center">
             <span className="text-xl font-extrabold text-[#082042] roboto">
-              {results.correctCount}/{totalCount}
+              {apiResults.correctCount}/{finalTotalCount}
             </span>
             <span className="text-[11px] text-[#66A331] font-bold mt-0.5 roboto">
               {correctPct}%
@@ -96,10 +162,10 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
         {/* Correct count */}
         <div className="flex flex-col items-center text-center flex-1 min-w-[80px]">
           <div className="w-10 h-10 rounded-xl bg-[#E8F5E9] text-[#66A331] flex items-center justify-center shadow-sm">
-          <Check size={24} color="#66A331" />
+            <Check size={24} color="#66A331" />
           </div>
           <span className="text-base font-extrabold text-[#66A331] mt-3 roboto">
-            {results.correctCount}
+            {apiResults.correctCount}
           </span>
           <span className="text-xs text-slate-500 font-bold -mt-0.5 lato">
             correct
@@ -111,40 +177,40 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
         {/* Incorrect count */}
         <div className="flex flex-col items-center text-center flex-1 min-w-[80px]">
           <div className="w-10 h-10 rounded-xl bg-[#FFECEE] text-red-500 flex items-center justify-center shadow-sm">
-          <X size={24} color="red" />
+            <X size={24} color="red" />
           </div>
           <span className="text-base font-extrabold text-slate-700 mt-3 roboto">
-            {results.incorrectCount}
+            {apiResults.incorrectCount}
           </span>
           <span className="text-xs text-slate-500 font-bold -mt-0.5 lato">
-            correct
+            incorrect
           </span>
         </div>
 
-        <div className="w-[1px] bg-slate-200 h-16 hidden md:block"></div>
+        {/* <div className="w-[1px] bg-slate-200 h-16 hidden md:block"></div> */}
 
         {/* Time Taken */}
-        <div className="flex flex-col items-center text-center flex-1 min-w-[100px]">
+        {/* <div className="flex flex-col items-center text-center flex-1 min-w-[100px]">
           <div className="w-10 h-10 rounded-xl bg-[#E8F0FE] text-[#1A73E8] flex items-center justify-center shadow-sm">
-          <Clock size={24} color="#1A73E8" />
+            <Clock size={24} color="#1A73E8" />
           </div>
           <span className="text-base font-extrabold text-slate-800 mt-3 roboto">
-            {results.timeTaken}
+            {apiResults.timeTaken}
           </span>
           <span className="text-xs text-slate-500 font-bold -mt-0.5 lato">
             Time Taken
           </span>
-        </div>
+        </div> */}
 
         <div className="w-[1px] bg-slate-200 h-16 hidden md:block"></div>
 
         {/* Accuracy */}
         <div className="flex flex-col items-center text-center flex-1 min-w-[100px]">
           <div className="w-10 h-10 rounded-xl bg-[#F3E8FF] text-purple-600 flex items-center justify-center shadow-sm">
-          <Target  size={24} color="purple" />
+            <Target size={24} color="purple" />
           </div>
           <span className="text-base font-extrabold text-purple-600 mt-3 roboto">
-            {results.accuracy}%
+            {apiResults.accuracy}%
           </span>
           <span className="text-xs text-slate-500 font-bold -mt-0.5 lato">
             Accuracy
@@ -160,7 +226,7 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
               Your Rank
             </span>
             <span className="text-[26px] font-extrabold text-orange-500 leading-none mt-1 roboto">
-              {results.rank} / {results.totalRank}
+              {apiResults.rank} / {apiResults.totalRank}
             </span>
           </div>
           <img
@@ -181,11 +247,8 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
             </h3>
             
             <div className="flex-1 overflow-y-auto pr-2 flex flex-col gap-4 custom-scrollbar">
-              {mockQuestions.map((q, idx) => {
-                const selectedKey = answers[idx];
-                const correctOption = q.options.find((o) => o.correct);
-                const correctKey = correctOption?.key;
-                const isCorrect = selectedKey === correctKey;
+              {displayQuestions.map((q, idx) => {
+                const isCorrect = q.isCorrect;
 
                 return (
                   <div
@@ -203,7 +266,7 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
                           {isCorrect ? "✓" : "✕"}
                         </span>
                         <span className="text-xs font-bold text-slate-400 lato">
-                          {q.id}
+                          {idx + 1}
                         </span>
                         <h4 className="text-[#082042] text-sm sm:text-base font-bold roboto">
                           {q.text}
@@ -215,11 +278,11 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-slate-100 pt-2 text-xs font-bold lato">
                       {/* Your Answer */}
                       <span className={isCorrect ? "text-[#66A331]" : "text-red-500"}>
-                        Your Answer : {selectedKey ? `Option ${selectedKey} (${q.options.find(o => o.key === selectedKey)?.val.replace(/^[A-D]\.\s*/, "")})` : "Not Attempted"}
+                        Your Answer : {q.selectedText ? q.selectedText : "Not Attempted"}
                       </span>
                       {/* Correct Answer */}
                       <span className="text-[#66A331]">
-                        Correct answer Answer : {correctOption?.val.replace(/^[A-D]\.\s*/, "")}
+                        Correct Answer : {q.correctText || "N/A"}
                       </span>
                     </div>
 
@@ -228,14 +291,27 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
                       <span className="text-xs font-bold text-[#66A331] uppercase tracking-wider block mb-2 font-mono">
                         solution:
                       </span>
-                      <div className="flex flex-col gap-2 font-mono text-xs text-slate-700">
-                        {getQuestionSolutionSteps(q).map((step, sIdx) => (
-                          <div key={sIdx} className="flex items-center gap-2">
-                            <span className="text-slate-400 shrink-0">{sIdx === 0 ? "Equation:" : `Step ${sIdx}:`}</span>
-                            {parseMathEquation(step, true)}
-                          </div>
-                        ))}
-                      </div>
+                      {q.steps && q.steps.length > 0 ? (
+                        <div className="flex flex-col gap-2 font-sans text-xs text-slate-700">
+                          {q.steps.map((step, sIdx) => (
+                            <div key={sIdx} className="flex items-start gap-2 leading-relaxed">
+                              <span className="text-[#66A331] font-bold shrink-0">{sIdx + 1}.</span>
+                              <span>{parseMathEquation(step)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : q.explanation ? (
+                        <p className="text-xs text-slate-700 leading-relaxed font-sans font-medium">{q.explanation}</p>
+                      ) : (
+                        <div className="flex flex-col gap-2 font-mono text-xs text-slate-700">
+                          {getQuestionSolutionSteps(q).map((step, sIdx) => (
+                            <div key={sIdx} className="flex items-center gap-2">
+                              <span className="text-slate-400 shrink-0">{sIdx === 0 ? "Equation:" : `Step ${sIdx}:`}</span>
+                              {parseMathEquation(step, true)}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -244,12 +320,12 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
           </div>
 
           {/* Previous Exam Papers (Stacked in the Left Column) */}
-          <SolutionPdf />
+          <SolutionPdf pdfUrl={quizResult?.reference_pdf} />
         </div>
 
         {/* Right: Leaderboard (Col-span 4) */}
         <div className="lg:col-span-4 flex">
-          <Leaderboard />
+          <Leaderboard quizId={quizId} />
         </div>
       </div>
     </div>

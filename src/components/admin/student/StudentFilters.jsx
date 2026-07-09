@@ -3,8 +3,10 @@ import { Search, ChevronDown, Download } from "lucide-react";
 export default function StudentFilters({
   searchQuery,
   onSearchChange,
-  selectedStatus,
-  onStatusChange,
+  selectedClass,
+  onClassChange,
+  selectedPlan,
+  onPlanChange,
   onExport,
 }) {
   return (
@@ -23,29 +25,48 @@ export default function StudentFilters({
 
       {/* Select Filter and Export on Right */}
       <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-        {/* Status Select */}
-        <div className="relative w-full sm:w-44 select-none">
+        {/* Class Select */}
+        <div className="relative w-full sm:w-36 select-none">
           <select
-            value={selectedStatus}
-            onChange={(e) => onStatusChange(e.target.value)}
+            value={selectedClass}
+            onChange={(e) => onClassChange(e.target.value)}
             className="appearance-none bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-semibold pl-4 pr-10 py-2.5 rounded-xl text-sm shadow-sm focus:outline-none cursor-pointer transition-colors w-full"
           >
-            <option value="All Status">All Status</option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
+            <option value="">All Classes</option>
+            <option value="4th">4th Grade</option>
+            <option value="5th">5th Grade</option>
+            <option value="6th">6th Grade</option>
+            <option value="7th">7th Grade</option>
+            <option value="8th">8th Grade</option>
+            <option value="9th">9th Grade</option>
+            <option value="10th">10th Grade</option>
           </select>
           <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
         </div>
 
+        {/* Plan Select */}
+        {/* <div className="relative w-full sm:w-36 select-none">
+          <select
+            value={selectedPlan}
+            onChange={(e) => onPlanChange(e.target.value)}
+            className="appearance-none bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-semibold pl-4 pr-10 py-2.5 rounded-xl text-sm shadow-sm focus:outline-none cursor-pointer transition-colors w-full"
+          >
+            <option value="">All Plans</option>
+            <option value="Free">Free</option>
+            <option value="Premium">Premium</option>
+          </select>
+          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+        </div> */}
+
         {/* Export Button */}
-        <button
+        {/* <button
           type="button"
           onClick={onExport}
           className="border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 bg-white transition-all px-4 py-2.5 rounded-xl text-sm font-semibold shadow-sm flex items-center gap-2 select-none shrink-0"
         >
           <span>Export</span>
           <Download className="w-4 h-4 text-slate-500" />
-        </button>
+        </button> */}
       </div>
     </div>
   );

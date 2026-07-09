@@ -1,113 +1,169 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
 import FormInput from "../../ui/FormInput";
 import FormSelect from "../../ui/FormSelect";
+import offset1 from "../../constant/ofset1.json";
+import offset2 from "../../constant/ofset2.json";
+import { infoSchema } from "../../../lib/validation/quiz.schema";
 
-
-const infoSchema = z.object({
-  book: z.string().min(1, "Book is required"),
-  chapter: z.string().min(1, "Chapter is required"),
-  topic: z.string().min(1, "Topic is required"),
-  duration: z.string().min(1, "Duration is required"),
-  numQuestions: z
-    .string()
-    .min(1, "Number of questions is required")
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-      message: "Questions must be a number greater than 0",
-    }),
-});
+const BOOKS = {
+  "volume1": offset1,
+  "volume2": offset2,
+};
 
 export default function QuizInfoForm({ onSubmitData, defaultValues }) {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(infoSchema),
     defaultValues: defaultValues || {
-      book: "",
+      title: "",
+      classForm: "",
+      duration: "",
+      numQuestions: "",
+      bookName: "",
       chapter: "",
       topic: "",
-      duration: "1 Hour",
-      numQuestions: "20",
     },
   });
+
+  const selectedBookName = watch("bookName");
+  const selectedChapter = watch("chapter");
+
+  // Keep dropdown options updated dynamically
+  const chapters = selectedBookName ? BOOKS[selectedBookName] : [];
+  const chapterObj = chapters.find((c) => c.chapter === selectedChapter);
+  const topics = chapterObj ? chapterObj.topics : [];
 
   return (
     <form
       onSubmit={handleSubmit(onSubmitData)}
-      className="bg-white border border-slate-200 rounded-[20px] p-8 shadow-sm flex flex-col gap-6 text-left w-full max-w-5xl mx-auto animate-in fade-in duration-300"
+      className="bg-white border border-slate-200 rounded-[20px] p-8 shadow-sm flex flex-col gap-6 text-left w-full max-w-7xl mx-auto animate-in fade-in duration-300"
     >
       <div className="flex flex-col gap-1">
         <h3 className="text-xl font-bold text-[#082042] roboto">Quiz Information</h3>
         <p className="text-slate-400 text-sm lato">Provide Basic Information About The Quiz</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Book Field */}
+      <div className="flex flex-col gap-5">
+        {/* Quiz Title */}
+        <FormInput
+          label="Quiz Title"
+          placeholder="Enter Quiz Title"
+          error={errors.title}
+          labelClassName="text-[#0A2648] font-bold text-base"
+          className="bg-[#F1F5FD] border-[#F1F5FD] rounded-xl text-slate-800 focus:bg-white focus:border-[#0A2648]"
+          {...register("title")}
+        />
+
+        {/* Class */}
         <FormSelect
-          label="Book"
-          error={errors.book}
-          {...register("book")}
+          label="Class"
+          error={errors.classForm}
+          labelClassName="text-[#0A2648] font-bold text-base"
+          className="bg-[#F1F5FD] border-[#F1F5FD] rounded-xl text-slate-855 focus:bg-white focus:border-[#0A2648]"
+          {...register("classForm")}
         >
-          <option value="">Select a Book</option>
-          <option value="Al-Quran">Al-Quran</option>
-          <option value="Islamic History">Islamic History</option>
-          <option value="Fiqh Essentials">Fiqh Essentials</option>
-          <option value="Hadith Studies">Hadith Studies</option>
+          <option value="">Select Class</option>
+          <option value="4th">4th Grade</option>
+          <option value="5th">5th Grade</option>
+          <option value="6th">6th Grade</option>
+          <option value="7th">7th Grade</option>
+          <option value="8th">8th Grade</option>
+          <option value="9th">9th Grade</option>
+          <option value="10th">10th Grade</option>
         </FormSelect>
 
-        {/* Chapter Field */}
+        {/* Book Name selection */}
+        <FormSelect
+          label="Book Name"
+          error={errors.bookName}
+          labelClassName="text-[#0A2648] font-bold text-base"
+          className="bg-[#F1F5FD] border-[#F1F5FD] rounded-xl text-slate-855 focus:bg-white focus:border-[#0A2648]"
+          {...register("bookName", {
+            onChange: () => {
+              setValue("chapter", "");
+              setValue("topic", "");
+            },
+          })}
+        >
+          <option value="">Select Book</option>
+          <option value="volume1">
+            Mathematics-a-Complete-Course-With-CXC-Questions-Volume-1
+          </option>
+          <option value="volume2">
+            Mathematics-a-Complete-Course-With-CXC-Questions-Volume-2
+          </option>
+        </FormSelect>
+
+        {/* Chapter Selection based on Book */}
         <FormSelect
           label="Chapter"
           error={errors.chapter}
-          {...register("chapter")}
+          labelClassName="text-[#0A2648] font-bold text-base"
+          className="bg-[#F1F5FD] border-[#F1F5FD] rounded-xl text-slate-855 focus:bg-white focus:border-[#0A2648]"
+          {...register("chapter", {
+            onChange: () => {
+              setValue("topic", "");
+            },
+          })}
+          disabled={!selectedBookName}
         >
-          <option value="">Select a Chapter</option>
-          <option value="Chapter 1">Chapter 1</option>
-          <option value="Chapter 2">Chapter 2</option>
-          <option value="Chapter 3">Chapter 3</option>
-          <option value="Chapter 4">Chapter 4</option>
-          <option value="Chapter 5">Chapter 5</option>
+          <option value="">Select Chapter</option>
+          {chapters.map((ch) => (
+            <option key={ch.chapter} value={ch.chapter}>
+              {ch.chapter}
+            </option>
+          ))}
         </FormSelect>
 
-        {/* Topic Field */}
+        {/* Topic Selection based on Chapter */}
         <FormSelect
           label="Topic"
           error={errors.topic}
+          labelClassName="text-[#0A2648] font-bold text-base"
+          className="bg-[#F1F5FD] border-[#F1F5FD] rounded-xl text-slate-855 focus:bg-white focus:border-[#0A2648]"
           {...register("topic")}
+          disabled={!selectedChapter}
         >
-          <option value="">Select a Topic</option>
-          <option value="Mathematics">Mathematics</option>
-          <option value="Artificial Intelligence">Artificial Intelligence</option>
-          <option value="Programming">Programming</option>
-          <option value="Data Science">Data Science</option>
+          <option value="">Select Topic</option>
+          {topics.map((tp) => (
+            <option key={tp.topic} value={tp.topic}>
+              {tp.topic}
+            </option>
+          ))}
         </FormSelect>
-      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {/* Duration */}
-        <FormInput
-          label="Duration Time"
-          placeholder="e.g. 1 Hour"
-          error={errors.duration}
-          {...register("duration")}
-        />
+        {/* Duration & Questions Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <FormInput
+            label="Duration Time (minutes)"
+            placeholder="Enter Time Duration"
+            error={errors.duration}
+            labelClassName="text-[#0A2648] font-bold text-base"
+            className="bg-[#F1F5FD] border-[#F1F5FD] rounded-xl text-slate-800 focus:bg-white focus:border-[#0A2648]"
+            {...register("duration")}
+          />
 
-        {/* Number of Questions */}
-        <FormInput
-          label="Number Of Questions"
-          placeholder="e.g. 20"
-          error={errors.numQuestions}
-          {...register("numQuestions")}
-        />
+          <FormInput
+            label="Number Of Questions"
+            placeholder="Enter Number Of Questions"
+            error={errors.numQuestions}
+            labelClassName="text-[#0A2648] font-bold text-base"
+            className="bg-[#F1F5FD] border-[#F1F5FD] rounded-xl text-slate-800 focus:bg-white focus:border-[#0A2648]"
+            {...register("numQuestions")}
+          />
+        </div>
       </div>
 
       {/* Submit Button */}
       <button
         type="submit"
-        className="w-full bg-[#082042] hover:bg-[#0c2f5d] text-white font-bold py-3.5 px-4 rounded-xl shadow-sm transition-all focus:outline-none mt-2 roboto text-center leading-none cursor-pointer"
+        className="w-full bg-[#0A2648] hover:bg-[#0A2648]/90 text-white font-bold py-4 px-4 rounded-xl shadow-sm transition-all focus:outline-none mt-4 roboto text-center leading-none cursor-pointer"
       >
         Generate Quiz With AI
       </button>

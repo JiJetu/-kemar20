@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Lock, Eye, EyeOff, X } from "lucide-react";
+import { useChangePasswordMutation } from "../../../redex/features/profile/profile.api";
+import { toast } from "sonner";
 
 const ChangePasswordModal = ({ isOpen, onClose }) => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -10,17 +12,50 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
   const [showNewPass, setShowNewPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
 
+  const [changePassword, { isLoading }] = useChangePasswordMutation();
+
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      alert("New password and confirm password do not match.");
+      toast.error("New password and confirm password do not match.");
       return;
     }
-    // Update password logic (API request placeholder)
-    alert("Password updated successfully!");
-    handleClose();
+    
+    try {
+      await changePassword({
+        old_password: currentPassword,
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+      }).unwrap();
+
+      toast.success("Password updated successfully!");
+      handleClose();
+    } catch (error) {
+      console.error("Change password error:", error);
+      let errorMsg = "Failed to change password. Please verify current password.";
+      const errorData = error?.data;
+      if (errorData) {
+        if (errorData.detail) {
+          errorMsg = errorData.detail;
+        } else if (errorData.message) {
+          errorMsg = errorData.message;
+        } else if (typeof errorData === "object") {
+          const fieldErrors = Object.entries(errorData)
+            .map(([field, msgs]) => {
+              const friendlyField = field.charAt(0).toUpperCase() + field.slice(1).replace("_", " ");
+              const messages = Array.isArray(msgs) ? msgs.join(" ") : msgs;
+              return `${friendlyField}: ${messages}`;
+            })
+            .join("\n");
+          if (fieldErrors) {
+            errorMsg = fieldErrors;
+          }
+        }
+      }
+      toast.error(errorMsg);
+    }
   };
 
   const handleClose = () => {
@@ -40,7 +75,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-200">
           <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Lock className="w-5 h-5 text-[#5D9E32]" /> Change Password
+            <Lock className="w-5 h-5 text-secondary" /> Change Password
           </h3>
           <button
             type="button"
@@ -59,7 +94,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
               Current Password
             </label>
             <div className="relative flex items-center">
-              <span className="absolute left-4 text-[#5D9E32]">
+              <span className="absolute left-4 text-secondary">
                 <Lock className="w-4 h-4" />
               </span>
               <input
@@ -67,7 +102,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
-                className="w-full bg-slate-50 border border-slate-200 focus:border-[#5D9E32] focus:bg-white rounded-xl pl-12 pr-12 py-3 text-sm text-slate-800 focus:outline-none transition-all placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-secondary focus:bg-white rounded-xl pl-12 pr-12 py-3 text-sm text-slate-800 focus:outline-none transition-all placeholder-slate-400"
                 placeholder="Enter current password"
               />
               <button
@@ -86,7 +121,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
               New Password
             </label>
             <div className="relative flex items-center">
-              <span className="absolute left-4 text-[#5D9E32]">
+              <span className="absolute left-4 text-secondary">
                 <Lock className="w-4 h-4" />
               </span>
               <input
@@ -94,7 +129,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
-                className="w-full bg-slate-50 border border-slate-200 focus:border-[#5D9E32] focus:bg-white rounded-xl pl-12 pr-12 py-3 text-sm text-slate-800 focus:outline-none transition-all placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-secondary focus:bg-white rounded-xl pl-12 pr-12 py-3 text-sm text-slate-800 focus:outline-none transition-all placeholder-slate-400"
                 placeholder="Enter new password"
               />
               <button
@@ -113,7 +148,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
               Confirm Password
             </label>
             <div className="relative flex items-center">
-              <span className="absolute left-4 text-[#5D9E32]">
+              <span className="absolute left-4 text-secondary">
                 <Lock className="w-4 h-4" />
               </span>
               <input
@@ -121,7 +156,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="w-full bg-slate-50 border border-slate-200 focus:border-[#5D9E32] focus:bg-white rounded-xl pl-12 pr-12 py-3 text-sm text-slate-800 focus:outline-none transition-all placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-secondary focus:bg-white rounded-xl pl-12 pr-12 py-3 text-sm text-slate-800 focus:outline-none transition-all placeholder-slate-400"
                 placeholder="Confirm new password"
               />
               <button
@@ -139,15 +174,17 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
             <button
               type="button"
               onClick={handleClose}
-              className="bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold py-2.5 px-5 rounded-xl transition-all text-sm w-full sm:flex-1"
+              disabled={isLoading}
+              className="bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold py-2.5 px-5 rounded-xl transition-all text-sm w-full sm:flex-1 disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-[#5D9E32] hover:bg-[#4d8229] text-white font-bold py-2.5 px-5 rounded-xl transition-all text-sm w-full sm:flex-1"
+              disabled={isLoading}
+              className="bg-[#39842B] hover:bg-[#39842B]/90 text-white font-bold py-2.5 px-5 rounded-xl transition-all text-sm w-full sm:flex-1 disabled:opacity-50"
             >
-              Update Password
+              {isLoading ? "Updating..." : "Update Password"}
             </button>
           </div>
         </form>

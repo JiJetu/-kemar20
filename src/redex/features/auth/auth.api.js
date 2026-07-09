@@ -5,7 +5,7 @@ export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: ({ email, password }) => ({
-        url: "/auth/login/",
+        url: "/api/auth/login/",
         method: "POST",
         body: { email, password },
       }),
@@ -20,10 +20,10 @@ export const authApi = baseApi.injectEndpoints({
     }),
 
     signup: builder.mutation({
-      query: ({ email, full_name, password }) => ({
-        url: "/api/auth/signup/",
+      query: (payload) => ({
+        url: "/api/auth/register/",
         method: "POST",
-        body: { email, full_name, password },
+        body: payload,
       }),
     }),
 
@@ -33,52 +33,52 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: { email, otp },
       }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data && (data.access || data.accessToken)) {
+            dispatch(setTokens(data));
+          }
+        } catch {}
+      },
     }),
 
-    // Forgot password: send OTP
-    sendOtp: builder.mutation({
+    resendOtp: builder.mutation({
       query: ({ email }) => ({
-        url: "/auth/forgot-password/",
+        url: "/api/auth/verify/resend/",
         method: "POST",
         body: { email },
       }),
     }),
 
-    // Verify OTP
-    verifyOtp: builder.mutation({
-      query: ({ email, otp }) => ({
-        url: "/auth/verify-otp/",
+
+
+    // Forgot password: send OTP
+    forgotPassword: builder.mutation({
+      query: ({ email }) => ({
+        url: "/api/auth/password/forgot/",
         method: "POST",
-        body: { email, otp },
+        body: { email },
       }),
     }),
 
     // Reset password
     resetPassword: builder.mutation({
-      query: ({ reset_token, new_password, confirm_password }) => ({
-        url: "/auth/reset-password/",
+      query: ({ email, otp, new_password }) => ({
+        url: "/api/auth/password/reset/",
         method: "POST",
-        body: { reset_token, new_password, confirm_password },
+        body: { email, otp, new_password },
       }),
     }),
 
-    // Get current logged-in user profile
-    getMe: builder.query({
-      query: () => ({
-        url: "/auth/me/",
-        method: "GET",
-        body: {},
-      }),
-    }),
   }),
 });
 
 export const {
   useLoginMutation,
-  useSendOtpMutation,
-  useVerifyOtpMutation,
+  useForgotPasswordMutation,
   useResetPasswordMutation,
-  useGetMeQuery,
   useSignupMutation,
   useVerifyMutation,
+  useResendOtpMutation,
 } = authApi;

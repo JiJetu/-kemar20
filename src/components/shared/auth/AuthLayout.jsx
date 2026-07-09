@@ -1,59 +1,62 @@
 import { IMAGES } from "../../../assets";
+import { Link, useLocation } from "react-router-dom";
 
-const AuthLayout = ({ children, title = "Welcome Back", subtitle }) => {
+export default function AuthLayout({ children, leftTitle, leftSubtitle }) {
+  const location = useLocation();
+  const isSignup = location.pathname.includes("signup");
+
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden bg-white text-black selection:bg-primary/30">
-      {/* Background Image */}
-      {/* <img
-        src={IMAGES.authBg}
-        alt=""
-        className="absolute inset-0 w-full h-full object-fill z-0 pointer-events-none select-none"
-        loading="eager"
-        decoding="async"
-      /> */}
+    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#EBF9E9] text-black select-none font-sans overflow-x-hidden">
+      {/* Left Column: Info & Illustration (Desktop Only) */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-left border">
+        <div className="w-full flex flex-col justify-start items-center">
+          <div>
+            <h1 className="text-4xl xl:text-[44px] font-extrabold text-[#082042] leading-[1.15] mb-6 lora">
+              {leftTitle}
+            </h1>
+            <p className="text-[#47515E] text-sm xl:text-base font-medium leading-relaxed mb-10 max-w-sm roboto">
+              {leftSubtitle ||
+                "Excellim is an ai-powered quiz and assessment platform that helps students practice, test their knowledge, and improve performance with instant results and solutions."}
+            </p>
+            <div className="w-full flex justify-start items-center">
+              <img
+                src={IMAGES.authImage}
+                alt="Auth Illustration"
+                className="w-full max-w-[450px] h-auto object-contain animate-in fade-in duration-700"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
 
-      {/* Form Card */}
-      <div
-        className="w-full max-w-[480px] p-8 sm:p-10 flex flex-col relative z-10"
-        style={{
-          borderRadius: "20px",
-          border: "1px solid #DED7D7",
-          // background: "#001131",
-        }}
-      >
-        {/* Logo Section */}
-        <div className="mb-6 flex justify-center select-none">
-          <img
-            src={IMAGES.logo}
-            alt="ExcelJM Logo"
-            className="w-24 h-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]"
-            loading="eager"
-            decoding="async"
-          />
+      {/* Right Column: Large White Form Panel */}
+      <div className="w-full lg:w-1/2 bg-white lg:rounded-l-[48px] flex flex-col min-h-screen relative p-6 sm:p-12 lg:p-16 justify-between shadow-lg">
+        {/* Top Header Row (Switch Link only) */}
+        <div className="w-full flex items-center justify-end mb-8 select-none">
+          <div className="text-sm font-semibold text-[#082042] roboto">
+            {isSignup ? (
+              <>
+                Already have an account?{" "}
+                <Link to="/login" className="text-[#39842B] hover:underline">
+                  Sign In
+                </Link>
+              </>
+            ) : (
+              <>
+                Don't have an account?{" "}
+                <Link to="/signup" className="text-[#39842B] hover:underline">
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
         </div>
 
-        {/* Title */}
-        {title && (
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#5D9E32] text-center mb-1 roboto">
-            {title}
-          </h1>
-        )}
-
-        {/* Subtitle */}
-        {subtitle && (
-          <p className="text-slate-400 text-sm text-center mb-6 font-medium lato">
-            {subtitle}
-          </p>
-        )}
-
-        {/* Form Content */}
-        <div className="w-full">
-          {children}
+        {/* Center Form Container */}
+        <div className="flex-1 flex items-center justify-center w-full max-w-[500px] mx-auto py-8">
+          <div className="w-full">{children}</div>
         </div>
       </div>
     </div>
   );
-};
-
-export default AuthLayout;
-
+}

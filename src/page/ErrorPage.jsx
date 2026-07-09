@@ -41,8 +41,8 @@ function ErrorPage() {
             to="/"
             className="flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-br from-primary to-gold text-secondary font-bold rounded-2xl shadow-[0_10px_30px_rgba(212,181,121,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_15px_40px_rgba(212,181,121,0.5)] active:scale-95 group"
           >
-            <Home className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
-            <span className="tracking-widest uppercase text-sm">Return Home</span>
+            <Home className="w-5 h-5 text-white group-hover:-translate-y-0.5 transition-transform" />
+            <span className="tracking-widest uppercase text-white text-sm">Return Home</span>
           </Link>
           
           <button
@@ -63,7 +63,7 @@ function ErrorPage() {
       {/* Bottom Branding / Metadata */}
       <div className="absolute bottom-10 flex flex-col items-center gap-2">
         <div className="w-12 h-[1px] bg-primary/40" />
-        <span className="text-[10px] uppercase tracking-[0.8em] text-white/30 font-mono">
+        <span className="text-[10px] uppercase tracking-[0.8em] text-white/50 font-mono">
           System_Error_Report // Ref: {error?.status || "0x000404"}
         </span>
       </div>

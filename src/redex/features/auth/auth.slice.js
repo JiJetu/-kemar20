@@ -12,12 +12,14 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setTokens: (state, action) => {
-      state.accessToken = action.payload.access ?? null;
-      state.refreshToken = action.payload.refresh ?? null;
+      state.accessToken = action.payload.access ?? action.payload.accessToken ?? null;
+      state.refreshToken = action.payload.refresh ?? action.payload.refreshToken ?? null;
+      const userObj = action.payload.user ?? {};
       state.user = {
-        role: action.payload.user_role ?? null,
-        email: action.payload.email ?? null,
-        id: action.payload.user_id ?? null,
+        role: userObj.role ?? action.payload.user_role ?? null,
+        email: userObj.email ?? action.payload.email ?? null,
+        id: userObj.id ?? action.payload.user_id ?? null,
+        full_name: userObj.full_name ?? action.payload.full_name ?? null,
       };
     },
     logout: (state) => {

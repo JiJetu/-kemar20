@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 const FormInput = React.forwardRef(
-  ({ label, icon: Icon, type = "text", error, ...props }, ref) => {
+  ({ label, icon: Icon, type = "text", error, className, labelClassName, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === "password";
 
     return (
       <div className="w-full flex flex-col gap-2 text-left">
         {label && (
-          <label className="text-[14px] text-black font-medium lato tracking-wide">
+          <label className={`text-sm font-semibold text-[#082042] roboto tracking-wide ${labelClassName || ""}`}>
             {label}
           </label>
         )}
@@ -17,7 +17,7 @@ const FormInput = React.forwardRef(
         <div className="relative flex items-center group">
           {/* Leading Icon */}
           {Icon && (
-            <div className="absolute left-4 text-slate-400 group-focus-within:text-[#5D9E32] transition-colors">
+            <div className="absolute left-4 text-slate-400 group-focus-within:text-primary transition-colors">
               <Icon size={18} />
             </div>
           )}
@@ -25,11 +25,11 @@ const FormInput = React.forwardRef(
           <input
             ref={ref}
             type={isPassword ? (showPassword ? "text" : "password") : type}
-            className={`w-full bg-white border border-[#192B4C] rounded-[10px] py-3.5 ${
+            className={`w-full bg-white border border-slate-200 rounded-[8px] py-3.5 ${
               Icon ? "pl-11" : "px-4"
             } ${
               isPassword ? "pr-11" : "pr-4"
-            } text-black placeholder:text-slate-500 focus:outline-none focus:border-[#5D9E32] focus:ring-1 focus:ring-[#5D9E32]/20 transition-all lato text-sm`}
+            } text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all roboto text-sm ${className || ""}`}
             {...props}
           />
 

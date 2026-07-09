@@ -1,26 +1,32 @@
-import { useState, useEffect } from "react";
-
-export default function AIProcessing({ onComplete }) {
-  const [isDone, setIsDone] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsDone(true);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
+export default function AIProcessing({ onComplete, isLoading, questionCount = 0, totalQuestions = 0 }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-[20px] p-12 shadow-sm min-h-[420px] flex flex-col items-center justify-center text-center w-full max-w-3xl mx-auto animate-in fade-in duration-300">
-      {!isDone ? (
+    <div className="bg-white border border-slate-200 rounded-[20px] p-12 shadow-sm min-h-[420px] flex flex-col items-center justify-center text-center w-full max-w-3xl mx-auto animate-in fade-in duration-300 animate-out duration-300 select-none">
+      {isLoading ? (
         <>
           {/* Custom CSS Spinner matching mockup */}
-          <div className="w-24 h-24 border-[8px] border-slate-100 border-t-[#082042] border-r-[#082042] rounded-full animate-spin mb-8" />
+          <div className="w-24 h-24 border-[8px] border-slate-150 border-t-[#0A2648] border-r-[#0A2648] rounded-full animate-spin mb-8" />
 
           {/* Processing Text */}
-          <h3 className="text-xl md:text-2xl font-bold text-[#082042] roboto mb-2.5">
+          <h3 className="text-xl md:text-2xl font-bold text-[#0A2648] roboto mb-2.5">
             AI Is Processing Your Exam Paper...
           </h3>
+
+          {/* Real-time generation progress */}
+          {totalQuestions > 0 && (
+            <div className="flex flex-col items-center justify-center mb-4 mt-2">
+              <span className="text-[#66A331] font-bold text-lg">
+                Generated {questionCount} of {totalQuestions} questions so far
+              </span>
+              {/* Progress bar container */}
+              <div className="w-64 h-2 bg-slate-100 rounded-full mt-2 overflow-hidden border border-slate-150">
+                <div 
+                  className="bg-[#66A331] h-full transition-all duration-500 ease-out" 
+                  style={{ width: `${Math.min(100, Math.max(0, (questionCount / totalQuestions) * 100))}%` }}
+                />
+              </div>
+            </div>
+          )}
+
           <p className="text-slate-400 text-sm lato">
             This May Take A Few Moments. Please Don't Close This Page
           </p>
@@ -51,7 +57,7 @@ export default function AIProcessing({ onComplete }) {
           </div>
 
           {/* Success Text */}
-          <h3 className="text-xl md:text-2xl font-bold text-[#082042] roboto mb-2.5">
+          <h3 className="text-xl md:text-2xl font-bold text-[#0A2648] roboto mb-2.5">
             Quiz Generated Successfully
           </h3>
           <p className="text-slate-400 text-sm lato max-w-md mb-8">
@@ -61,7 +67,7 @@ export default function AIProcessing({ onComplete }) {
           <button
             type="button"
             onClick={onComplete}
-            className="bg-[#082042] hover:bg-[#0c2f5d] text-white font-bold py-3.5 px-10 rounded-xl shadow-sm transition-all focus:outline-none roboto text-center leading-none"
+            className="bg-[#0A2648] hover:bg-[#0A2648]/90 text-white font-bold py-3.5 px-10 rounded-xl shadow-sm transition-all focus:outline-none roboto text-center leading-none cursor-pointer"
           >
             Continue to Preview
           </button>

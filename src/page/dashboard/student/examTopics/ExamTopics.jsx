@@ -1,160 +1,89 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { 
-  Calculator, 
-  Search, 
-  Clock, 
-  ArrowRight, 
-  GraduationCap,
-} from "lucide-react";
+import { GraduationCap } from "lucide-react";
+import { toast } from "sonner";
+import FreeTrialAlertBar from "./FreeTrialAlertBar";
+import TopicCard from "./TopicCard";
+import PremiumActiveAlertBar from "./PremiumActiveAlertBar";
+import { useGetSubscriptionStatusQuery } from "../../../../redex/features/subscription/subscription.api";
+import { useGetQuizzesQuery } from "../../../../redex/features/quiz/quiz.api";
+import Pagination from "../../../../components/shared/Pagination";
+import LoadingSpinner from "../../../../components/shared/LoadingSpinner";
 
-// Simplified Exam Topics data
-const mockTopics = [
-  {
-    id: 1,
-    title: "Math Practice Session",
-    description: "Practice standard algebraic equations, quadratic root calculations, and equation balancing.",
-    questionsCount: 10,
-    duration: 20
-  },
-  {
-    id: 2,
-    title: "Algebra Challenge",
-    description: "Deep dive into linear equations, expressions, factoring, and function graphs.",
-    questionsCount: 15,
-    duration: 30
-  },
-  {
-    id: 3,
-    title: "Geometry Practice",
-    description: "Master areas, volumes, coordinate geometry, and triangle similarity theorems.",
-    questionsCount: 12,
-    duration: 25
-  },
-  {
-    id: 4,
-    title: "Trigonometry Basics",
-    description: "Calculate sine, cosine, tangent values, and prove simple trigonometric identities.",
-    questionsCount: 8,
-    duration: 15
+export default function ExamTopics() {
+  const [page, setPage] = useState(1);
+  const { data: subStatus, isLoading: isSubLoading } = useGetSubscriptionStatusQuery();
+  const { data: quizzesData, isLoading: isQuizzesLoading } = useGetQuizzesQuery(page);
+
+  const isSubscribed = subStatus?.is_premium === true || subStatus?.is_active === true || subStatus?.plan === "premium";
+
+  const isLoading = isSubLoading || isQuizzesLoading;
+
+  if (isLoading) {
+    return <LoadingSpinner message="Loading practice topics..." minHeight="min-h-[40vh]" />;
   }
-];
 
-const ExamTopics = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const topics = (quizzesData?.results || []).map((q) => ({
+    id: q.id,
+    title: q.title && q.title !== "string" ? q.title : `${q.chapter} - ${q.topic}`,
+    description: q.description && q.description !== "string" ? q.description : `Practice questions for chapter ${q.chapter}, topic ${q.topic}.`,
+    questionsCount: q.question_count || q.num_questions || 0,
+    duration: q.time_limit || 30,
+    isPremium: q.is_premium_required || false,
+  }));
 
-  // Filtering Logic (Search only)
-  const filteredTopics = mockTopics.filter((topic) =>
-    topic.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    topic.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const totalPages = quizzesData?.count ? Math.ceil(quizzesData.count / 10) : 1;
 
   return (
-    <div className="w-full flex flex-col gap-6 text-slate-800 pb-12 select-none px-2">
+    <div className="w-full flex flex-col gap-6 text-slate-800 pb-12 select-none px-2 font-sans animate-in fade-in duration-300">
       
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-slate-50 border border-slate-200 rounded-[20px] p-6 shadow-md relative overflow-hidden">
-        {/* Glow backdrop decorative effect */}
-        <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-primary/5 rounded-full blur-[60px] pointer-events-none" />
-        
-        <div className="flex items-start gap-4">
-          <div className="bg-primary/10 border border-primary/20 text-primary p-3 rounded-xl hidden sm:flex items-center justify-center shrink-0">
-            <GraduationCap className="w-6 h-6" />
-          </div>
-          <div className="flex flex-col text-left">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2 roboto">
-              Exam Practice Topics 
-              {/* <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse" /> */}
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1 lato">
-              Select a topic below to start your practice session and challenge the leaderboard.
-            </p>
-          </div>
+      {/* Page Title Row */}
+      <div className="flex items-center gap-4 text-left select-none mt-2">
+        <div className="w-14 h-14 rounded-[12px] bg-[#EBF9E9] border border-[#39842B]/10 flex items-center justify-center shrink-0">
+          <GraduationCap className="w-7 h-7 text-[#39842B]" />
         </div>
-
-        {/* Search Input Box */}
-        <div className="relative flex items-center w-full md:w-80 shrink-0 z-10">
-          <span className="absolute left-4 text-slate-400">
-            <Search className="w-5 h-5" />
-          </span>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search exam topics..."
-            className="w-full bg-white border border-slate-300 focus:border-primary rounded-xl pl-12 pr-4 py-2.5 text-sm text-slate-800 focus:outline-none transition-all placeholder-slate-400 font-medium lato"
-          />
+        <div className="flex flex-col">
+          <h2 className="text-2xl font-bold text-slate-900 lora leading-none mb-1">
+            Exam Practice Topics
+          </h2>
+          <p className="text-slate-500 text-xs sm:text-sm font-semibold roboto">
+            Select a topic below to start your practice session and challenge the leaderboard.
+          </p>
         </div>
       </div>
 
+      {/* Subscription Alert Bar */}
+      {!isSubscribed && (
+        <FreeTrialAlertBar />
+      )}
+
       {/* Grid List of Topics */}
-      {filteredTopics.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-          {filteredTopics.map((topic) => (
-            <div
-              key={topic.id}
-              className="bg-slate-50 border border-slate-200 rounded-[20px] p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-md flex flex-col justify-between gap-5 relative overflow-hidden group"
-            >
-              {/* Decorative background circle */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-slate-100 to-transparent rounded-full blur-lg pointer-events-none" />
-
-              <div className="flex flex-col gap-2 text-left">
-                {/* Title */}
-                <h4 className="text-lg font-bold text-slate-900 leading-snug group-hover:text-primary transition-colors flex items-center gap-2.5 roboto">
-                  <Calculator className="w-5 h-5 text-primary shrink-0" />
-                  {topic.title}
-                </h4>
-                {/* Description */}
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed lato">
-                  {topic.description}
-                </p>
-              </div>
-
-              {/* Bottom stats and action button */}
-              <div className="flex items-center justify-between border-t border-slate-200 pt-4 mt-auto">
-                {/* Stats */}
-                <div className="flex items-center gap-4 text-xs font-semibold text-slate-500 lato">
-                  <span className="flex items-center gap-1.5">
-                    <GraduationCap className="w-4 h-4 text-primary" /> {topic.questionsCount} Qs
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="w-4 h-4 text-primary" /> {topic.duration} Mins
-                  </span>
-                </div>
-
-                {/* Dynamic Start Practice or View Result button */}
-                {(() => {
-                  const isCompleted = localStorage.getItem("exam_completed_" + topic.id) === "true";
-                  return (
-                    <Link
-                      to={`/dashboard/exam-details/${topic.id}`}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 lato text-white ${
-                        isCompleted
-                          ? "bg-[#082042] hover:bg-[#1c398e]"
-                          : "bg-primary hover:bg-[#4d8229]"
-                      }`}
-                    >
-                      {isCompleted ? "View Result" : "Start Practice"}
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                  );
-                })()}
-              </div>
-            </div>
-          ))}
+      {topics.length === 0 ? (
+        <div className="bg-white border border-slate-200 rounded-[12px] p-8 text-center text-slate-500 font-medium">
+          No practice topics available at the moment.
         </div>
       ) : (
-        <div className="bg-slate-50 border border-slate-200 rounded-[20px] p-12 text-center shadow-md w-full">
-          <GraduationCap className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-          <h4 className="text-lg font-bold text-slate-900 roboto">No Topics Found</h4>
-          <p className="text-sm text-slate-600 mt-1 max-w-md mx-auto lato">
-            We couldn't find any exam topics matching your current search.
-          </p>
+        <div className="flex flex-col gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-2">
+            {topics.map((topic) => (
+              <TopicCard
+                key={topic.id}
+                topic={topic}
+                isSubscribed={isSubscribed}
+                onLockClick={() => toast.error("Please upgrade to Premium to start this practice session!")}
+              />
+            ))}
+          </div>
+
+          {quizzesData?.count > 10 && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
+          )}
         </div>
       )}
 
     </div>
   );
-};
-
-export default ExamTopics;
+}

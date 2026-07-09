@@ -27,7 +27,7 @@ export default function QuizPublishedSuccess({ onViewQuiz, onGoToDashboard }) {
         </div>
 
         {/* Success Description Text */}
-        <h3 className="text-2xl font-bold text-[#082042] roboto mb-2.5">
+        <h3 className="text-2xl font-bold text-[#0A2648] roboto mb-2.5">
           Quiz Published Successfully
         </h3>
         <p className="text-slate-400 text-sm lato max-w-md mb-8 leading-relaxed">
@@ -39,14 +39,14 @@ export default function QuizPublishedSuccess({ onViewQuiz, onGoToDashboard }) {
           <button
             type="button"
             onClick={onViewQuiz}
-            className="border border-slate-200 bg-[#F0F4FA]/50 hover:bg-[#F0F4FA] text-[#082042] font-bold py-2.5 px-6 rounded-lg shadow-sm transition-all text-sm roboto cursor-pointer animate-none"
+            className="border border-[#0A2648]/15 bg-[#E5ECF9] hover:bg-[#E5ECF9]/80 text-[#0A2648] font-bold py-2.5 px-6 rounded-lg shadow-sm transition-all text-sm roboto cursor-pointer animate-none"
           >
             View Published Quiz
           </button>
           <button
             type="button"
             onClick={onGoToDashboard}
-            className="bg-[#66A331] hover:bg-[#548728] text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition-all text-sm roboto cursor-pointer animate-none"
+            className="bg-[#0A2648] hover:bg-[#0A2648]/90 text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition-all text-sm roboto cursor-pointer animate-none"
           >
             Go To Dashboard
           </button>

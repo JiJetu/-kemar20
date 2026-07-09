@@ -81,10 +81,10 @@ export default function Footer() {
           <div className="lg:col-span-3 flex flex-col items-start text-left gap-5">
             {/* Title with Underline */}
             <div>
-              <h4 className="font-bold text-lg text-[#082042] lora tracking-wide">
+              <h4 className="font-bold text-lg text-primary lora tracking-wide">
                 Link
               </h4>
-              <div className="w-9 h-[2px] bg-[#082042] mt-1" />
+              <div className="w-11 h-[2px] bg-primary mt-1" />
             </div>
             {/* Links list */}
             <ul className="flex flex-col gap-3.5">
@@ -105,27 +105,27 @@ export default function Footer() {
           <div className="lg:col-span-4 flex flex-col items-start text-left gap-5 w-full">
             {/* Title with Underline */}
             <div>
-              <h4 className="font-bold text-lg text-[#082042] lora tracking-wide">
+              <h4 className="font-bold text-lg text-primary lora tracking-wide">
                 Stay in the know
               </h4>
-              <div className="w-16 h-[2px] bg-[#FF7A59] mt-1" />
+              <div className="w-36 h-[2px] bg-primary mt-1" />
             </div>
             {/* Description */}
             <p className="text-[#47515E] text-sm leading-relaxed font-medium roboto">
               Stay Updated With The Latest Features, Product Updates, And AI-Powered Learning Insights Delivered Directly To Your Inbox.
             </p>
             {/* Input Form */}
-            <form onSubmit={handleSubscribe} className="flex items-center bg-[#F0F4FA] border border-[#E2E8F0] p-1.5 rounded-xl w-full">
+            <form onSubmit={handleSubscribe} className="flex items-center bg-[#F7FFF6] border border-[#DFDFDF] p-1.5 rounded-xl w-full">
               <input
                 type="email"
                 placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-transparent border-none outline-none px-3.5 py-2 text-sm text-slate-800 placeholder:text-slate-400 w-full roboto focus:ring-0 focus:outline-none"
+                className="bg-transparent border-none outline-none px-3.5 py-2 text-sm text-black placeholder:text-[#626262] w-full roboto focus:ring-0 focus:outline-none"
               />
               <button
                 type="submit"
-                className="bg-[#082042] hover:bg-[#1C398E] text-white text-sm font-bold px-6 py-2.5 rounded-lg transition-colors shrink-0 roboto active:scale-95 duration-150"
+                className="bg-primary text-white text-sm font-bold px-6 py-2.5 rounded-lg transition-colors shrink-0 roboto active:scale-95 duration-150"
               >
                 Send
               </button>

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
-import { IMAGES } from "../../assets";
-import { useGetMeQuery } from "../../redex/features/auth/auth.api";
+import { IMAGES, ICONS } from "../../assets";
+import { useGetMeQuery } from "../../redex/features/profile/profile.api";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -8,14 +8,18 @@ const Header = () => {
   const displayName = useSelector((state) => state.auth.displayName);
   const token = useSelector((state) => state.auth.accessToken);
 
+
   // Future-ready API call (skipped if token is not available)
   const { data: profile } = useGetMeQuery(undefined, { skip: !token });
 
   // Mock fallbacks based on mockup image data
-  const username = profile?.username || profile?.name || displayName || user?.email?.split("@")[0] || "Kemar20";
-  const userRole = profile?.role || user?.role || "Super Admin";
-  const avatarUrl = profile?.avatar || "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80";
-  const description = profile?.description || "Author";
+  const username = profile?.parent_full_name || profile?.name || displayName || user?.email?.split("@")[0] || "Kemar20";
+  const userRole = profile?.role || user?.role;
+  const avatarUrl = profile?.profile_picture || ICONS.studentIcon;
+  const description =
+    profile?.preferred_time && profile?.student_class
+      ? `${profile.preferred_time} | ${profile.student_class}`
+      : "Author";
   const notificationsCount = profile?.notificationsCount ?? 4;
 
   return (

@@ -24,11 +24,11 @@ export default function QuizLeaderboard({ attemptsCount = 45 }) {
           </div>
           <span className="font-bold text-slate-800 text-sm lato mb-1">Joti Das</span>
           <span className="text-lg font-bold text-slate-800 roboto">16/20</span>
-          <span className="text-xs font-bold text-[#66A331] lato mt-0.5">Score 95%</span>
+          <span className="text-xs font-bold text-[#137333] lato mt-0.5">Score 95%</span>
         </div>
 
         {/* Rank 1 (Center - taller & light blue-grey card) */}
-        <div className="flex-1 bg-[#EAEFF8] border border-slate-200 rounded-[20px] p-5 shadow-sm flex flex-col items-center justify-center h-[220px] text-center">
+        <div className="flex-1 bg-[#FCEDEF] border border-[#FCEDEF] rounded-[20px] p-5 shadow-sm flex flex-col items-center justify-center h-[220px] text-center">
           <div className="relative mb-2">
             {/* Crown Icon Asset */}
             <img
@@ -44,7 +44,7 @@ export default function QuizLeaderboard({ attemptsCount = 45 }) {
           </div>
           <span className="font-bold text-slate-800 text-sm lato mb-1">Pappu</span>
           <span className="text-2xl font-extrabold text-slate-800 roboto">18/20</span>
-          <span className="text-xs font-bold text-[#66A331] lato mt-0.5">Score 98%</span>
+          <span className="text-xs font-bold text-[#137333] lato mt-0.5">Score 98%</span>
         </div>
 
         {/* Rank 3 (Right) */}
@@ -61,7 +61,7 @@ export default function QuizLeaderboard({ attemptsCount = 45 }) {
           </div>
           <span className="font-bold text-slate-800 text-sm lato mb-1">Joti Das</span>
           <span className="text-lg font-bold text-slate-800 roboto">14/20</span>
-          <span className="text-xs font-bold text-[#66A331] lato mt-0.5">Score 90%</span>
+          <span className="text-xs font-bold text-[#137333] lato mt-0.5">Score 90%</span>
         </div>
       </div>
     </div>

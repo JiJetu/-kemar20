@@ -42,17 +42,17 @@ export default function UploadStepper({ currentStep }) {
               <div className="flex items-center gap-3">
                 <div
                   className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors shrink-0 ${
-                    isActive
-                      ? "bg-[#082042] text-white shadow-sm"
-                      : isCompleted
-                      ? "bg-[#66A331] text-white shadow-sm"
-                      : "bg-[#E2E8F0] text-[#082042]"
+                    isActive || isCompleted
+                      ? "bg-[#0A2648] text-white shadow-sm"
+                      : "bg-[#D8DCE3]/65 text-[#0A2648]/70"
                   }`}
                 >
                   <Icon className="w-5 h-5" />
                 </div>
                 <div className="flex flex-col text-left">
-                  <span className="font-bold text-sm text-[#082042] roboto">
+                  <span className={`font-bold text-sm roboto ${
+                    isActive || isCompleted ? "text-[#0A2648]" : "text-[#0A2648]/70"
+                  }`}>
                     {step.title}
                   </span>
                   <span className="text-slate-400 text-xs mt-0.5 whitespace-nowrap lato">

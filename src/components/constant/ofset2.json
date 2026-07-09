@@ -1,0 +1,678 @@
+[
+    {
+        "chapter": "Sets 2",
+        "page": 736,
+        "topics": [
+            {
+                "topic": "Introduction",
+                "page": 736
+            },
+            {
+                "topic": "Number of Elements for Two Sets",
+                "page": 737
+            },
+            {
+                "topic": "Number of Elements for Three Sets",
+                "page": 740
+            },
+            {
+                "topic": "Syllogism",
+                "page": 750
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 754
+            }
+        ]
+    },
+    {
+        "chapter": "Algebra 2",
+        "page": 756,
+        "topics": [
+            {
+                "topic": "Addition and Subtraction of Algebraic Terms",
+                "page": 756
+            },
+            {
+                "topic": "Laws of Indices",
+                "page": 757
+            },
+            {
+                "topic": "Changing the Subject of a Formula",
+                "page": 760
+            },
+            {
+                "topic": "Distributive Law",
+                "page": 774
+            },
+            {
+                "topic": "Product of Two Binomial Expressions",
+                "page": 777
+            },
+            {
+                "topic": "Factorizing Using the Distributive Law",
+                "page": 790
+            },
+            {
+                "topic": "Factorizing as the Product of two Binomial Expressions",
+                "page": 791
+            },
+            {
+                "topic": "Factorizing as a Perfect Square",
+                "page": 795
+            },
+            {
+                "topic": "Factorizing as the Difference of two Squares",
+                "page": 797
+            },
+            {
+                "topic": "Factorizing a Quadratic Expression",
+                "page": 798
+            },
+            {
+                "topic": "Algebraic Fractions",
+                "page": 804
+            },
+            {
+                "topic": "Solution of a Quadratic Equation",
+                "page": 807
+            },
+            {
+                "topic": "Solution of Simultaneous Equations—one Linear and one non-linear",
+                "page": 816
+            },
+            {
+                "topic": "Word Problems",
+                "page": 818
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 822
+            }
+        ]
+    },
+    {
+        "chapter": "Relations, Functions and Graphs 2",
+        "page": 824,
+        "topics": [
+            {
+                "topic": "Relation and Function",
+                "page": 824
+            },
+            {
+                "topic": "Inverse of a Function",
+                "page": 825
+            },
+            {
+                "topic": "Solution of an Equation Using the Inverse of a Function",
+                "page": 826
+            },
+            {
+                "topic": "Flowchart (or Function Machine)",
+                "page": 827
+            },
+            {
+                "topic": "Graph of a Function and its Inverse",
+                "page": 828
+            },
+            {
+                "topic": "Composite Functions",
+                "page": 830
+            },
+            {
+                "topic": "Inverse of a Composite Function",
+                "page": 833
+            },
+            {
+                "topic": "Interpolating and Extrapolating",
+                "page": 837
+            },
+            {
+                "topic": "Graph of the Function f: x → a nx",
+                "page": 841
+            },
+            {
+                "topic": "Roots of a Quadratic Function",
+                "page": 845
+            },
+            {
+                "topic": "Solution of the Simultaneous Equations —One Linear and One Quadratic",
+                "page": 847
+            },
+            {
+                "topic": "Axis of Symmetry—Maximum or Minimum Value",
+                "page": 853
+            },
+            {
+                "topic": "Gradient of a Curve at a Point",
+                "page": 857
+            },
+            {
+                "topic": "Reciprocal Function",
+                "page": 860
+            },
+            {
+                "topic": "Rate of Change",
+                "page": 864
+            },
+            {
+                "topic": "Distance—Time Graph",
+                "page": 869
+            },
+            {
+                "topic": "Velocity—Time Graph",
+                "page": 877
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 888
+            }
+        ]
+    },
+    {
+        "chapter": "Statistics 2",
+        "page": 891,
+        "topics": [
+            {
+                "topic": "Introduction",
+                "page": 891
+            },
+            {
+                "topic": "Estimating the Mean from Grouped Data",
+                "page": 891
+            },
+            {
+                "topic": "using an Assumed Mean",
+                "page": 892
+            },
+            {
+                "topic": "Cumulative Frequency Table",
+                "page": 897
+            },
+            {
+                "topic": "Cumulative Frequency curves",
+                "page": 902
+            },
+            {
+                "topic": "Estimating the Median from Grouped Data",
+                "page": 906
+            },
+            {
+                "topic": "Estimating the Mode from Grouped Data",
+                "page": 908
+            },
+            {
+                "topic": "Interquartile Range and Semi-interquartile Range",
+                "page": 911
+            },
+            {
+                "topic": "Standard Deviation",
+                "page": 915
+            },
+            {
+                "topic": "Analysing Statistical Data",
+                "page": 923
+            },
+            {
+                "topic": "Probability",
+                "page": 927
+            },
+            {
+                "topic": "Mutually Exclusive Events",
+                "page": 928
+            },
+            {
+                "topic": "Independent Events",
+                "page": 931
+            },
+            {
+                "topic": "Dependent Events",
+                "page": 933
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 934
+            }
+        ]
+    },
+    {
+        "chapter": "Geometry 2",
+        "page": 938,
+        "topics": [
+            {
+                "topic": "Equation of a Straight Line",
+                "page": 938
+            },
+            {
+                "topic": "Determining an Equation Given m and a Point",
+                "page": 939
+            },
+            {
+                "topic": "Determining an Equation Given Two Points",
+                "page": 940
+            },
+            {
+                "topic": "Determining an Equation Given the Two Intercept Points",
+                "page": 941
+            },
+            {
+                "topic": "Analysis of y = mx + c",
+                "page": 943
+            },
+            {
+                "topic": "Parallel Lines",
+                "page": 945
+            },
+            {
+                "topic": "Perpendicular Lines",
+                "page": 946
+            },
+            {
+                "topic": "Length of a Line Segment and Mid-point of a Line Segment",
+                "page": 947
+            },
+            {
+                "topic": "Equation of the Perpendicular Bisector",
+                "page": 949
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 951
+            }
+        ]
+    },
+    {
+        "chapter": "Geometry: Transformations 2",
+        "page": 953,
+        "topics": [
+            {
+                "topic": "Translation",
+                "page": 953
+            },
+            {
+                "topic": "Reflection",
+                "page": 956
+            },
+            {
+                "topic": "Rotation",
+                "page": 967
+            },
+            {
+                "topic": "Enlargement",
+                "page": 976
+            },
+            {
+                "topic": "Glide Reflection",
+                "page": 984
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 989
+            }
+        ]
+    },
+    {
+        "chapter": "Geometry: Trigonometry 2",
+        "page": 991,
+        "topics": [
+            {
+                "topic": "Radian Measure of an Angle",
+                "page": 991
+            },
+            {
+                "topic": "Length of an Arc of a Circle",
+                "page": 994
+            },
+            {
+                "topic": "Area of a Sector of a Circle",
+                "page": 997
+            },
+            {
+                "topic": "Area of a Segment of a Circle",
+                "page": 1001
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 1004
+            }
+        ]
+    },
+    {
+        "chapter": "Trigonometry 1",
+        "page": 1006,
+        "topics": [
+            {
+                "topic": "Trigonometrical Ratios of an Angle",
+                "page": 1006
+            },
+            {
+                "topic": "Trigonometrical Ratios for 30° and 60°",
+                "page": 1006
+            },
+            {
+                "topic": "Trigonometrical Ratios for 45°",
+                "page": 1007
+            },
+            {
+                "topic": "Complementary Angles",
+                "page": 1008
+            },
+            {
+                "topic": "Deducing Trigonometrical Ratios from a Trigonometrical Ratio",
+                "page": 1009
+            },
+            {
+                "topic": "Squares of the Trigonometrical Ratios",
+                "page": 1010
+            },
+            {
+                "topic": "Circular Functions of Angles Between 0° and 360°",
+                "page": 1011
+            },
+            {
+                "topic": "Circular Functions of Angles Between -360° and 0°",
+                "page": 1016
+            },
+            {
+                "topic": "Sine Rule",
+                "page": 1017
+            },
+            {
+                "topic": "Cosine Rule",
+                "page": 1020
+            },
+            {
+                "topic": "Area of a Parallelogram and are of a Triangle",
+                "page": 1023
+            },
+            {
+                "topic": "Trigonometrical Formula for the Area of a Triangle",
+                "page": 1025
+            },
+            {
+                "topic": "Area of a Segment of a Circle",
+                "page": 1027
+            },
+            {
+                "topic": "Area of a Segment of a Circle Given r and θ",
+                "page": 1029
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 1032
+            }
+        ]
+    },
+    {
+        "chapter": "Vectors and Matrices 1",
+        "page": 1034,
+        "topics": [
+            {
+                "topic": "Defining a Matrix",
+                "page": 1034
+            },
+            {
+                "topic": "Formalising a Matrix",
+                "page": 1035
+            },
+            {
+                "topic": "Addition and Subtraction of Matrices",
+                "page": 1036
+            },
+            {
+                "topic": "Scalar Multiplication",
+                "page": 1038
+            },
+            {
+                "topic": "Matrix Multiplication",
+                "page": 1039
+            },
+            {
+                "topic": "Equal Matrices",
+                "page": 1043
+            },
+            {
+                "topic": "Defining a Vector Quantity",
+                "page": 1043
+            },
+            {
+                "topic": "Representing a Vector Quantity",
+                "page": 1044
+            },
+            {
+                "topic": "A Vector as a Translation",
+                "page": 1047
+            },
+            {
+                "topic": "Equal Vectors",
+                "page": 1048
+            },
+            {
+                "topic": "Inverse Vectors (or Negative Vectors)",
+                "page": 1048
+            },
+            {
+                "topic": "Multiplying a Vector by a Scalar",
+                "page": 1048
+            },
+            {
+                "topic": "Vector Algebra",
+                "page": 1049
+            },
+            {
+                "topic": "Triangle Law of Vectors",
+                "page": 1051
+            },
+            {
+                "topic": "Parallelogram Law of Vectors",
+                "page": 1055
+            },
+            {
+                "topic": "Position Vector",
+                "page": 1058
+            },
+            {
+                "topic": "Displacement Vector",
+                "page": 1060
+            },
+            {
+                "topic": "Resultant Vector",
+                "page": 1062
+            },
+            {
+                "topic": "Unit Vector",
+                "page": 1064
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 1066
+            }
+        ]
+    },
+    {
+        "chapter": "Relations, Functions and Graphs 3",
+        "page": 1070,
+        "topics": [
+            {
+                "topic": "Graph of the Cubic Function f:x→ax³",
+                "page": 1070
+            },
+            {
+                "topic": "Graph of the Squared Reciprocal Function f: x → a x−2",
+                "page": 1073
+            },
+            {
+                "topic": "Graph of a Circular Function",
+                "page": 1076
+            },
+            {
+                "topic": "Graphical Solutions of a Trigonometrical Equation",
+                "page": 1079
+            },
+            {
+                "topic": "Maximum or Minimum Value of a Quadratic Equation",
+                "page": 1081
+            },
+            {
+                "topic": "Solution of a Quadratic Inequation",
+                "page": 1085
+            },
+            {
+                "topic": "Word Problem—Quadratic Inequation",
+                "page": 1090
+            },
+            {
+                "topic": "Linear Programming",
+                "page": 1092
+            },
+            {
+                "topic": "Areas Under a Curve",
+                "page": 1097
+            },
+            {
+                "topic": "Area Under a Velocity-Time Curve",
+                "page": 1100
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 1102
+            }
+        ]
+    },
+    {
+        "chapter": "Geometry 3",
+        "page": 1105,
+        "topics": [
+            {
+                "topic": "Angles in a Circle",
+                "page": 1105
+            },
+            {
+                "topic": "Tangent to a Circle",
+                "page": 1110
+            },
+            {
+                "topic": "Tangents to a Circle",
+                "page": 1113
+            },
+            {
+                "topic": "Angle Between a Tangent and a Chord",
+                "page": 1117
+            },
+            {
+                "topic": "Secant",
+                "page": 1120
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 1122
+            }
+        ]
+    },
+    {
+        "chapter": "Trigonometry 2",
+        "page": 1123,
+        "topics": [
+            {
+                "topic": "Tan $A = { \\frac { \\sin A } { \\cos A } }$",
+                "page": 1123
+            },
+            {
+                "topic": "Solution of Trigonometrical Equations",
+                "page": 1124
+            },
+            {
+                "topic": "Trigonometrical Identities",
+                "page": 1126
+            },
+            {
+                "topic": "3-D Problems",
+                "page": 1127
+            },
+            {
+                "topic": "Angles of Elevation and Depression",
+                "page": 1132
+            },
+            {
+                "topic": "Relative Velocity",
+                "page": 1140
+            },
+            {
+                "topic": "The Earth—Latitude and Longitude",
+                "page": 1150
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 1163
+            }
+        ]
+    },
+    {
+        "chapter": "Vectors and Matrices 2",
+        "page": 1066,
+        "topics": [
+            {
+                "topic": "Determinant of a 2×2Matrix",
+                "page": 1066
+            }
+        ]
+    },
+    {
+        "chapter": "× 2 Adjoint Matrix",
+        "page": 1167,
+        "topics": [
+            {
+                "topic": "Inverse of a Non-Singular 2 × 2 Matrix",
+                "page": 1168
+            },
+            {
+                "topic": "Solution of Simultaneous Equations",
+                "page": 1170
+            },
+            {
+                "topic": "Geometry",
+                "page": 1176
+            },
+            {
+                "topic": "Transformation",
+                "page": 1181
+            },
+            {
+                "topic": "Transformation",
+                "page": 1182
+            },
+            {
+                "topic": "Composite Transformation",
+                "page": 1184
+            },
+            {
+                "topic": "C.X.C. Past Paper Questions",
+                "page": 1192
+            },
+            {
+                "topic": "C.X.C. Model Examinations 1 to",
+                "page": 29
+            },
+            {
+                "topic": "Paper 1 - General Proficiency",
+                "page": 1197
+            },
+            {
+                "topic": "C.X.C. Model Examinations 1 to",
+                "page": 29
+            },
+            {
+                "topic": "Paper 2 - General Proficiency",
+                "page": 1227
+            },
+            {
+                "topic": "Three Figure Tables",
+                "page": 1246
+            },
+            {
+                "topic": "Answers",
+                "page": 1262
+            }
+        ]
+    }
+]

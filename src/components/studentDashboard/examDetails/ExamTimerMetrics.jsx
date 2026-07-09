@@ -33,9 +33,8 @@ export default function ExamTimerMetrics({
             cx="72"
             cy="72"
             r={radius}
-            className="text-slate-200"
             strokeWidth="8"
-            stroke="currentColor"
+            stroke="#EBF9E9"
             fill="transparent"
           />
           <circle
@@ -46,13 +45,13 @@ export default function ExamTimerMetrics({
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
-            stroke="#082042"
+            stroke="#39842B"
             fill="transparent"
             className="transition-all duration-1000"
           />
         </svg>
         <div className="absolute flex flex-col items-center justify-center">
-          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">
+          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-0.5 animate-pulse">
             Time Left
           </span>
           <span className="text-3xl font-extrabold text-[#082042] tracking-wider roboto">
@@ -67,34 +66,34 @@ export default function ExamTimerMetrics({
       {/* Metrics Rows */}
       <div className="w-full flex flex-col gap-3">
         {/* Total Time */}
-        <div className="bg-[#F0F4FA] rounded-xl py-3.5 px-4 flex items-center justify-between">
+        <div className="bg-white border border-slate-100 rounded-xl py-3.5 px-4 flex items-center justify-between">
           <span className="text-[#47515E] text-sm font-semibold flex items-center gap-2 roboto">
             <Clock size={16} className="text-[#47515E]" />
             Total Time
           </span>
-          <span className="text-[#082042] text-base font-bold roboto">
+          <span className="text-black text-base font-bold roboto">
             30:00
           </span>
         </div>
 
         {/* Attempted */}
-        <div className="bg-[#F0F4FA] rounded-xl py-3.5 px-4 flex items-center justify-between">
+        <div className="bg-white border border-slate-100 rounded-xl py-3.5 px-4 flex items-center justify-between">
           <span className="text-[#47515E] text-sm font-semibold flex items-center gap-2 roboto">
             <Clock size={16} className="text-[#47515E]" />
             Attempted
           </span>
-          <span className="text-[#082042] text-base font-bold roboto">
+          <span className="text-black text-base font-bold roboto">
             {attemptedCount} <span className="text-slate-400 font-medium">/ {totalCount}</span>
           </span>
         </div>
 
         {/* Remaining */}
-        <div className="bg-[#F0F4FA] rounded-xl py-3.5 px-4 flex items-center justify-between">
+        <div className="bg-white border border-slate-100 rounded-xl py-3.5 px-4 flex items-center justify-between">
           <span className="text-[#47515E] text-sm font-semibold flex items-center gap-2 roboto">
             <Clock size={16} className="text-[#47515E]" />
             Remaining
           </span>
-          <span className="text-[#082042] text-base font-bold roboto">
+          <span className="text-black text-base font-bold roboto">
             {remainingCount}
           </span>
         </div>
