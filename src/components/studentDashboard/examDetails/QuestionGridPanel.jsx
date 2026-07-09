@@ -52,7 +52,7 @@ export default function QuestionGridPanel({
               onClick={() => setCurrentQIndex(idx)}
               className={`aspect-square w-full rounded-lg border text-sm font-semibold flex items-center justify-center transition-all ${btnStyles}`}
             >
-              {item.id}
+              {item.question_no}
             </button>
           );
         })}

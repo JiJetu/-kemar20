@@ -1,4 +1,4 @@
-import { Check, ChevronLeft, Clock, Target, X } from "lucide-react";
+import { Check, ChevronLeft, Target, X } from "lucide-react";
 import Leaderboard from "./Leaderboard";
 import SolutionPdf from "./SolutionPdf";
 import { ICONS } from "../../../assets";
@@ -38,10 +38,9 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
     );
   }
 
-  // Override results with API response if available
   const apiResults = quizResult ? {
     correctCount: quizResult.score ?? 0,
-    incorrectCount: (quizResult.total - quizResult.score) ?? 0,
+    incorrectCount: (quizResult.total ?? 0) - (quizResult.score ?? 0),
     accuracy: quizResult.percentage ?? 0,
     timeTaken: quizResult.time_taken ?? results?.timeTaken ?? "00:00",
     rank: quizResult.rank ?? results?.rank ?? 1,

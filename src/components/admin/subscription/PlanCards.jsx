@@ -44,21 +44,18 @@ export default function PlanCards({ plans, onEditPlan }) {
               {/* Price / Subtitle */}
               <div className="mb-6">
                 {isFree ? (
-                  <div className="flex flex-col">
-                    <span className="text-2xl font-bold text-[#137333] roboto">
-                      {plan.freeCount || "2"} Free Topics / Quizess
-                    </span>
-                    <span className="text-slate-400 text-xs mt-1 font-medium lato">
-                      Handpicked by our experts
+                  <div className="flex items-baseline">
+                    <span className="text-3xl font-extrabold text-[#137333] roboto">
+                      Free
                     </span>
                   </div>
                 ) : (
                   <div className="flex items-baseline">
                     <span className="text-3xl font-extrabold text-[#1A73E8] roboto">
-                      ${plan.price || "9.99"}
+                      ${plan.price}
                     </span>
                     <span className="text-slate-400 text-sm font-semibold ml-1.5 lato">
-                      /Month
+                      /{plan.billingPeriodDays} Days
                     </span>
                   </div>
                 )}

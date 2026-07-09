@@ -6,50 +6,48 @@ import QuizFilters from "../../../components/admin/quiz/QuizFilters";
 import QuizTable from "../../../components/admin/quiz/QuizTable";
 import Pagination from "../../../components/shared/Pagination";
 import DeleteConfirmModal from "../../../components/shared/DeleteConfirmModal";
-
-// Mock quiz data generator
-const generateMockQuizzes = () => {
-  const baseQuizzes = [
-    { title: "Math final exam 2025", subject: "Mathematics", questions: 20, duration: "1 Hour", status: "Published", createdAt: "May 20, 2025" },
-    { title: "AI Foundations Quiz", subject: "Artificial Intelligence", questions: 15, duration: "45 Mins", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Python Programming Lab", subject: "Programming", questions: 30, duration: "2 Hours", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Data Science Essentials", subject: "Data Science", questions: 25, duration: "1.5 Hours", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Linear Algebra Exam", subject: "Mathematics", questions: 20, duration: "1 Hour", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Neural Networks Test", subject: "Artificial Intelligence", questions: 10, duration: "30 Mins", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Git and Code Collaboration", subject: "Programming", questions: 15, duration: "45 Mins", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Probability & Stats quiz", subject: "Mathematics", questions: 20, duration: "1 Hour", status: "Draft", createdAt: "May 20, 2025" },
-    { title: "SQL Database Queries", subject: "Data Science", questions: 20, duration: "1 Hour", status: "Draft", createdAt: "May 20, 2025" },
-    { title: "Machine Learning Basics", subject: "Artificial Intelligence", questions: 25, duration: "1.5 Hours", status: "Draft", createdAt: "May 20, 2025" },
-    { title: "C++ Programming Midterm", subject: "Programming", questions: 30, duration: "2 Hours", status: "Draft", createdAt: "May 20, 2025" },
-    { title: "Discrete Math Evaluation", subject: "Mathematics", questions: 20, duration: "1 Hour", status: "Draft", createdAt: "May 20, 2025" },
-  ];
-
-  const list = [];
-  // Generate 60 mock items (exactly 5 pages of 12 items)
-  for (let i = 0; i < 60; i++) {
-    const base = baseQuizzes[i % baseQuizzes.length];
-    list.push({
-      id: i + 1,
-      title: i < 12 ? base.title : `${base.title} #${i + 1}`,
-      subject: base.subject,
-      questions: base.questions,
-      duration: base.duration,
-      status: base.status,
-      createdAt: base.createdAt,
-    });
-  }
-  return list;
-};
+import LoadingSpinner from "../../../components/shared/LoadingSpinner";
+import {
+  useGetAdminQuizzesQuery,
+  useGetAdminQuizStatsQuery,
+  useDeleteQuizMutation,
+} from "../../../redex/features/admin/quiz.api";
 
 export default function QuizManagement() {
   const navigate = useNavigate();
-  const [quizzes, setQuizzes] = useState(() => generateMockQuizzes());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("Status");
   const [selectedSubject, setSelectedSubject] = useState("All Subject");
   const [currentPage, setCurrentPage] = useState(1);
-  const [deletingQuiz, setDeletingQuiz] = useState(null); // stores quiz to delete
-  const itemsPerPage = 12;
+  const [deletingQuiz, setDeletingQuiz] = useState(null);
+
+  // 1. Build API filters dynamically to deduplicate cache keys
+  const queryArgs = useMemo(() => {
+    const args = { page: currentPage };
+    if (searchQuery) args.search = searchQuery;
+    
+    if (selectedSubject === "volume1" || selectedSubject === "volume2") {
+      args.book_name = selectedSubject;
+    }
+    
+    if (selectedStatus === "Published") {
+      args.is_published = "true";
+    } else if (selectedStatus === "Draft") {
+      args.is_published = "false";
+    }
+    return args;
+  }, [currentPage, searchQuery, selectedSubject, selectedStatus]);
+
+  const { data: currentListData, isLoading } = useGetAdminQuizzesQuery(queryArgs);
+
+  // Dedicated single endpoint query for totals
+  const { data: statsData } = useGetAdminQuizStatsQuery();
+
+  const totalCount = statsData?.total_quizzes !== undefined ? statsData.total_quizzes : (statsData?.total || 0);
+  const publishedCount = statsData?.published_quizzes !== undefined ? statsData.published_quizzes : (statsData?.published || 0);
+  const draftCount = statsData?.draft_quizzes !== undefined ? statsData.draft_quizzes : (statsData?.draft || 0);
+
+  const [deleteQuiz] = useDeleteQuizMutation();
 
   // Reset page number on filter changes
   const handleSearchChange = (query) => {
@@ -67,26 +65,27 @@ export default function QuizManagement() {
     setCurrentPage(1);
   };
 
-  // Filter quizzes based on search, status, and subject
-  const filteredQuizzes = useMemo(() => {
-    return quizzes.filter((quiz) => {
-      const matchesSearch = quiz.title.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesStatus = selectedStatus === "Status" || quiz.status === selectedStatus;
-      const matchesSubject = selectedSubject === "All Subject" || quiz.subject === selectedSubject;
-      return matchesSearch && matchesStatus && matchesSubject;
+  // Map backend quizzes to front-end schema
+  const mappedQuizzes = useMemo(() => {
+    return (currentListData?.results || []).map((q) => {
+      const dateObj = new Date(q.created_at);
+      const options = { month: "short", day: "numeric", year: "numeric" };
+      const formattedDate = isNaN(dateObj.getTime())
+        ? "N/A"
+        : dateObj.toLocaleDateString("en-US", options);
+
+      return {
+        id: q.id,
+        title: q.title,
+        questions: q.question_count || q.questions?.length || 0,
+        duration: q.time_limit ? `${q.time_limit} Mins` : "30 Mins",
+        status: q.is_published ? "Published" : "Draft",
+        createdAt: formattedDate,
+      };
     });
-  }, [quizzes, searchQuery, selectedStatus, selectedSubject]);
+  }, [currentListData]);
 
-  // Pagination calculations
-  const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(filteredQuizzes.length / itemsPerPage));
-  }, [filteredQuizzes, itemsPerPage]);
-
-  const paginatedQuizzes = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return filteredQuizzes.slice(startIndex, endIndex);
-  }, [filteredQuizzes, currentPage, itemsPerPage]);
+  const totalPages = currentListData?.total_pages || 1;
 
   // View action
   const handleView = (quiz) => {
@@ -98,11 +97,17 @@ export default function QuizManagement() {
     setDeletingQuiz(quiz);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (deletingQuiz) {
-      setQuizzes((prev) => prev.filter((q) => q.id !== deletingQuiz.id));
-      toast.success(`Quiz "${deletingQuiz.title}" deleted successfully.`);
-      setDeletingQuiz(null);
+      try {
+        await deleteQuiz(deletingQuiz.id).unwrap();
+        toast.success(`Quiz "${deletingQuiz.title}" deleted successfully.`);
+      } catch (err) {
+        console.error("Delete quiz error:", err);
+        toast.error("Failed to delete quiz.");
+      } finally {
+        setDeletingQuiz(null);
+      }
     }
   };
 
@@ -113,7 +118,11 @@ export default function QuizManagement() {
   return (
     <div className="w-full flex flex-col gap-6 text-left">
       {/* Three Summary Status Cards */}
-      <QuizStats />
+      <QuizStats 
+        total={totalCount}
+        published={publishedCount}
+        draft={draftCount}
+      />
 
       {/* Filters block */}
       <QuizFilters
@@ -126,19 +135,32 @@ export default function QuizManagement() {
       />
 
       {/* Table grid wrapper and pagination */}
-      <div className="bg-white border border-slate-200 rounded-[20px] shadow-sm flex flex-col w-full overflow-hidden">
-        <div className="p-6">
-          <QuizTable
-            quizzes={paginatedQuizzes}
-            onView={handleView}
-            onDeleteRequest={handleDeleteRequest}
-          />
-        </div>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+      <div className="bg-white border border-slate-200 rounded-[20px] shadow-sm flex flex-col w-full overflow-hidden min-h-[400px]">
+        {isLoading ? (
+          <div className="flex-1 flex items-center justify-center p-12">
+            <LoadingSpinner />
+          </div>
+        ) : mappedQuizzes.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center p-12 text-slate-400 font-semibold select-none text-center gap-2">
+            <span>No quizzes found.</span>
+            <span className="text-xs text-slate-400">Try adjusting filters or create a new quiz.</span>
+          </div>
+        ) : (
+          <>
+            <div className="p-6">
+              <QuizTable
+                quizzes={mappedQuizzes}
+                onView={handleView}
+                onDeleteRequest={handleDeleteRequest}
+              />
+            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </>
+        )}
       </div>
 
       {/* Delete Confirmation Modal Popup */}

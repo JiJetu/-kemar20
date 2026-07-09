@@ -76,9 +76,14 @@ export default function TopicCard({ topic, isSubscribed, onLockClick }) {
         ) : (
           <Link
             to={`/dashboard/exam-details/${topic.id}`}
-            className="px-4 py-2 rounded-[8px] text-xs font-bold bg-[#39842B] hover:bg-[#39842B]/95 text-white transition-all shadow-sm flex items-center gap-1.5 roboto active:scale-[0.98]"
+            state={{ isAttempted: topic.isAttempted }}
+            className={`px-4 py-2 rounded-[8px] text-xs font-bold text-white transition-all shadow-sm flex items-center gap-1.5 roboto active:scale-[0.98] ${
+              topic.isAttempted
+                ? "bg-[#082042] hover:bg-[#082042]/95"
+                : "bg-[#39842B] hover:bg-[#39842B]/95"
+            }`}
           >
-            <span>Start Practice</span>
+            <span>{topic.isAttempted ? "View Results" : "Start Practice"}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         )}

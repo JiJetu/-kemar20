@@ -10,6 +10,20 @@ export const adminQuizApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Quizzes"],
     }),
+    getAdminQuizzes: builder.query({
+      query: ({ page = 1, search = "", book_name = "", is_published = "" } = {}) => {
+        let params = `page=${page}`;
+        if (search) params += `&search=${encodeURIComponent(search)}`;
+        if (book_name) params += `&book_name=${encodeURIComponent(book_name)}`;
+        if (is_published !== "") params += `&is_published=${is_published}`;
+        return `/api/quizzes/?${params}`;
+      },
+      providesTags: ["Quizzes"],
+    }),
+    getAdminQuizStats: builder.query({
+      query: () => "/api/quizzes/stats/",
+      providesTags: ["Quizzes"],
+    }),
     getAdminQuizDetails: builder.query({
       query: (id) => `/api/quizzes/${id}/`,
       providesTags: (result, error, id) => [{ type: "Quiz", id }],
@@ -30,6 +44,13 @@ export const adminQuizApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (result, error, { id }) => ["Quizzes", { type: "Quiz", id }],
     }),
+    publishQuiz: builder.mutation({
+      query: (id) => ({
+        url: `/api/quizzes/${id}/publish/`,
+        method: "POST",
+      }),
+      invalidatesTags: (result, error, id) => ["Quizzes", { type: "Quiz", id }],
+    }),
     deleteQuiz: builder.mutation({
       query: (id) => ({
         url: `/api/quizzes/${id}/`,
@@ -42,8 +63,11 @@ export const adminQuizApi = baseApi.injectEndpoints({
 
 export const {
   useCreateQuizMutation,
+  useGetAdminQuizzesQuery,
+  useGetAdminQuizStatsQuery,
   useGetAdminQuizDetailsQuery,
   useUpdateQuizMutation,
   usePatchQuizMutation,
+  usePublishQuizMutation,
   useDeleteQuizMutation,
 } = adminQuizApi;

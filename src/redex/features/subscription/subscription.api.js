@@ -4,10 +4,19 @@ export const subscriptionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getBillingPlans: builder.query({
       query: () => "/api/billing/plans/",
+      providesTags: ["Subscription"],
     }),
     getSubscriptionStatus: builder.query({
       query: () => "/api/billing/subscription/",
       providesTags: ["Subscription"],
+    }),
+    updateBillingPlan: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/api/billing/plans/${id}/`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Subscription"],
     }),
     checkoutPremium: builder.mutation({
       query: () => ({
@@ -29,6 +38,7 @@ export const subscriptionApi = baseApi.injectEndpoints({
 export const {
   useGetBillingPlansQuery,
   useGetSubscriptionStatusQuery,
+  useUpdateBillingPlanMutation,
   useCheckoutPremiumMutation,
   useActivateFreeTrialMutation,
 } = subscriptionApi;

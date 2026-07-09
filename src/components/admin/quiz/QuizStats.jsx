@@ -1,8 +1,8 @@
-export default function QuizStats() {
+export default function QuizStats({ total = 0, published = 0, draft = 0 }) {
   const stats = [
     {
       title: "Total Quizzes",
-      value: "1,248",
+      value: total.toLocaleString(),
       bg: "bg-[#FCEDEF]",
       icon: (
         <svg className="w-7 h-7 text-[#AD0122]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -12,7 +12,7 @@ export default function QuizStats() {
     },
     {
       title: "Published Quizzes",
-      value: "1,000",
+      value: published.toLocaleString(),
       bg: "bg-[#E6F4EA]",
       icon: (
         <svg className="w-7 h-7 text-[#137333]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -22,7 +22,7 @@ export default function QuizStats() {
     },
     {
       title: "Draft Quizzes",
-      value: "248",
+      value: draft.toLocaleString(),
       bg: "bg-[#FFF4E5]",
       icon: (
         <svg className="w-7 h-7 text-[#B26A00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

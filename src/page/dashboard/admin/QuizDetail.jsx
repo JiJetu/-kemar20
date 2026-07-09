@@ -1,92 +1,164 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import QuizReview from "../../../components/admin/quiz/QuizReview";
-
-// Reusable mock generator matching QuizManagement.jsx
-const generateMockQuizzes = () => {
-  const baseQuizzes = [
-    { title: "Math final exam 2025", subject: "Mathematics", questions: 20, duration: "1 Hour", status: "Published", createdAt: "May 20, 2025" },
-    { title: "AI Foundations Quiz", subject: "Artificial Intelligence", questions: 15, duration: "45 Mins", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Python Programming Lab", subject: "Programming", questions: 30, duration: "2 Hours", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Data Science Essentials", subject: "Data Science", questions: 25, duration: "1.5 Hours", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Linear Algebra Exam", subject: "Mathematics", questions: 20, duration: "1 Hour", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Neural Networks Test", subject: "Artificial Intelligence", questions: 10, duration: "30 Mins", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Git and Code Collaboration", subject: "Programming", questions: 15, duration: "45 Mins", status: "Published", createdAt: "May 20, 2025" },
-    { title: "Probability & Stats quiz", subject: "Mathematics", questions: 20, duration: "1 Hour", status: "Draft", createdAt: "May 20, 2025" },
-    { title: "SQL Database Queries", subject: "Data Science", questions: 20, duration: "1 Hour", status: "Draft", createdAt: "May 20, 2025" },
-    { title: "Machine Learning Basics", subject: "Artificial Intelligence", questions: 25, duration: "1.5 Hours", status: "Draft", createdAt: "May 20, 2025" },
-    { title: "C++ Programming Midterm", subject: "Programming", questions: 30, duration: "2 Hours", status: "Draft", createdAt: "May 20, 2025" },
-    { title: "Discrete Math Evaluation", subject: "Mathematics", questions: 20, duration: "1 Hour", status: "Draft", createdAt: "May 20, 2025" },
-  ];
-
-  const list = [];
-  for (let i = 0; i < 60; i++) {
-    const base = baseQuizzes[i % baseQuizzes.length];
-    list.push({
-      id: i + 1,
-      title: i < 12 ? base.title : `${base.title} #${i + 1}`,
-      subject: base.subject,
-      questions: base.questions,
-      duration: base.duration,
-      status: base.status,
-      createdAt: base.createdAt,
-    });
-  }
-  return list;
-};
+import QuizPublishedSuccess from "../../../components/admin/quiz/QuizPublishedSuccess";
+import LoadingSpinner from "../../../components/shared/LoadingSpinner";
+import {
+  useGetAdminQuizDetailsQuery,
+  usePatchQuizMutation,
+  usePublishQuizMutation,
+} from "../../../redex/features/admin/quiz.api";
 
 export default function QuizDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  // Find or default mock quiz details
-  const allQuizzes = useMemo(() => generateMockQuizzes(), []);
-  const initialQuiz = useMemo(() => {
-    return allQuizzes.find((q) => q.id === Number(id)) || {
-      id: Number(id) || 1,
-      title: "Math Final Exam 2026",
-      subject: "Mathematics",
-      questions: 20,
-      duration: "1 Hour",
-      status: Number(id) % 2 === 0 ? "Draft" : "Published",
-      createdAt: "28 May 2025"
+
+  // Queries & Mutations
+  const { data: quizDetails, isLoading, error } = useGetAdminQuizDetailsQuery(Number(id));
+  const [patchQuiz] = usePatchQuizMutation();
+  const [publishQuiz] = usePublishQuizMutation();
+
+  const [localMetadata, setLocalMetadata] = useState(null);
+  const [isPublished, setIsPublished] = useState(false);
+
+  // Sync local state when quizDetails are loaded
+  useEffect(() => {
+    if (quizDetails) {
+      setTimeout(() => {
+        setLocalMetadata({
+          title: quizDetails.title || "",
+          classForm: quizDetails.class_form || "4th",
+          duration: quizDetails.time_limit || 60,
+          numQuestions: String(quizDetails.num_questions || quizDetails.questions?.length || 0),
+          bookName: quizDetails.book_name || "",
+          chapter: quizDetails.chapter || "",
+          topic: quizDetails.topic || "",
+        });
+      }, 0);
+    }
+  }, [quizDetails]);
+
+  // Map backend details to the format expected by QuizReview component
+  const formData = useMemo(() => {
+    if (!quizDetails || !localMetadata) return null;
+
+    const mappedQuestions = (quizDetails.questions || []).map((q, idx) => ({
+      id: q.id || idx + 1,
+      question_no: q.question_no || idx + 1,
+      questionText: q.question_text || "No Question Text",
+      options: Array.isArray(q.options) ? q.options : ["A", "B", "C", "D"],
+      correctAnswer: q.correct_answer !== undefined ? Number(q.correct_answer) - 1 : 0,
+      solution: Array.isArray(q.steps) ? q.steps.join("\n") : (q.solution || ""),
+    }));
+
+    return {
+      id: quizDetails.id,
+      title: localMetadata.title,
+      classForm: localMetadata.classForm,
+      duration: localMetadata.duration,
+      numQuestions: localMetadata.numQuestions,
+      bookName: localMetadata.bookName,
+      chapter: localMetadata.chapter,
+      topic: localMetadata.topic,
+      pdfFile: quizDetails.reference_pdf || null,
+      questions: mappedQuestions,
     };
-  }, [allQuizzes, id]);
-
-  const [quiz, setQuiz] = useState(initialQuiz);
-
-  const handleSaveChanges = () => {
-    toast.success("Quiz saved successfully!");
-    navigate("/admin/quiz");
-  };
+  }, [quizDetails, localMetadata]);
 
   const handleUpdateFormData = (updatedData) => {
-    setQuiz((prev) => ({
-      ...prev,
-      title: updatedData.title !== undefined ? updatedData.title : prev.title,
-      duration: updatedData.duration !== undefined ? updatedData.duration : prev.duration,
-      questions: updatedData.numQuestions !== undefined ? Number(updatedData.numQuestions) : prev.questions,
-    }));
+    setLocalMetadata((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        ...updatedData,
+      };
+    });
   };
 
-  const formData = useMemo(() => {
-    return {
-      title: quiz.title,
-      classForm: "4th Form",
-      quizType: quiz.status === "Published" ? "Premium" : "Free",
-      duration: quiz.duration,
-      numQuestions: String(quiz.questions),
-      pdfFile: null,
-    };
-  }, [quiz]);
+  const handleSaveChangesComplete = async (updatedQuestions, publishVal = false) => {
+    try {
+      const payloadQuestions = updatedQuestions.map((q, idx) => ({
+        id: q.id,
+        question_no: idx + 1,
+        question_text: q.questionText,
+        options: q.options,
+        correct_answer: q.correctAnswer + 1, // 1-indexed conversion
+        steps: q.solution ? q.solution.split("\n") : [],
+        chapter: localMetadata.chapter || "",
+        topic: localMetadata.topic || "",
+      }));
+
+      await patchQuiz({
+        id: Number(id),
+        title: localMetadata.title,
+        time_limit: Number(localMetadata.duration || 60),
+        num_questions: Number(localMetadata.numQuestions || updatedQuestions.length),
+        book_name: localMetadata.bookName,
+        chapter: localMetadata.chapter,
+        topic: localMetadata.topic,
+        is_published: publishVal,
+        questions: payloadQuestions,
+      }).unwrap();
+
+      if (publishVal) {
+        toast.success("Quiz has been successfully published to students!");
+        setIsPublished(true);
+      } else {
+        toast.success("Quiz saved successfully!");
+        navigate("/admin/quiz");
+      }
+    } catch (err) {
+      console.error("Save quiz error:", err);
+      toast.error("Failed to save changes.");
+    }
+  };
+
+  const handlePublishComplete = async () => {
+    try {
+      await publishQuiz(Number(id)).unwrap();
+      toast.success("Quiz has been successfully published to students!");
+      setIsPublished(true);
+    } catch (err) {
+      console.error("Publish error:", err);
+      toast.error("Failed to publish quiz.");
+    }
+  };
+
+  if (isLoading || !localMetadata) {
+    return <LoadingSpinner message="Loading quiz details..." minHeight="min-h-[40vh]" />;
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white border border-slate-200 rounded-[20px] p-8 text-center text-red-500 font-semibold shadow-sm max-w-lg mx-auto mt-12">
+        Failed to load quiz details. Please return to the quiz management page.
+      </div>
+    );
+  }
+
+  if (isPublished) {
+    return (
+      <QuizPublishedSuccess
+        onViewQuiz={() => {
+          setIsPublished(false);
+          navigate("/admin/quiz");
+        }}
+        onGoToDashboard={() => {
+          setIsPublished(false);
+          navigate("/admin");
+        }}
+      />
+    );
+  }
 
   return (
     <div className="w-full">
       <QuizReview
         formData={formData}
-        onSave={handleSaveChanges}
+        onSave={handleSaveChangesComplete}
         onUpdateFormData={handleUpdateFormData}
+        onPublish={handlePublishComplete}
       />
     </div>
   );

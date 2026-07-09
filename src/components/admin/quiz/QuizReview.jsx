@@ -8,11 +8,11 @@ import EditQuizInfoModal from "./EditQuizInfoModal";
 import EditPdfModal from "./EditPdfModal";
 import {
   useCreateAdminQuestionMutation,
-  useUpdateAdminQuestionMutation,
+  usePatchAdminQuestionMutation,
   useDeleteAdminQuestionMutation,
 } from "../../../redex/features/admin/questions.api";
 
-export default function QuizReview({ formData, onPublish, onGoToStep, onUpdateFormData, onSave }) {
+export default function QuizReview({ formData, onPublish, onUpdateFormData, onSave }) {
   const navigate = useNavigate();
   const [questions, setQuestions] = useState(formData?.questions || []);
   const [editingQuestion, setEditingQuestion] = useState(null);
@@ -22,12 +22,14 @@ export default function QuizReview({ formData, onPublish, onGoToStep, onUpdateFo
 
   // RTK-Query CRUD Mutations
   const [createQuestion] = useCreateAdminQuestionMutation();
-  const [updateQuestion] = useUpdateAdminQuestionMutation();
+  const [patchQuestion] = usePatchAdminQuestionMutation();
   const [deleteQuestion] = useDeleteAdminQuestionMutation();
 
   useEffect(() => {
     if (formData?.questions) {
-      setQuestions(formData.questions);
+      setTimeout(() => {
+        setQuestions(formData.questions);
+      }, 0);
     }
   }, [formData?.questions]);
 
@@ -106,7 +108,7 @@ export default function QuizReview({ formData, onPublish, onGoToStep, onUpdateFo
           chapter: formData.chapter || "",
           topic: formData.topic || "",
         };
-        await updateQuestion(payload).unwrap();
+        await patchQuestion(payload).unwrap();
 
         setQuestions((prev) =>
           prev.map((q) => (q.id === updatedQuestion.id ? updatedQuestion : q))
@@ -135,10 +137,18 @@ export default function QuizReview({ formData, onPublish, onGoToStep, onUpdateFo
 
   const handleSaveChanges = () => {
     if (onSave) {
-      onSave(questions);
+      onSave(questions, false);
     } else {
       toast.success("Quiz saved as draft successfully!");
       navigate("/admin/quiz");
+    }
+  };
+
+  const handlePublishClick = () => {
+    if (onSave) {
+      onSave(questions, true);
+    } else if (onPublish) {
+      onPublish();
     }
   };
 
@@ -242,8 +252,14 @@ export default function QuizReview({ formData, onPublish, onGoToStep, onUpdateFo
             type="button"
             onClick={() => {
               if (formData?.pdfFile) {
-                const url = URL.createObjectURL(formData.pdfFile);
-                window.open(url, "_blank");
+                if (formData.pdfFile instanceof File) {
+                  const url = URL.createObjectURL(formData.pdfFile);
+                  window.open(url, "_blank");
+                } else if (typeof formData.pdfFile === "string") {
+                  window.open(formData.pdfFile, "_blank");
+                } else if (formData.pdfFile.url) {
+                  window.open(formData.pdfFile.url, "_blank");
+                }
               } else {
                 toast.info("No file uploaded to preview");
               }
@@ -364,7 +380,7 @@ export default function QuizReview({ formData, onPublish, onGoToStep, onUpdateFo
         {onPublish && (
           <button
             type="button"
-            onClick={onPublish}
+            onClick={handlePublishClick}
             className="bg-[#66A331] hover:bg-[#66A331]/95 text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition-all text-sm leading-none cursor-pointer"
           >
             Publish Quiz

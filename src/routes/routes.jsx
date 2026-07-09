@@ -12,6 +12,7 @@ import StudentManagement from "../page/dashboard/admin/StudentManagement";
 import Profile from "../components/studentDashboard/profile/Profile";
 import ManageSubscription from "../components/studentDashboard/profile/ManageSubscription";
 import ExamDetails from "../page/dashboard/student/examDetails/ExamDetails";
+import PaymentSuccess from "../page/dashboard/student/PaymentSuccess";
 import StudentProfile from "../components/admin/student/StudentProfile";
 import UploadQuizPdf from "../page/dashboard/admin/UploadQuizPdf";
 import QuizManagement from "../page/dashboard/admin/QuizManagement";
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
         path: "profile",
         element: <Profile />,
       },
+      {
+        path: "payment-success",
+        element: <PaymentSuccess />,
+      },
     ],
   },
   {
@@ -92,12 +97,12 @@ const router = createBrowserRouter([
         element: <QuizDetail />,
       },
       {
-        path: "setting",
-        element: <SettingsPage />,
-      },
-      {
         path: "subscriptions",
         element: <SubscriptionManagement />,
+      },
+      {
+        path: "setting",
+        element: <SettingsPage />,
       },
     ],
   },

@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, AlertTriangle } from "lucide-react";
 import { parseMathEquation } from "../../../../lib/utils/math";
 import { toast } from "sonner";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import ExamTimerMetrics from "../../../../components/studentDashboard/examDetails/ExamTimerMetrics";
 import QuestionGridPanel from "../../../../components/studentDashboard/examDetails/QuestionGridPanel";
 import QuizResultSummary from "../../../../components/studentDashboard/examDetails/QuizResultSummary";
@@ -11,6 +11,7 @@ import LoadingSpinner from "../../../../components/shared/LoadingSpinner";
 import {
   useGetQuizDetailsQuery,
   useSubmitQuizMutation,
+  useGetQuizResultQuery,
 } from "../../../../redex/features/quiz/quiz.api";
 import { useGetSubscriptionStatusQuery } from "../../../../redex/features/subscription/subscription.api";
 
@@ -18,17 +19,19 @@ import { useGetSubscriptionStatusQuery } from "../../../../redex/features/subscr
 export default function ExamDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
 
   const { data: quizDetails, isLoading: isQuizLoading } = useGetQuizDetailsQuery(id);
   const { data: subStatus } = useGetSubscriptionStatusQuery();
   const [submitQuiz, { isLoading: isSubmitting }] = useSubmitQuizMutation();
+  const { isSuccess: isResultSuccess } = useGetQuizResultQuery(id, { skip: !id });
 
   const isSubscribed = subStatus?.is_premium === true || subStatus?.is_active === true || subStatus?.plan === "premium";
 
-  // Track submission state via local state & localStorage to prevent calling result on load unless finished
-  const [isExamSubmitted, setIsExamSubmitted] = useState(() => {
-    return localStorage.getItem("exam_completed_" + id) === "true";
-  });
+  // Track submission state via local state (for active session submits)
+  const [isExamSubmitted, setIsExamSubmitted] = useState(false);
+
+  const hasAttempted = location.state?.isAttempted || quizDetails?.is_attempted || isResultSuccess || isExamSubmitted;
 
   if (isQuizLoading || isSubmitting) {
     return (
@@ -56,7 +59,7 @@ export default function ExamDetails() {
 
   const totalCount = questions.length;
 
-  if (isExamSubmitted) {
+  if (hasAttempted) {
     return (
       <QuizResultSummary
         results={{
@@ -137,7 +140,6 @@ function ActiveExamSession({
       });
 
       await submitQuiz({ id, answers: formattedAnswers }).unwrap();
-      localStorage.setItem("exam_completed_" + id, "true");
       setIsExamSubmitted(true);
       toast.success("Exam results submitted successfully!");
     } catch (err) {

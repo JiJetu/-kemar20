@@ -10,8 +10,8 @@ import QuizPublishedSuccess from "../../../components/admin/quiz/QuizPublishedSu
 import {
   useCreateQuizMutation,
   useGetAdminQuizDetailsQuery,
-  useUpdateQuizMutation,
   usePatchQuizMutation,
+  usePublishQuizMutation,
 } from "../../../redex/features/admin/quiz.api";
 
 export default function UploadQuizPdf() {
@@ -34,8 +34,8 @@ export default function UploadQuizPdf() {
 
   // RTK-Query endpoints
   const [createQuiz, { isLoading: isCreating }] = useCreateQuizMutation();
-  const [updateQuiz] = useUpdateQuizMutation();
   const [patchQuiz] = usePatchQuizMutation();
+  const [publishQuiz] = usePublishQuizMutation();
 
   // Background status polling (runs every 5 seconds when activeQuizId is active)
   const { data: polledQuizDetails } = useGetAdminQuizDetailsQuery(activeQuizId, {
@@ -148,7 +148,7 @@ export default function UploadQuizPdf() {
   const handlePublishComplete = async () => {
     if (formData?.id) {
       try {
-        await patchQuiz({ id: formData.id, is_published: true }).unwrap();
+        await publishQuiz(formData.id).unwrap();
         toast.success("Quiz has been successfully published to students!");
         setIsPublished(true);
       } catch (err) {
@@ -187,7 +187,7 @@ export default function UploadQuizPdf() {
     }));
   };
 
-  const handleSaveChangesComplete = async (updatedQuestions) => {
+  const handleSaveChangesComplete = async (updatedQuestions, publishVal = false) => {
     if (formData?.id) {
       try {
         const payloadQuestions = updatedQuestions.map((q, idx) => ({
@@ -198,28 +198,36 @@ export default function UploadQuizPdf() {
           steps: q.solution ? q.solution.split("\n") : [],
         }));
 
-        await updateQuiz({
+        await patchQuiz({
           id: formData.id,
           title: formData.title,
-          class_form: formData.classForm,
           time_limit: Number(formData.duration || 60),
           num_questions: Number(formData.numQuestions || updatedQuestions.length),
           book_name: formData.bookName,
           chapter: formData.chapter,
           topic: formData.topic,
-          is_published: false,
+          is_published: publishVal,
           questions: payloadQuestions,
         }).unwrap();
 
-        toast.success("Quiz saved as draft successfully!");
-        navigate("/admin/quiz");
+        if (publishVal) {
+          toast.success("Quiz has been successfully published to students!");
+          setIsPublished(true);
+        } else {
+          toast.success("Quiz saved as draft successfully!");
+          navigate("/admin/quiz");
+        }
       } catch (err) {
-        console.error("Save draft error:", err);
+        console.error("Save/Publish draft error:", err);
         toast.error("Failed to save changes.");
       }
     } else {
-      toast.success("Quiz saved as draft successfully!");
-      navigate("/admin/quiz");
+      if (publishVal) {
+        setIsPublished(true);
+      } else {
+        toast.success("Quiz saved as draft successfully!");
+        navigate("/admin/quiz");
+      }
     }
   };
 

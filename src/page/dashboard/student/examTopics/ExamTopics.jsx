@@ -3,7 +3,6 @@ import { GraduationCap } from "lucide-react";
 import { toast } from "sonner";
 import FreeTrialAlertBar from "./FreeTrialAlertBar";
 import TopicCard from "./TopicCard";
-import PremiumActiveAlertBar from "./PremiumActiveAlertBar";
 import { useGetSubscriptionStatusQuery } from "../../../../redex/features/subscription/subscription.api";
 import { useGetQuizzesQuery } from "../../../../redex/features/quiz/quiz.api";
 import Pagination from "../../../../components/shared/Pagination";
@@ -29,6 +28,7 @@ export default function ExamTopics() {
     questionsCount: q.question_count || q.num_questions || 0,
     duration: q.time_limit || 30,
     isPremium: q.is_premium_required || false,
+    isAttempted: q.is_attempted || false,
   }));
 
   const totalPages = quizzesData?.count ? Math.ceil(quizzesData.count / 10) : 1;

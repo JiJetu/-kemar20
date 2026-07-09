@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import {
-  Mail,
   Lock,
   Eye,
   EyeOff,
   LogOut,
-  Trash2,
   ChevronRight,
 } from "lucide-react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../../redex/features/auth/auth.slice";
 import {
@@ -50,22 +48,23 @@ const Profile = () => {
   // Sync state from profileData
   useEffect(() => {
     if (profileData) {
-      setFullName(profileData.full_name || "");
-      setEmail(profileData.email || "");
-      setContactNumber(profileData.contact_number || "");
-      setCurrentSchool(profileData.current_school || "");
-      setParentFullName(profileData.parent_full_name || "");
-      setParentEmail(profileData.parent_email || "");
-      setParentContactNumber(profileData.parent_contact_number || "");
-      setStudentClass(profileData.student_class || "");
-      setPreferredTime(profileData.preferred_time || "");
-      setProfilePicture(profileData.profile_picture || "");
-      setProfileImageFile(null);
+      setTimeout(() => {
+        setFullName(profileData.full_name || "");
+        setEmail(profileData.email || "");
+        setContactNumber(profileData.contact_number || "");
+        setCurrentSchool(profileData.current_school || "");
+        setParentFullName(profileData.parent_full_name || "");
+        setParentEmail(profileData.parent_email || "");
+        setParentContactNumber(profileData.parent_contact_number || "");
+        setStudentClass(profileData.student_class || "");
+        setPreferredTime(profileData.preferred_time || "");
+        setProfilePicture(profileData.profile_picture || "");
+        setProfileImageFile(null);
+      }, 0);
     }
   }, [profileData]);
 
-  // Password Visibility & General Settings States
-  const [showPassword, setShowPassword] = useState(false);
+  // General Settings States
   const [emailNotifications, setEmailNotifications] = useState(true);
 
   // Change Password Modal States
@@ -244,26 +243,16 @@ const Profile = () => {
               <Lock className="w-6 h-6" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold tracking-widest text-[#39842B] select-none h-6 flex items-center font-mono">
-                {showPassword ? "TemporaryPw123!" : "************"}
+              <span className="text-lg font-bold text-slate-950 mb-1">
+                Account Password
               </span>
-              <span className="text-xs sm:text-sm text-slate-500 mt-1">
+              <span className="text-xs sm:text-sm text-slate-500">
                 For Your Security, Keep Your Password Strong And Secure.
               </span>
             </div>
           </div>
 
           <div className="flex items-center w-full md:w-auto justify-end gap-6 border-t border-slate-100 md:border-t-0 pt-4 md:pt-0 shrink-0">
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="text-[#39842B] hover:bg-[#39842B]/10 p-2 rounded-full transition-all flex items-center justify-center cursor-pointer"
-            >
-              {showPassword ? <EyeOff className="w-6 h-6" /> : <Eye className="w-6 h-6" />}
-            </button>
-
-            <div className="hidden md:block w-px h-10 bg-slate-200" />
-
             <button
               type="button"
               onClick={() => setIsPasswordModalOpen(true)}

@@ -5,26 +5,26 @@ export default function QuizTable({ quizzes, onView, onDeleteRequest }) {
     <div className="w-full overflow-x-auto">
       <table className="w-full text-sm border-separate border-spacing-0">
         <thead>
-          <tr className="text-slate-500 font-semibold lato text-sm bg-[#FCEDEF]">
-            <th className="py-3 px-6 text-center font-semibold bg-[#FCEDEF] rounded-l-xl w-[8%]">
+          <tr className="text-slate-500 font-semibold lato text-sm bg-[#E9EFF8]">
+            <th className="py-3 px-6 text-center font-semibold bg-[#E9EFF8] rounded-l-xl w-[8%]">
               #
             </th>
-            <th className="py-3 px-4 text-left font-semibold bg-[#FCEDEF] w-[35%]">
+            <th className="py-3 px-4 text-left font-semibold bg-[#E9EFF8] w-[35%]">
               Quiz Title
             </th>
-            <th className="py-3 px-4 text-center font-semibold bg-[#FCEDEF] w-[12%]">
+            <th className="py-3 px-4 text-center font-semibold bg-[#E9EFF8] w-[12%]">
               Questions
             </th>
-            <th className="py-3 px-4 text-center font-semibold bg-[#FCEDEF] w-[13%]">
+            <th className="py-3 px-4 text-center font-semibold bg-[#E9EFF8] w-[13%]">
               Duration
             </th>
-            <th className="py-3 px-4 text-center font-semibold bg-[#FCEDEF] w-[13%]">
+            <th className="py-3 px-4 text-center font-semibold bg-[#E9EFF8] w-[13%]">
               Status
             </th>
-            <th className="py-3 px-4 text-center font-semibold bg-[#FCEDEF] w-[13%]">
+            <th className="py-3 px-4 text-center font-semibold bg-[#E9EFF8] w-[13%]">
               Created at
             </th>
-            <th className="py-3 px-6 text-center font-semibold bg-[#FCEDEF] rounded-r-xl w-[10%]">
+            <th className="py-3 px-6 text-center font-semibold bg-[#E9EFF8] rounded-r-xl w-[10%]">
               Action
             </th>
           </tr>

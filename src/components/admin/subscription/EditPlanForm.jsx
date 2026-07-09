@@ -7,7 +7,7 @@ export default function EditPlanForm({ plan, onSave, onCancel }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [freeCount, setFreeCount] = useState("");
+  const [billingPeriodDays, setBillingPeriodDays] = useState("");
   const [features, setFeatures] = useState([]);
   const [newFeatureText, setNewFeatureText] = useState("");
 
@@ -16,7 +16,7 @@ export default function EditPlanForm({ plan, onSave, onCancel }) {
       setName(plan.name || "");
       setDescription(plan.description || "");
       setPrice(String(plan.price !== undefined ? plan.price : ""));
-      setFreeCount(String(plan.freeCount !== undefined ? plan.freeCount : ""));
+      setBillingPeriodDays(String(plan.billingPeriodDays !== undefined ? plan.billingPeriodDays : ""));
       setFeatures(plan.features ? [...plan.features] : []);
     }
   }, [plan]);
@@ -63,7 +63,7 @@ export default function EditPlanForm({ plan, onSave, onCancel }) {
       name: name.trim(),
       description: description.trim(),
       price: isFree ? 0 : Number(price) || 0,
-      freeCount: isFree ? Number(freeCount) || 2 : undefined,
+      billingPeriodDays: Number(billingPeriodDays) || 0,
       features: features.map((f) => f.trim()),
     };
 
@@ -85,39 +85,31 @@ export default function EditPlanForm({ plan, onSave, onCancel }) {
           className="bg-white border-slate-300 rounded-lg text-slate-800 focus:border-[#0A2648]"
         />
 
-        {/* Description */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-slate-500 font-bold text-xs uppercase">Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter plan description"
-            className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 text-sm focus:outline-none focus:border-[#0A2648] h-24 resize-none font-medium"
+
+
+        {/* Conditional Pricing & Billing Period Inputs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {!isFree && (
+            <FormInput
+              label="Monthly price($)"
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="Enter monthly price"
+              labelClassName="text-slate-500 font-bold text-xs uppercase"
+              className="bg-white border-slate-300 rounded-lg text-slate-800 focus:border-[#0A2648]"
+            />
+          )}
+          <FormInput
+            label="Billing Period (days)"
+            type="number"
+            value={billingPeriodDays}
+            onChange={(e) => setBillingPeriodDays(e.target.value)}
+            placeholder="Enter billing period in days"
+            labelClassName="text-slate-500 font-bold text-xs uppercase"
+            className="bg-white border-slate-300 rounded-lg text-slate-800 focus:border-[#0A2648]"
           />
         </div>
-
-        {/* Conditional Pricing Input */}
-        {isFree ? (
-          <FormInput
-            label="Free Topics / Quizzes count"
-            type="number"
-            value={freeCount}
-            onChange={(e) => setFreeCount(e.target.value)}
-            placeholder="Enter number of free topics"
-            labelClassName="text-slate-500 font-bold text-xs uppercase"
-            className="bg-white border-slate-300 rounded-lg text-slate-800 focus:border-[#0A2648]"
-          />
-        ) : (
-          <FormInput
-            label="Monthly price($)"
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder="Enter monthly price"
-            labelClassName="text-slate-500 font-bold text-xs uppercase"
-            className="bg-white border-slate-300 rounded-lg text-slate-800 focus:border-[#0A2648]"
-          />
-        )}
 
         {/* Features List Section */}
         <div className="flex flex-col gap-3">
