@@ -23,6 +23,14 @@ export default function PricingPlanScreen() {
   const freePlan = plans.find((p) => p.code === "free_trial" || Number(p.price) === 0);
   const premiumPlan = plans.find((p) => p.code === "premium");
 
+  const freeFeatures = freePlan && freePlan.description
+    ? freePlan.description.split(",").map(f => f.trim()).filter(Boolean)
+    : ["Access 2 handpicked topics/quizzes", "Selected By Admin", "No Payment Required"];
+
+  const premiumFeatures = premiumPlan && premiumPlan.description
+    ? premiumPlan.description.split(",").map(f => f.trim()).filter(Boolean)
+    : ["Access All Topics & Quizzes", "Unlimited Practice", "Detailed Solutions & Explanations", "Track Progress & Performance"];
+
   const handleSelectPlan = async (plan) => {
     if (plan === "free") {
       try {
@@ -104,44 +112,30 @@ export default function PricingPlanScreen() {
                   <h3 className="text-xl font-extrabold text-[#082042] lora">
                     Start <span className="text-[#39842B]">{freePlan?.code_display || "Free Trial"}</span>
                   </h3>
-                  <p className="text-slate-400 text-xs font-semibold roboto">{freePlan?.description || "Try Excelim With Limited Access."}</p>
+                  <p className="text-slate-400 text-xs font-semibold roboto">Try Excelim With Limited Access.</p>
                 </div>
               </div>
 
               {/* Price block */}
               <div className="mb-6">
                 <h4 className="text-2xl font-extrabold text-[#39842B] leading-none mb-1 roboto">
-                  2 Free Topics / Quizess
+                  Free
                 </h4>
-                <span className="text-slate-400 text-xs font-bold roboto">Handpicked by our experts</span>
+                <span className="text-slate-400 text-xs font-bold roboto">No credit card required</span>
               </div>
 
               {/* Bullets */}
               <ul className="space-y-3.5 mb-8">
-                <li className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
-                  <div className="w-5 h-5 rounded-full bg-[#EBF9E9] text-[#39842B] flex items-center justify-center shrink-0 select-none">
-                    <svg className="w-3.5 h-3.5 stroke-[3px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>Access 2 handpicked topics/quizzes</span>
-                </li>
-                <li className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
-                  <div className="w-5 h-5 rounded-full bg-[#EBF9E9] text-[#39842B] flex items-center justify-center shrink-0 select-none">
-                    <svg className="w-3.5 h-3.5 stroke-[3px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>Selected By Admin</span>
-                </li>
-                <li className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
-                  <div className="w-5 h-5 rounded-full bg-[#EBF9E9] text-[#39842B] flex items-center justify-center shrink-0 select-none">
-                    <svg className="w-3.5 h-3.5 stroke-[3px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>No Payment Required</span>
-                </li>
+                {freeFeatures.map((feat, idx) => (
+                  <li key={idx} className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
+                    <div className="w-5 h-5 rounded-full bg-[#EBF9E9] text-[#39842B] flex items-center justify-center shrink-0 select-none">
+                      <svg className="w-3.5 h-3.5 stroke-[3px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span>{feat}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -168,52 +162,33 @@ export default function PricingPlanScreen() {
                   <h3 className="text-xl font-extrabold text-[#082042] lora">
                     Go <span className="text-[#0047D2]">{premiumPlan?.code_display || "Premium"}</span>
                   </h3>
-                  <p className="text-slate-400 text-xs font-semibold roboto">{premiumPlan?.description || "Unlock all features and accelerate your success"}</p>
+                  <p className="text-slate-400 text-xs font-semibold roboto">Unlock all features and accelerate your success.</p>
                 </div>
               </div>
 
               {/* Price block */}
               <div className="mb-6">
                 <h4 className="text-2xl font-extrabold text-[#0047D2] leading-none mb-1 roboto">
-                  ${premiumPlan?.price ? parseFloat(premiumPlan.price) : "9.99"} <span className="text-slate-400 text-sm font-semibold">/Month</span>
+                  ${premiumPlan?.price ? parseFloat(premiumPlan.price).toFixed(2) : "9.99"}{" "}
+                  <span className="text-slate-400 text-sm font-semibold">
+                    /{premiumPlan?.billing_period_days || 30} Days
+                  </span>
                 </h4>
                 <span className="text-transparent text-xs font-bold block select-none roboto">Placeholder</span>
               </div>
 
               {/* Bullets */}
               <ul className="space-y-3.5 mb-8">
-                <li className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
-                  <div className="w-5 h-5 rounded-full bg-[#E8F0FA] text-[#0047D2] flex items-center justify-center shrink-0 select-none">
-                    <svg className="w-3.5 h-3.5 stroke-[3px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>Access All Topics & Quizzes</span>
-                </li>
-                <li className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
-                  <div className="w-5 h-5 rounded-full bg-[#E8F0FA] text-[#0047D2] flex items-center justify-center shrink-0 select-none">
-                    <svg className="w-3.5 h-3.5 stroke-[3px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>Unlimited Practice</span>
-                </li>
-                <li className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
-                  <div className="w-5 h-5 rounded-full bg-[#E8F0FA] text-[#0047D2] flex items-center justify-center shrink-0 select-none">
-                    <svg className="w-3.5 h-3.5 stroke-[3px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>Detailed Solutions & Explanations</span>
-                </li>
-                <li className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
-                  <div className="w-5 h-5 rounded-full bg-[#E8F0FA] text-[#0047D2] flex items-center justify-center shrink-0 select-none">
-                    <svg className="w-3.5 h-3.5 stroke-[3px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>Track Progress & Performance</span>
-                </li>
+                {premiumFeatures.map((feat, idx) => (
+                  <li key={idx} className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
+                    <div className="w-5 h-5 rounded-full bg-[#E8F0FA] text-[#0047D2] flex items-center justify-center shrink-0 select-none">
+                      <svg className="w-3.5 h-3.5 stroke-[3px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span>{feat}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -232,7 +207,7 @@ export default function PricingPlanScreen() {
 
         {/* Safe payment branding */}
         <span className="text-[#39842B] font-bold text-[13px] tracking-wide mt-4 roboto">
-          Secure & Safe Payment Power By Stripe
+          Secure & Safe Payment Powered By DimePay
         </span>
 
       </div>

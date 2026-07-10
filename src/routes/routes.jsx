@@ -20,6 +20,7 @@ import QuizDetail from "../page/dashboard/admin/QuizDetail";
 import SettingsPage from "../page/dashboard/admin/SettingsPage";
 import SubscriptionManagement from "../page/dashboard/admin/SubscriptionManagement";
 import ProtectedRoute from "../components/shared/auth/ProtectedRoute";
+import PricingPlanScreen from "../components/auth/signup/PricingPlanScreen";
 
 const router = createBrowserRouter([
   {
@@ -27,10 +28,10 @@ const router = createBrowserRouter([
     element: <Home />,
     errorElement: <ErrorPage />,
   },
-  // {
-  //   path: "/test",
-  //   element: <PricingPlanScreen />,
-  // },
+  {
+    path: "/test",
+    element: <PricingPlanScreen />,
+  },
   {
     path: "/dashboard",
     element: (
