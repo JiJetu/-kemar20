@@ -295,7 +295,7 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
                           {q.steps.map((step, sIdx) => (
                             <div key={sIdx} className="flex items-start gap-2 leading-relaxed">
                               <span className="text-[#66A331] font-bold shrink-0">{sIdx + 1}.</span>
-                              <span>{parseMathEquation(step)}</span>
+                              <span>{parseMathEquation(step, true)}</span>
                             </div>
                           ))}
                         </div>
@@ -319,7 +319,7 @@ const QuizResultSummary = ({ results, totalCount, mockQuestions, answers, onBack
           </div>
 
           {/* Previous Exam Papers (Stacked in the Left Column) */}
-          <SolutionPdf pdfUrl={quizResult?.reference_pdf} />
+          <SolutionPdf pdfUrl={quizResult?.reference_pdf_url} />
         </div>
 
         {/* Right: Leaderboard (Col-span 4) */}

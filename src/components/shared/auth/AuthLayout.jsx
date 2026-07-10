@@ -8,7 +8,7 @@ export default function AuthLayout({ children, leftTitle, leftSubtitle }) {
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#EBF9E9] text-black select-none font-sans overflow-x-hidden">
       {/* Left Column: Info & Illustration (Desktop Only) */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-left border">
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-left">
         <div className="w-full flex flex-col justify-start items-center">
           <div>
             <h1 className="text-4xl xl:text-[44px] font-extrabold text-[#082042] leading-[1.15] mb-6 lora">
@@ -30,7 +30,7 @@ export default function AuthLayout({ children, leftTitle, leftSubtitle }) {
       </div>
 
       {/* Right Column: Large White Form Panel */}
-      <div className="w-full lg:w-1/2 bg-white lg:rounded-l-[48px] flex flex-col min-h-screen relative p-6 sm:p-12 lg:p-16 justify-between shadow-lg">
+      <div className="w-full lg:w-1/2 bg-white lg:rounded-l-[48px] flex flex-col relative p-6 sm:p-12 lg:p-16 justify-between shadow-lg lg:my-10">
         {/* Top Header Row (Switch Link only) */}
         <div className="w-full flex items-center justify-end mb-8 select-none">
           <div className="text-sm font-semibold text-[#082042] roboto">
@@ -53,7 +53,7 @@ export default function AuthLayout({ children, leftTitle, leftSubtitle }) {
         </div>
 
         {/* Center Form Container */}
-        <div className="flex-1 flex items-center justify-center w-full max-w-[500px] mx-auto py-8">
+        <div className="flex-1 flex items-center justify-center w-full max-w-[500px] mx-auto">
           <div className="w-full">{children}</div>
         </div>
       </div>

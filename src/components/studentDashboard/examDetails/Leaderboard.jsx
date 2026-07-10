@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { ICONS } from "../../../assets";
 import { useGetQuizLeaderboardQuery } from "../../../redex/features/quiz/quiz.api";
 
 const Leaderboard = ({ quizId }) => {
   const { data: leaderboardData, isLoading } = useGetQuizLeaderboardQuery(quizId);
+  const [showAll, setShowAll] = useState(false);
 
   if (isLoading) {
     return (
@@ -258,7 +260,7 @@ const Leaderboard = ({ quizId }) => {
 
       {/* Leaderboard scrollable list */}
       <div className="flex-1 flex flex-col gap-2.5">
-        {rankingsList.slice(0, 5).map((rank) => (
+        {rankingsList.slice(0, showAll ? undefined : 10).map((rank) => (
           <div
             key={rank.rank}
             className="bg-slate-50/60 hover:bg-slate-50 border border-slate-200 rounded-xl py-2 px-4 flex items-center justify-between transition-all"
@@ -290,12 +292,15 @@ const Leaderboard = ({ quizId }) => {
       </div>
 
       {/* View Full Leaderboard Button */}
-      <button
-        type="button"
-        className="w-full mt-4 py-2.5 bg-[#E5ECF9] text-secondary font-bold rounded-xl text-xs sm:text-sm transition-all tracking-wide shadow-sm"
-      >
-        View Full Leaderboard
-      </button>
+      {rankingsList.length > 10 && (
+        <button
+          type="button"
+          onClick={() => setShowAll(!showAll)}
+          className="w-full mt-4 py-2.5 bg-[#E5ECF9] hover:bg-[#E5ECF9]/80 text-secondary font-bold rounded-xl text-xs sm:text-sm transition-all tracking-wide shadow-sm cursor-pointer"
+        >
+          {showAll ? "Show Less" : "View Full Leaderboard"}
+        </button>
+      )}
     </div>
   );
 };

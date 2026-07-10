@@ -1,8 +1,62 @@
-import { Download, FileText } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Download, FileText, Loader2 } from "lucide-react";
 
 export default function SolutionPdf({ pdfUrl }) {
+  const [blobUrl, setBlobUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (!pdfUrl) return;
+
+    let active = true;
+    let localUrl = null;
+
+    setTimeout(() => {
+      if (active) {
+        setLoading(true);
+        setError(false);
+      }
+    }, 0);
+
+    fetch(pdfUrl)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch PDF");
+        return res.blob();
+      })
+      .then((blob) => {
+        if (!active) return;
+        const fileBlob = new Blob([blob], { type: "application/pdf" });
+        localUrl = URL.createObjectURL(fileBlob);
+        setBlobUrl(localUrl);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error loading PDF blob:", err);
+        if (active) {
+          setError(true);
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      active = false;
+      if (localUrl) {
+        URL.revokeObjectURL(localUrl);
+      }
+    };
+  }, [pdfUrl]);
+
   const handleDownloadPdf = () => {
-    if (pdfUrl) {
+    if (blobUrl) {
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      const filename = pdfUrl.substring(pdfUrl.lastIndexOf("/") + 1) || "exam_reference.pdf";
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (pdfUrl) {
       window.open(pdfUrl, "_blank");
     }
   };
@@ -37,14 +91,36 @@ export default function SolutionPdf({ pdfUrl }) {
       </div>
 
       {/* Sheet Content Viewer wrapper */}
-      <div className="relative overflow-auto flex justify-center py-2 bg-slate-50 rounded-xl border border-slate-100 min-h-[300px] items-center px-4">
-        <div className="w-full">
-          <iframe
-            src={pdfUrl}
-            title="Solution Reference PDF"
-            className="w-full h-[450px] rounded-xl border border-slate-200 shadow-sm bg-white"
-          />
-        </div>
+      <div className="relative overflow-auto flex justify-center py-2 bg-slate-50 rounded-xl border border-slate-100 min-h-[470px] items-center px-4">
+        {loading ? (
+          <div className="flex flex-col items-center gap-2">
+            <Loader2 className="w-8 h-8 text-[#39842B] animate-spin" />
+            <span className="text-xs text-slate-400 font-bold roboto">Loading inline viewer...</span>
+          </div>
+        ) : error || !blobUrl ? (
+          <div className="flex flex-col items-center justify-center p-8 text-center bg-white rounded-xl h-[450px] w-full border border-slate-200 shadow-sm">
+            <FileText className="w-14 h-14 text-slate-300 mb-4 animate-pulse" />
+            <h4 className="text-lg font-bold text-[#082042] roboto">Inline PDF Preview Blocked</h4>
+            <p className="text-xs text-slate-500 mt-2 font-medium max-w-sm leading-relaxed mb-6">
+              Your browser doesn't support previewing PDFs inline or the server requires downloading the document. Use the button below to view it.
+            </p>
+            <button
+              type="button"
+              onClick={handleDownloadPdf}
+              className="flex items-center gap-2 bg-[#39842B] hover:bg-[#39842B]/95 text-white font-bold py-2.5 px-6 rounded-xl text-sm transition-all shadow-md active:scale-95 cursor-pointer select-none"
+            >
+              <Download size={16} /> Open PDF in New Tab
+            </button>
+          </div>
+        ) : (
+          <div className="w-full">
+            <iframe
+              src={blobUrl}
+              title="Solution Reference PDF"
+              className="w-full h-[450px] rounded-xl border border-slate-200 shadow-sm bg-white"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
