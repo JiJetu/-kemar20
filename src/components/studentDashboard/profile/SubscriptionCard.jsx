@@ -1,5 +1,6 @@
 import { Crown, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useGetSubscriptionStatusQuery } from "../../../redex/features/subscription/subscription.api";
 
 const SubscriptionCard = ({
   isPremiumSubscribed,
@@ -7,6 +8,17 @@ const SubscriptionCard = ({
   handleSubscribe,
 }) => {
   const navigate = useNavigate();
+  const { data: subStatus } = useGetSubscriptionStatusQuery();
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "N/A";
+    try {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
+    } catch {
+      return "N/A";
+    }
+  };
 
   return isPremiumSubscribed ? (
     /* Premium Member Banner */
@@ -19,9 +31,11 @@ const SubscriptionCard = ({
           <h3 className="font-bold text-slate-900 text-lg leading-tight roboto mb-1">
             Premium Member
           </h3>
-          <span className="text-xs font-bold text-[#0047D2] mb-1.5 block">
-            Renewal Date: 25 May 2025
-          </span>
+          {subStatus?.current_period_end && (
+            <span className="text-xs font-bold text-[#0047D2] mb-1.5 block">
+              Renewal Date: {formatDate(subStatus.current_period_end)}
+            </span>
+          )}
           <p className="text-slate-400 text-xs font-semibold roboto leading-relaxed">
             You Have Full Access To All Topics, Quizzes And Premium Features
           </p>

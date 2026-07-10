@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import {
   Lock,
-  Eye,
-  EyeOff,
   LogOut,
   ChevronRight,
 } from "lucide-react";

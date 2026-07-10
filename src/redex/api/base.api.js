@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { logout } from "../features/auth/auth.slice";
+import { logout, setTokens } from "../features/auth/auth.slice";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_BASE_URL,
@@ -14,16 +14,55 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithExpiryGuard = async (args, api, extraOptions) => {
-  const result = await baseQuery(args, api, extraOptions);
+const baseQueryWithReauth = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
 
   if (result?.error?.status === 401) {
-    api.dispatch(logout());
-    if (
-      typeof window !== "undefined" &&
-      window.location?.pathname !== "/login"
-    ) {
-      window.location.replace("/login");
+    const refreshToken = api.getState().auth.refreshToken;
+    if (refreshToken) {
+      console.log("Token expired. Attempting automatic refresh...");
+      const refreshResult = await baseQuery(
+        {
+          url: "/api/auth/token/refresh/",
+          method: "POST",
+          body: { refresh: refreshToken },
+        },
+        api,
+        extraOptions
+      );
+
+      if (refreshResult?.data?.access) {
+        console.log("Token refreshed successfully.");
+        const newAccess = refreshResult.data.access;
+        // Dispatch setTokens while preserving existing refresh token and user
+        api.dispatch(
+          setTokens({
+            access: newAccess,
+            refresh: refreshToken,
+            user: api.getState().auth.user,
+          })
+        );
+        // Retry the original query
+        result = await baseQuery(args, api, extraOptions);
+      } else {
+        console.error("Token refresh failed. Logging out...");
+        api.dispatch(logout());
+        if (
+          typeof window !== "undefined" &&
+          window.location?.pathname !== "/login"
+        ) {
+          window.location.replace("/login");
+        }
+      }
+    } else {
+      console.warn("No refresh token available. Logging out...");
+      api.dispatch(logout());
+      if (
+        typeof window !== "undefined" &&
+        window.location?.pathname !== "/login"
+      ) {
+        window.location.replace("/login");
+      }
     }
   }
 
@@ -32,7 +71,7 @@ const baseQueryWithExpiryGuard = async (args, api, extraOptions) => {
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  baseQuery: baseQueryWithExpiryGuard,
+  baseQuery: baseQueryWithReauth,
   tagTypes: [
     "Profile",
     "Subscription",

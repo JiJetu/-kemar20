@@ -1,50 +1,51 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Crown, CheckCircle2, ChevronLeft } from "lucide-react";
+import { Crown, CheckCircle2, ChevronLeft, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "../../shared/SEO";
-import { useGetSubscriptionStatusQuery } from "../../../redex/features/subscription/subscription.api";
+import { 
+  useGetSubscriptionStatusQuery,
+  useCancelSubscriptionMutation,
+  useGetBillingPlansQuery
+} from "../../../redex/features/subscription/subscription.api";
 
 export default function ManageSubscription() {
   const navigate = useNavigate();
   const { data: subStatus, isLoading } = useGetSubscriptionStatusQuery();
+  const { data: plansData } = useGetBillingPlansQuery();
+  const [cancelSubscription, { isLoading: isCancelling }] = useCancelSubscriptionMutation();
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  
   const isSubscribed = subStatus?.is_premium === true || subStatus?.is_active === true || subStatus?.plan === "premium";
 
+  useEffect(() => {
+    if (!isLoading && subStatus && !isSubscribed) {
+      toast.error("You must have an active premium plan to access subscription management.");
+      navigate("/dashboard/profile", { replace: true });
+    }
+  }, [isLoading, subStatus, isSubscribed, navigate]);
+
   const handleCancelSubscription = () => {
-    toast.info("Please contact ExcelJM support to process plan cancellations.");
+    setShowCancelModal(true);
   };
 
-  if (isLoading) {
+  const confirmCancelSubscription = async () => {
+    setShowCancelModal(false);
+    try {
+      await cancelSubscription().unwrap();
+      toast.success("Subscription cancelled successfully.");
+    } catch (err) {
+      console.error("Cancel subscription error:", err);
+      toast.error(err?.data?.detail || err?.data?.message || "Failed to cancel subscription. Please try again.");
+    }
+  };
+
+  if (isLoading || !isSubscribed) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
         <div className="w-10 h-10 border-4 border-[#0047D2] border-t-transparent rounded-full animate-spin" />
-        <p className="text-slate-500 font-medium roboto">Retrieving subscription status...</p>
+        <p className="text-slate-500 font-medium roboto">Verifying subscription status...</p>
       </div>
-    );
-  }
-
-  if (!isSubscribed) {
-    return (
-      <>
-        <SEO
-          title="Manage Subscription || ExcelJM"
-          description="View and manage your active premium subscription settings."
-        />
-        <div className="max-w-md mx-auto px-4 py-16 flex flex-col items-center text-center gap-6 font-sans">
-          <div className="p-4 bg-slate-100 rounded-full text-slate-400">
-            <Crown className="w-12 h-12" />
-          </div>
-          <h2 className="text-2xl font-bold text-slate-800">No Active Premium Plan</h2>
-          <p className="text-slate-500 text-sm">
-            Upgrade to premium to unlock all topics, quizzes, and learning tools.
-          </p>
-          <button
-            onClick={() => navigate("/dashboard/profile")}
-            className="bg-[#39842B] hover:bg-[#39842B]/95 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md cursor-pointer"
-          >
-            Upgrade Now
-          </button>
-        </div>
-      </>
     );
   }
 
@@ -67,6 +68,11 @@ export default function ManageSubscription() {
       return "N/A";
     }
   };
+
+  const premiumPlan = plansData?.results?.find((p) => p.code === "premium");
+  const premiumFeatures = premiumPlan && premiumPlan.description
+    ? premiumPlan.description.split(",").map(f => f.trim()).filter(Boolean)
+    : ["Access All Topics & Quizzes", "Unlimited Practice", "Detailed Solutions & Explanations", "Track Progress & Performance"];
 
   return (
     <>
@@ -116,9 +122,10 @@ export default function ManageSubscription() {
           <div className="shrink-0">
             <button
               onClick={handleCancelSubscription}
-              className="bg-white hover:bg-slate-50 border border-slate-100 text-[#0047D2] font-bold text-xs sm:text-sm px-5 py-2.5 rounded-[8px] transition-all flex items-center gap-1.5 shadow-sm roboto cursor-pointer"
+              disabled={isCancelling}
+              className="bg-white hover:bg-slate-50 border border-slate-100 text-[#0047D2] font-bold text-xs sm:text-sm px-5 py-2.5 rounded-[8px] transition-all flex items-center gap-1.5 shadow-sm roboto cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>Cancel Subscription</span>
+              <span>{isCancelling ? "Cancelling..." : "Cancel Subscription"}</span>
               <span className="text-sm font-medium leading-none">→</span>
             </button>
           </div>
@@ -178,7 +185,7 @@ export default function ManageSubscription() {
                   Billing Cycle
                 </span>
                 <span className="text-sm sm:text-base font-medium text-[#082042] roboto">
-                  {subStatus?.plan === "premium" ? "Monthly" : "N/A"}
+                  {premiumPlan?.billing_period_days ? `${premiumPlan.billing_period_days} Days` : "30 Days"}
                 </span>
               </div>
               <div className="text-right sm:text-left">
@@ -186,7 +193,7 @@ export default function ManageSubscription() {
                   Amount
                 </span>
                 <span className="text-sm sm:text-base font-medium text-[#082042] roboto">
-                  {subStatus?.plan === "premium" ? "$9.99/Month" : "$0.00"}
+                  {premiumPlan?.price ? `$${parseFloat(premiumPlan.price).toFixed(2)}` : "$9.99"}
                 </span>
               </div>
             </div>
@@ -200,26 +207,58 @@ export default function ManageSubscription() {
           </h3>
 
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <li className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
-              <CheckCircle2 className="w-5 h-5 text-[#0047D2] shrink-0" />
-              <span>Access All Topics & Quizzes</span>
-            </li>
-            <li className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
-              <CheckCircle2 className="w-5 h-5 text-[#0047D2] shrink-0" />
-              <span>Unlimited Practice</span>
-            </li>
-            <li className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
-              <CheckCircle2 className="w-5 h-5 text-[#0047D2] shrink-0" />
-              <span>Detailed Solutions & Explanations</span>
-            </li>
-            <li className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
-              <CheckCircle2 className="w-5 h-5 text-[#0047D2] shrink-0" />
-              <span>Track Progress & Performance</span>
-            </li>
+            {premiumFeatures.map((feat, idx) => (
+              <li key={idx} className="flex items-center gap-3 text-sm font-semibold text-slate-600 roboto">
+                <CheckCircle2 className="w-5 h-5 text-[#0047D2] shrink-0" />
+                <span>{feat}</span>
+              </li>
+            ))}
           </ul>
         </div>
 
       </div>
+
+      {/* Cancellation Confirmation Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 flex flex-col items-center text-center shadow-lg animate-in fade-in zoom-in-95 duration-200">
+            
+            {/* Warning Icon */}
+            <div className="w-16 h-16 rounded-full bg-red-50 border border-red-100 flex items-center justify-center text-red-500 mb-4 select-none animate-bounce">
+              <AlertTriangle className="w-8 h-8 stroke-[1.5]" />
+            </div>
+
+            {/* Title */}
+            <h3 className="text-[#082042] text-xl font-bold mb-2 lora">
+              Cancel Subscription?
+            </h3>
+
+            {/* Description */}
+            <p className="text-slate-505 text-xs md:text-sm font-semibold leading-relaxed mb-6 roboto">
+              Are you sure you want to cancel your active premium subscription? You will retain premium access until the end of your current billing period.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3 w-full justify-center">
+              <button
+                type="button"
+                onClick={() => setShowCancelModal(false)}
+                className="px-4 py-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-[#082042] font-bold text-xs md:text-sm transition-all flex-1 cursor-pointer select-none"
+              >
+                No, Keep
+              </button>
+              <button
+                type="button"
+                onClick={confirmCancelSubscription}
+                className="px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-650 text-white font-bold text-xs md:text-sm transition-all flex-1 cursor-pointer select-none shadow-sm active:scale-95"
+              >
+                Yes, Cancel
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </>
   );
 }

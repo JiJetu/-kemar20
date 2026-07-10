@@ -32,6 +32,13 @@ export const subscriptionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Subscription", "Profile"],
     }),
+    cancelSubscription: builder.mutation({
+      query: () => ({
+        url: "/api/billing/cancel/",
+        method: "POST",
+      }),
+      invalidatesTags: ["Subscription", "Profile"],
+    }),
   }),
 });
 
@@ -41,4 +48,5 @@ export const {
   useUpdateBillingPlanMutation,
   useCheckoutPremiumMutation,
   useActivateFreeTrialMutation,
+  useCancelSubscriptionMutation,
 } = subscriptionApi;
