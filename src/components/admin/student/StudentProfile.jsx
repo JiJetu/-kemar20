@@ -248,9 +248,9 @@ export default function StudentProfile() {
                 <th className="py-3 px-4 text-center font-semibold bg-[#E5ECF9]/50 border-y border-[#E5ECF9]/10 text-slate-600">
                   Date
                 </th>
-                <th className="py-3 px-6 text-center font-semibold bg-[#E5ECF9]/50 border-y border-r border-[#E5ECF9]/10 rounded-r-xl text-slate-600">
+                {/* <th className="py-3 px-6 text-center font-semibold bg-[#E5ECF9]/50 border-y border-r border-[#E5ECF9]/10 rounded-r-xl text-slate-600">
                   Action
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -309,7 +309,7 @@ export default function StudentProfile() {
                     </td>
 
                     {/* Action */}
-                    <td className="py-4 px-6 border-b border-slate-100 text-center">
+                    {/* <td className="py-4 px-6 border-b border-slate-100 text-center">
                       <div className="flex items-center justify-center">
                         <button
                           type="button"
@@ -319,7 +319,7 @@ export default function StudentProfile() {
                           <Eye className="w-4 h-4" />
                         </button>
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               )}
