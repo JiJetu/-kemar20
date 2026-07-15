@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Eye } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useGetStudentDetailsQuery } from "../../../redex/features/admin/admin.api";
 import LoadingSpinner from "../../shared/LoadingSpinner";
