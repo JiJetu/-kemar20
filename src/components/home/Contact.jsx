@@ -4,6 +4,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Mail, Phone, MapPin, ChevronDown } from "lucide-react";
 import SectionHeader from "../shared/SectionHeader";
+import { useContactMutation } from "../../redex/features/auth/auth.api";
 
 // Define the schema for validation
 const contactSchema = z.object({
@@ -19,6 +20,7 @@ const contactSchema = z.object({
 });
 
 export default function Contact() {
+  const [contact] = useContactMutation();
   const {
     register,
     handleSubmit,
@@ -41,15 +43,19 @@ export default function Contact() {
 
   const onSubmit = async (data) => {
     try {
-      // Simulate API submit delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log("Contact form submitted successfully:", data);
+      await contact({
+        full_name: data.fullName,
+        email: data.email,
+        subject: data.subject,
+        message: data.message
+      }).unwrap();
       
       toast.success("Thank you! Your message has been sent successfully.");
       reset();
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to send message. Please try again.");
+      console.error("Contact form error:", error);
+      const errorMsg = error?.data?.detail || error?.data?.message || "Failed to send message. Please try again.";
+      toast.error(errorMsg);
     }
   };
 

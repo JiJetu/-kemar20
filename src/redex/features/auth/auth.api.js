@@ -71,6 +71,14 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
+    contact: builder.mutation({
+      query: (body) => ({
+        url: "/api/auth/contact/",
+        method: "POST",
+        body,
+      }),
+    }),
+
   }),
 });
 
@@ -81,4 +89,5 @@ export const {
   useSignupMutation,
   useVerifyMutation,
   useResendOtpMutation,
+  useContactMutation,
 } = authApi;
