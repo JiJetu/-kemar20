@@ -70,7 +70,7 @@ export default function QuizInfoForm({ onSubmitData, defaultValues }) {
         >
           <option value="">Select Class</option>
           <option value="4th">4th Grade</option>
-          <option value="5th">5th Grade</option>>
+          <option value="5th">5th Grade</option>
         </FormSelect>
 
         {/* Book Name selection */}
