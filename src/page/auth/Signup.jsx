@@ -38,11 +38,6 @@ export default function Signup() {
   const classes = [
     "4th Form",
     "5th Form",
-    "6th Form",
-    "7th Form",
-    "8th Form",
-    "9th Form",
-    "10th Form"
   ];
 
   const timeOptions = [
