@@ -131,7 +131,7 @@ export default function QuizDetail() {
 
   if (error) {
     return (
-      <div className="bg-white border border-slate-200 rounded-[20px] p-8 text-center text-red-500 font-semibold shadow-sm max-w-lg mx-auto mt-12">
+      <div className="bg-white border border-slate-200 rounded-[20px]  p-8 text-center text-red-500 font-semibold shadow-sm max-w-lg mx-auto mt-12">
         Failed to load quiz details. Please return to the quiz management page.
       </div>
     );
