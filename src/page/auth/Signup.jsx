@@ -35,22 +35,19 @@ export default function Signup() {
 
   const [errors, setErrors] = useState({});
 
-  const classes = [
-    "4th Form",
-    "5th Form",
-  ];
+  const classes = ["4th Form", "5th Form"];
 
   const timeOptions = [
     { id: "morning", title: "Morning", time: "12:00 Am-02:00PM" },
     { id: "afternoon", title: "Afternoon", time: "10:00 Am-12:00PM" },
-    { id: "evening", title: "Evening", time: "12:00 Am-02:00PM" }
+    { id: "evening", title: "Evening", time: "12:00 Am-02:00PM" },
   ];
 
   const steps = [
     { num: 1, label: "Student Info" },
     { num: 2, label: "Parent Info" },
     { num: 3, label: "Class Selection" },
-    { num: 4, label: "Time Selection" }
+    { num: 4, label: "Time Selection" },
   ];
 
   const validateStep = (stepNum) => {
@@ -60,14 +57,17 @@ export default function Signup() {
       if (!studentEmail.trim() || !/\S+@\S+\.\S+/.test(studentEmail)) {
         errs.studentEmail = "Valid email address is required";
       }
-      if (!studentPhone.trim()) errs.studentPhone = "Contact Number is required";
-      if (!studentSchool.trim()) errs.studentSchool = "Current School is required";
+      if (!studentPhone.trim())
+        errs.studentPhone = "Contact Number is required";
+      if (!studentSchool.trim())
+        errs.studentSchool = "Current School is required";
     } else if (stepNum === 2) {
       if (!parentName.trim()) errs.parentName = "Parent Full Name is required";
       if (!parentEmail.trim() || !/\S+@\S+\.\S+/.test(parentEmail)) {
         errs.parentEmail = "Valid Parent email is required";
       }
-      if (!parentPhone.trim()) errs.parentPhone = "Parent Contact Number is required";
+      if (!parentPhone.trim())
+        errs.parentPhone = "Parent Contact Number is required";
     } else if (stepNum === 3) {
       if (!selectedClass) errs.selectedClass = "Please select your class";
     } else if (stepNum === 4) {
@@ -101,12 +101,20 @@ export default function Signup() {
         preferred_time: selectedTime.toLowerCase(),
       }).unwrap();
 
-      toast.success(response.message || response.detail || "Account created! Verification code sent.");
+      toast.success(
+        response.message ||
+          response.detail ||
+          "Account created! Verification code sent.",
+      );
       setEmail(studentEmail);
       setSignupStep("otp");
     } catch (error) {
       console.error("Signup error:", error);
-      const errorMsg = error?.data?.detail || error?.data?.message || error?.data?.email?.[0] || "Signup failed. Please try again.";
+      const errorMsg =
+        error?.data?.detail ||
+        error?.data?.message ||
+        error?.data?.email?.[0] ||
+        "Signup failed. Please try again.";
       toast.error(errorMsg);
     }
   };
@@ -118,7 +126,11 @@ export default function Signup() {
   return (
     <>
       <SEO
-        title={signupStep === "signup" ? "Sign Up || ExcelJM" : "Verify Email || ExcelJM"}
+        title={
+          signupStep === "signup"
+            ? "Sign Up || ExcelJM"
+            : "Verify Email || ExcelJM"
+        }
         description="Create and verify your account to start exploring and learning on ExcelJM."
       />
 
@@ -139,30 +151,43 @@ export default function Signup() {
               alt="ExcelJM Logo"
               className="h-16 w-auto object-contain mb-8 select-none"
             />
-            
+
             {/* Steps Progress Header */}
             <div className="flex items-center justify-between w-full mb-14 px-2 relative select-none">
               {steps.map((s, idx) => (
-                <div key={s.num} className="flex items-center flex-1 last:flex-initial">
+                <div
+                  key={s.num}
+                  className="flex items-center flex-1 last:flex-initial"
+                >
                   <div className="flex flex-col items-center relative">
                     {/* Circle */}
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-base transition-colors lora ${
-                      currentStep >= s.num ? "bg-[#39842B] text-white" : "bg-[#EBF5E4] text-[#39842B] border border-[#39842B]/30"
-                    }`}>
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-base transition-colors lora ${
+                        currentStep >= s.num
+                          ? "bg-[#39842B] text-white"
+                          : "bg-[#EBF5E4] text-[#39842B] border border-[#39842B]/30"
+                      }`}
+                    >
                       {s.num}
                     </div>
                     {/* Label */}
-                    <span className={`text-[10px] font-extrabold mt-3 whitespace-nowrap absolute top-8 transition-colors lato ${
-                      currentStep === s.num ? "text-[#082042]" : "text-slate-400"
-                    }`}>
+                    <span
+                      className={`text-[10px] font-extrabold mt-3 whitespace-nowrap absolute top-8 transition-colors lato ${
+                        currentStep === s.num
+                          ? "text-[#082042]"
+                          : "text-slate-400"
+                      }`}
+                    >
                       {s.label}
                     </span>
                   </div>
                   {/* Connecting Line */}
                   {idx < steps.length - 1 && (
-                    <div className={`flex-1 h-[2px] mx-2 ${
-                      currentStep > s.num ? "bg-[#39842B]" : "bg-slate-200"
-                    }`} />
+                    <div
+                      className={`flex-1 h-[2px] mx-2 ${
+                        currentStep > s.num ? "bg-[#39842B]" : "bg-slate-200"
+                      }`}
+                    />
                   )}
                 </div>
               ))}
@@ -170,7 +195,6 @@ export default function Signup() {
 
             {/* Step Form Rendering */}
             <div className="w-full text-left mt-4">
-              
               {currentStep === 1 && (
                 <StudentInfoForm
                   studentName={studentName}
@@ -232,11 +256,13 @@ export default function Signup() {
                   isLoading={isLoading}
                 />
               )}
-
             </div>
           </div>
         ) : (
-          <OtpVerificationForm email={email} onSuccess={() => setSignupStep("pricing")} />
+          <OtpVerificationForm
+            email={email}
+            onSuccess={() => setSignupStep("pricing")}
+          />
         )}
       </AuthLayout>
     </>

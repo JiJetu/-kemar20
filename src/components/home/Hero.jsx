@@ -11,7 +11,7 @@ export default function Hero() {
   ];
 
   return (
-    <div className="relative w-full min-h-screen bg-white select-none flex items-center">
+    <div className="relative w-full lg:min-h-screen bg-white select-none flex items-center">
       {/* Background Image Container (Layered behind content, extends under the absolute navbar) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden hidden lg:block">
         <img

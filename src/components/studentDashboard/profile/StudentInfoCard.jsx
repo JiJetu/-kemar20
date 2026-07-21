@@ -193,12 +193,7 @@ const StudentInfoCard = ({
               >
                 <option value="">Select Class</option>
                 <option value="4th">4th</option>
-                <option value="5th">5th</option>
-                <option value="6th">6th</option>
-                <option value="7th">7th</option>
-                <option value="8th">8th</option>
-                <option value="9th">9th</option>
-                <option value="10th">10th</option>
+                <option value="5th">5th</option>=
               </select>
             </div>
           </div>
